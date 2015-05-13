@@ -1,45 +1,42 @@
+/// <reference path="../typings/tsd.d.ts" />
 
+import assert = require("assert")
+import Table = require('../../src/data/Table');
 
-var assert = require("assert")
-var Table = require('../../src/data/Table');
 
 describe('Table', function() {
     
     it('should be defined empty', function() {
-      
-        var table = new Table();
+        var table = new Table([]);
         assert.equal(table.size(), 0);
         assert(table.empty());
-      
     });
     
     
     it('should catch errors', function() {
         assert.throws(function() {
-            new Table("a");
+            new (<any> Table)("a"); // Should throw an exception
         });
     });
     
     
     it('should be created statically', function() {
-        var rows = [
-             [0, 'Max', null],
-             [1,  null, null]
-        ];
         var header = ['ID', 'Name', 'Address'];
         
-        var table = new Table(rows, header);
+        var table = new Table(header);
+        table.addRow([0, 'Max', null]);
+        table.addRow([1,  null, null]);
         
         assert.deepEqual(table.rows(), [[0, 'Max', null], [1, null, null]]);
     });
     
     
     it('should be created dynamically', function() {
-        var table = new Table();
+        var table = new Table([]);
         table.addField('ID');
         table.addField('Name');
         
-        assert.deepEqual(table.header(), ['ID', 'Name']);
+        assert.deepEqual(table.fields(), ['ID', 'Name']);
         assert.deepEqual(table.rows(), []);
         
         table.addRow([0, 'Max']);

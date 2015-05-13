@@ -1,3 +1,9 @@
 {
-    
+	"compilerOptions": {
+		"module": "commonjs"		
+	},
+	"filesGlob": [
+		"src/**/*.ts",
+		"test/**/*.ts"
+	]
 }

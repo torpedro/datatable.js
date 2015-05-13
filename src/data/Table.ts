@@ -1,65 +1,82 @@
+/// <reference path="TableInterface.ts" />
 
-type Row = Array<any>;
 
 /**
  * @class Table
  * 
- * this is a row store
- * TODO: Implement a column store
+ * This table is implemented as a column store.
  */
-class Table {
-	private _rows : Array<Row>;
-	private _header : Array<string>;
+class Table implements TableInterface {
+	private _attributeVectors : Array<Array<any>>;
+	private _fields : Array<string>;
 	
-	constructor(rows : Array<Row>, header : Array<string>) {
-		if (rows && !(rows instanceof Array)) throw "Unexpected type for rows!"
-		if (!rows) rows = [];
+	
+	constructor(fields: Array<string>) {
+		if (!(fields instanceof Array)) throw "Unexpected type for rows!";
+		this._fields = fields;
+		this._attributeVectors = [];
 		
-		this._rows = rows;
-		
-		if (!header) {
-			this._header = [];
-			
-			if (rows.length > 0) {
-				for (var i = 0; i < rows[0].length; ++i) {
-					this.addField("Column " + i);
-				}
-			}
-		} else {
-			this._header = header;
+		for (var c = 0; c < fields.length; ++c) {
+			this._attributeVectors.push([]);
 		}
 	}
 	
-	// Fields
-	header() : Array<string> { return this._header; }
+	fields(): Array<string> { return this._fields; }
 	
-	numFields() : number { return this._header.length; }
-	
-	addField(name : string) {
-		this._header.push(name);
-		for (var i = 0; i < this.size(); ++i) {
-			this._rows[i].push(null);
-		}
-	}
-	
-	// Rows
-	rows() : Array<Row> { return this._rows; }
-	
-	size() : number { return this._rows.length; }
+	numFields() : number { return this._attributeVectors.length; }
 	
 	empty() : boolean { return this.size() == 0; }
 	
+	size() : number {
+		if (this._attributeVectors.length == 0) return 0;
+		return this._attributeVectors[0].length;
+	}
 	
-	addRow(row : Row) {
-		if (row.length > this.numFields()) throw "Too many fields in row!";
-		
-		// Insert null values for non existing fields in row!
-		for (var i = row.length; i < this.numFields(); ++i) {
-			row.push(null);	
+	rows() : Array<Row> {
+		var rows : Array<Row> = [];
+		for (var r = 0; r < this.size(); ++r) {
+			rows.push(this.row(r));
 		}
+		return rows;
+	}
+	
+	row(r: number) : Row {
+		// Build the Row from the attribute vectors
+		var record : Row = [];
+		for (var c = 0; c < this.numFields(); ++c) {
+			record.push(this.getValue(r, c));
+		}
+		return record;
+	}
+	
+	getValue(row: number, column: number) {
+		return this._attributeVectors[column][row];
+	}
+	
+	addRow(row: Row) {
+		for (var c = 0; c < row.length; ++c) {
+			this._attributeVectors[c].push(row[c]);
+		}
+		for (var c = row.length; c < this.numFields(); ++c) {
+			this._attributeVectors[c].push(null);
+		}
+	}
+	
+	addField(name: string) {
+		this._fields.push(name);
 		
-		this._rows.push(row);
+		// Push null-values for existing rows
+		var vector = [];
+		for (var r = 0; r < this.size(); ++r) {
+			vector.push(null);
+		}	
+		this._attributeVectors.push(vector);
 	}
 }
 
+
+
+
+
+// modules.export
 export = Table;
