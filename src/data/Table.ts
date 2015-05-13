@@ -21,6 +21,7 @@ class Table implements TableInterface {
 		}
 	}
 	
+	
 	fields(): Array<string> { return this._fields; }
 	
 	numFields() : number { return this._attributeVectors.length; }
@@ -54,9 +55,13 @@ class Table implements TableInterface {
 	}
 	
 	addRow(row: Row) {
+		if (row.length > this.numFields()) throw "Row has too many fields!";
+		
 		for (var c = 0; c < row.length; ++c) {
 			this._attributeVectors[c].push(row[c]);
 		}
+		
+		// Push null-values for non-existant fields
 		for (var c = row.length; c < this.numFields(); ++c) {
 			this._attributeVectors[c].push(null);
 		}
@@ -71,6 +76,14 @@ class Table implements TableInterface {
 			vector.push(null);
 		}	
 		this._attributeVectors.push(vector);
+	}
+	
+	column(c: number) {
+		return this._attributeVectors[c];
+	}
+	
+	columns() {
+		return this._attributeVectors;
 	}
 }
 

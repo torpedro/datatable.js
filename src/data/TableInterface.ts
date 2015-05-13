@@ -3,14 +3,19 @@ type Row = Array<any>;
 
 interface TableInterface {
 	
-	size() : number;
+	size(): number;
 	
-	empty() : boolean;
+	empty(): boolean;
 	
-	row(n : number) : Row;
+	row(n: number): Row;
 	
-	rows() : Array<Row>;
+	rows(): Array<Row>;
 	
-	addRow(record : Row) : void;
+	column(c: number): Array<any>;
+	
+	columns(): Array<Array<any>>;
+	
+	addRow(record: Row): void;
+	
 	
 }
