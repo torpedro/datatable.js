@@ -4,9 +4,9 @@ module.exports = function(grunt) {
         cfg: {
             'libName': 'ds',
              
-            'src': './src/',
-            'test': './test/',
-            'build': './build/'
+            'src': './src',
+            'test': './test',
+            'build': './build'
         },
 
         watch: {

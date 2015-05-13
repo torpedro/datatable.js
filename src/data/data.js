@@ -1,4 +1,4 @@
 module.exports = {
-	Table: require('./Table.js'),
-	RowTable: require('./RowTable.js')
+	VectorOperations: require('./VectorOperations.js'),
+	CoreColumnTable: require('./CoreColumnTable.js')
 };

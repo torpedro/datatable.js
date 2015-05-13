@@ -1,7 +1,7 @@
 
 type Row = Array<any>;
 
-interface TableInterface {
+interface CoreTableInterface {
 	
 	size(): number;
 	

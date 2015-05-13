@@ -1,14 +1,14 @@
-/// <reference path="TableInterface.ts" />
+/// <reference path="CoreTableInterface.ts" />
 
 
 /**
- * @class Table
+ * @class CoreColumnTable
  * 
  * This table is implemented as a column store.
  */
-class Table implements TableInterface {
-	private _attributeVectors : Array<Array<any>>;
-	private _fields : Array<string>;
+class CoreColumnTable implements CoreTableInterface {
+	protected _attributeVectors : Array<Array<any>>;
+	protected _fields : Array<string>;
 	
 	
 	constructor(fields: Array<string>) {
@@ -92,4 +92,4 @@ class Table implements TableInterface {
 
 
 // modules.export
-export = Table;
+export = CoreColumnTable;

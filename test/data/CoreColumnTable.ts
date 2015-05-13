@@ -1,13 +1,12 @@
 /// <reference path="../typings/tsd.d.ts" />
-
 import assert = require("assert")
-import Table = require('../../src/data/Table');
+import CoreColumnTable = require('../../src/data/CoreColumnTable');
 
 
-describe('Table', function() {
+describe('CoreColumnTable', function() {
     
     it('should be defined empty', function() {
-        var table = new Table([]);
+        var table = new CoreColumnTable([]);
         assert.equal(table.size(), 0);
         assert(table.empty());
     });
@@ -15,7 +14,7 @@ describe('Table', function() {
     
     it('should catch errors', function() {
         assert.throws(function() {
-            new (<any> Table)("a"); // Should throw an exception
+            new (<any> CoreColumnTable)("a"); // Should throw an exception
         });
     });
     
@@ -23,7 +22,7 @@ describe('Table', function() {
     it('should be created statically', function() {
         var header = ['ID', 'Name', 'Address'];
         
-        var table = new Table(header);
+        var table = new CoreColumnTable(header);
         table.addRow([0, 'Max', null]);
         table.addRow([1,  null, null]);
         
@@ -33,7 +32,7 @@ describe('Table', function() {
     
     
     it('should be created dynamically', function() {
-        var table = new Table([]);
+        var table = new CoreColumnTable([]);
         table.addField('ID');
         table.addField('Name');
         
