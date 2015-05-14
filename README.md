@@ -1,5 +1,6 @@
-# predictive.js
+# datasci.js
 
+**datasci.js** is a analytics library for JavaScript.
 
 # Usage
 
