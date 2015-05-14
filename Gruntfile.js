@@ -2,7 +2,8 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         cfg: {
-            'libName': 'ds',
+            'libName': 'datasci.js',
+            'libNamespace': 'ds',
              
             'src': './src',
             'test': './test',
@@ -18,14 +19,14 @@ module.exports = function(grunt) {
                     '<%= cfg.src %>/**/*.ts',
                     '<%= cfg.src %>/**/*.js'
                 ],
-                tasks: ['build', 'just-test']
+                tasks: ['build', 'only-test']
             },
             test: {
                 files: [
                     '<%= cfg.test %>/**/*.ts',
                     '<%= cfg.test %>/**/*.js'
                 ],
-                tasks: ['just-test']
+                tasks: ['only-test']
             }
         },
 
@@ -99,12 +100,21 @@ module.exports = function(grunt) {
         browserify: {
             options: {
                 browserifyOptions: {
-                    standalone: '<%= cfg.libName %>'      
+                    standalone: '<%= cfg.libNamespace %>'      
                 }
             },
             src: {
                 src: '<%= cfg.build %>/src/app.js',
-                dest: '<%= cfg.build %>/app-full.js'
+                dest: '<%= cfg.build %>/<%= cfg.libName %>-full.js'
+            }
+        },
+        
+        // Uglify for release
+        uglify: {
+            my_target: {
+                files: {
+                    '<%= cfg.build %>/<%= cfg.libName %>-full-min.js': ['<%= cfg.build %>/<%= cfg.libName %>-full.js']
+                }
             }
         }
     });
@@ -112,6 +122,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-typescript');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-browserify');
@@ -123,16 +134,24 @@ module.exports = function(grunt) {
         'browserify'
     ]);
     
-    grunt.registerTask('just-test', [
+    grunt.registerTask('only-test', [
         'copy:test',
         'typescript:test',
         'mochaTest'
-    ])
+    ]);
     
+    // Build and Test
     grunt.registerTask('test', [
         'build',
-        'just-test'
-    ])
+        'only-test'
+    ]);
+    
+    // Build, Test and Minify
+    grunt.registerTask('release', [
+        'build',
+        'only-test',
+        'uglify' 
+    ]);
 
-    grunt.registerTask('default', ['build', 'test'])
+    grunt.registerTask('default', ['test']);
 };

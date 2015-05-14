@@ -1,6 +1,15 @@
 # predictive.js
 
 
+# Usage
+
+Include the JavaScript library in your HTML page.
+
+    <script src="build/datasci.js-full-min.js"></script>
+	
+
+
+
 # Functionality
 
 Planned:
@@ -14,10 +23,16 @@ Planned:
 * Classification (Bayes, SVM, DT)
 
 
-
 # Development
 
+Install the dependencies:
+
     npm install
+
+
+## Build the library
+
+    grunt build
 
 
 ## Testing
@@ -25,6 +40,11 @@ Planned:
 We use Mocha for testing. Run with:
 
     grunt test
+	
+	
+## Create the minified sources
+
+    grunt release
 	
 	
 	
