@@ -15,13 +15,17 @@ Include the JavaScript library in your HTML page.
 
 Planned:
 
-* Data Table Structure
-* Table Compression (Dict, RLE)
-* Smoothing Algorithms (SES, DES, MA)
-* Charting (Line charts)
-* CSV interop (Load and Save)
-* Forecasting Algorithms (Regression)
-* Classification (Bayes, SVM, DT)
+* **Soon**
+  * Data Table Structure
+  * Advanced Data Structures (Set, Tree, ...)
+  * Smoothing Algorithms (SES, DES, MA, ...)
+  * Charting (Line charts, ...)
+  * CSV interop (Load and Save)
+  
+* **Future**
+  * Table Compression (Dict, RLE)
+  * Forecasting Algorithms (Regression)
+  * Classification (Bayes, SVM, DT)
 
 
 # Development
