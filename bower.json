@@ -1,0 +1,12 @@
+{
+  "name": "datasci.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/torpedro/predictive.js",
+  "authors": [
+    "Pedro <pedroflemming@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "underscore": "~1.8.3"
+  }
+}

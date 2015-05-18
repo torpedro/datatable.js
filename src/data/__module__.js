@@ -5,5 +5,6 @@ module.exports = {
 	
 	CoreColumnTable: require('./CoreColumnTable.js'),
 	Set: require('./Set.js'),
-	OrderedSet: require('./OrderedSet.js')
+	OrderedSet: require('./OrderedSet.js'),
+	HashMap: require('./HashMap.js')
 };

@@ -1,5 +1,5 @@
 {
-  "name": "predictive.js",
+  "name": "datasci.js",
   "author": "Pedro Flemming",
   "devDependencies": {
     "grunt-typescript": "~0.6.1",
@@ -7,6 +7,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-contrib-copy": "~0.8.0",
     "grunt-browserify": "~3.8.0",
-    "grunt-contrib-uglify": "~0.9.1"
+    "grunt-contrib-uglify": "~0.9.1",
+    "bower": "~1.4.1"
   }
 }

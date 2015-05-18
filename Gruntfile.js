@@ -7,7 +7,8 @@ module.exports = function(grunt) {
              
             'src': './src',
             'test': './test',
-            'build': './build'
+            'build': './build',
+            'bower': './bower_components',
         },
 
         watch: {
@@ -41,6 +42,18 @@ module.exports = function(grunt) {
 		
 		
         copy: {
+            bower: {
+                // Copy all bower files
+                files: [{
+                    dot: true,
+                    expand: true,
+                    cwd: '<%= cfg.bower %>/',
+                    src: ['**/*'],
+                    dest: '<%= cfg.build %>/bower_components/'
+                }]    
+            },
+            
+            
             src: {
 				// Copy all src files to the build-directory
                 files: [{
