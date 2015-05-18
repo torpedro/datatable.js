@@ -50,8 +50,16 @@ class CoreColumnTable implements CoreTableInterface {
 		return record;
 	}
 	
-	getValue(row: number, column: number) {
-		return this._attributeVectors[column][row];
+	getFieldNameIndex(field: string) {
+		var index = this._fields.indexOf(field);
+		if (index == -1) throw "Field '" + field + "' doesn't exist!";
+		return index;
+	}
+	
+	getValue(row: number, column: number|string) {
+		if (typeof column === 'string') column = this.getFieldNameIndex(<string>column);
+		
+		return this._attributeVectors[<number>column][row];
 	}
 	
 	addRow(row: Row) {
@@ -65,6 +73,10 @@ class CoreColumnTable implements CoreTableInterface {
 		for (var c = row.length; c < this.numFields(); ++c) {
 			this._attributeVectors[c].push(null);
 		}
+	}
+	
+	addRows(rows: Array<Row>) {
+		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
 	}
 	
 	addField(name: string) {

@@ -18,6 +18,9 @@ describe('HashMap', function() {
 		
 		map.set(['Max', 'Mustermann'], 1000);
 		assert.equal(map.get(['Max', 'Mustermann']), 1000);
+		
+		
+		assert.deepEqual(map.keys(), ['abc', {a: 1}, ['Max', 'Mustermann']]);
     });
 	
 	

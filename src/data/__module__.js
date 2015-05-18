@@ -1,10 +1,12 @@
 module.exports = {
-	vec: require('./VectorOperations.js'),
-	types: require('./types.js'),
-	util: require('./util.js'),
-	
-	CoreColumnTable: require('./CoreColumnTable.js'),
-	Set: require('./Set.js'),
-	OrderedSet: require('./OrderedSet.js'),
-	HashMap: require('./HashMap.js')
+	vec: require('./VectorOperations'),
+	types: require('./types'),
+	util: require('./util'),
+	agg: require('./agg'),
+		
+	CoreColumnTable: require('./CoreColumnTable'),
+	AnalyticsTable: require('./AnalyticsTable'),
+	Set: require('./Set'),
+	OrderedSet: require('./OrderedSet'),
+	HashMap: require('./HashMap')
 };

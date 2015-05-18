@@ -18,7 +18,7 @@ class HashMap {
 		else this._useIdentity = false;
 	}
 	
-	public set(key: any, val: any): void {
+	set(key: any, val: any): void {
 		var bucket = this._getBucket(key);
 		var i = this._findKeyInBucket(key, bucket);
 		
@@ -27,7 +27,7 @@ class HashMap {
 	}	
 	
 	
-	public get(key: any): any {
+	get(key: any): any {
 		var bucket = this._getBucket(key);
 		var i = this._findKeyInBucket(key, bucket);
 		
@@ -35,9 +35,20 @@ class HashMap {
 		else return null;
 	}
 	
-	public contains(key: any): any {
+	contains(key: any): any {
 		var bucket = this._getBucket(key);
 		return this._findKeyInBucket(key, bucket) >= 0;
+	}
+	
+	keys(): Array<any> {
+		var keys = [];
+		for (var hash in this._data) {
+			var bucket = this._data[hash];
+			for (var i = 0; i < bucket.length; ++i) {
+				keys.push(bucket[i][0]);
+			}
+		}
+		return keys;
 	}
 	
 	private _getBucket(key: any): Array<any> {
