@@ -27,5 +27,13 @@ describe('VectorOperations', function() {
 		vector = ['2014-02-03', '2015-05-02', '2.3.2012', '5/10/2011', new Date()];
 		assert.equal(VectorOperations.detectDataType(vector), 'date');
     });
+	
+	it('distinctValues', function() {
+		var vector: Array<any>;
+		
+		vector = [1, 2, 1, 1, 2, 3, '1.0', null, 1];
+		assert.deepEqual(VectorOperations.distinctValues(vector), [1, 2, 3, '1.0', null])
+	});
+	
     
 });

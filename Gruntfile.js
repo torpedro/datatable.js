@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         cfg: {
             'libName': 'datasci.js',
-            'libNamespace': 'ds',
+            'libNamespace': 'sci',
              
             'src': './src',
             'test': './test',

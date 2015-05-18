@@ -44,6 +44,37 @@ class VectorOperations {
 		if (typeset.length == 1) return typeset[0];
 		else return 'mixed'
 	}
+	
+	/**
+	 * @name groupByPositions
+	 * 
+	 * not type safe
+	 */
+	static groupByPositions(vector: Array<any>): Object {
+		var map = {};
+		for (var i = 0; i < vector.length; ++i) {
+			var value = vector[i];
+			if (value in map) {
+				map[value].push(i);
+			} else {
+				map[value] = [i];
+			}
+		}
+		return map;
+	}
+	
+	/**
+	 * list all distinct values within the array
+	 */
+	static distinctValues(vector: Array<any>): Array<any> {
+		var values = [];
+		for (var i = 0; i < vector.length; ++i) {
+			if (values.indexOf(vector[i]) == -1) {
+				values.push(vector[i]);
+			}
+		}
+		return values;
+	}
 }
 
 
