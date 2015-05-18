@@ -1,5 +1,5 @@
 // top-level namespace
 module.exports = {
-	data: require('./data/data.js'),
-	smooth: require('./smooth/smooth.js')
+	data: require('./data/__module__.js'),
+	smooth: require('./smooth/__module__.js')
 }

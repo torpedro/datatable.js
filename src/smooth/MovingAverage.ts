@@ -1,4 +1,6 @@
-
+/**
+ * @module ma
+ */
 module ma {
 	export function SimpleMovingAverage(vector: Array<number>, k: number): Array<number> {
 		var result: Array<number> = [];

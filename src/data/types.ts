@@ -6,19 +6,19 @@ interface TypeDetection {
 }
 
 /**
- * @class Types
+ * @module types
  */
-class Types {
+module types {
 	
 	// These are the data types that can be detected
-	static kString = 'string';
-	static kNumber = 'number';
-	static kData = 'date';
-	static kObject = 'object';
-	static kBoolean = 'boolean';
-	static kNull = 'null';
+	export var kString = 'string';
+	export var kNumber = 'number';
+	export var kData = 'date';
+	export var kObject = 'object';
+	export var kBoolean = 'boolean';
+	export var kNull = 'null';
 	
-	private static _typeDetectors = {
+	 var _typeDetectors = {
 		'date': {
 			'iso-date': { // yyyy-mm-dd
 				regex: /^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])$/, 
@@ -61,7 +61,7 @@ class Types {
 	}
 	
 	
-	static detectDataType(value: any, parseStrings?: boolean): TypeDetection {
+	export function detectDataType(value: any, parseStrings?: boolean): TypeDetection {
 		if (typeof parseStrings === 'undefined') parseStrings = true;
 		
 		// Get the javascript built-in type
@@ -89,17 +89,17 @@ class Types {
 		
 		// Parse the string
 		if (type == 'string') {
-			return this.detectDataTypeOfString(value);
+			return detectDataTypeOfString(value);
 		}
 		
 	}
 	
-	static detectDataTypeOfString(value: string): TypeDetection {
+	export function detectDataTypeOfString(value: string): TypeDetection {
 		// Iterate over all types
-		for (var type in this._typeDetectors) {
+		for (var type in _typeDetectors) {
 			// Iterate over all detectors of that type
-			for (var key in this._typeDetectors[type]) {
-				var detector = this._typeDetectors[type][key];
+			for (var key in _typeDetectors[type]) {
+				var detector = _typeDetectors[type][key];
 				
 				if (detector.regex) {
 					var match = detector.regex.exec(value);
@@ -129,4 +129,4 @@ class Types {
 
 
 // modules.export
-export = Types;
+export = types;

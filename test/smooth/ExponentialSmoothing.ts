@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 import assert = require("assert")
-import ExponentialSmoothing = require('../../src/smooth/ExponentialSmoothing');
+import es = require('../../src/smooth/ExponentialSmoothing');
 
 
 describe('ExponentialSmoothing', function() {
@@ -11,13 +11,13 @@ describe('ExponentialSmoothing', function() {
 		
 		vector = [1, 2, 2, 1, 5];
 		
-		smoothed = ExponentialSmoothing.SingleExponentialSmoothing(vector, 1);
+		smoothed = es.SingleExponentialSmoothing(vector, 1);
 		assert.deepEqual(smoothed, vector);
 		
-		smoothed = ExponentialSmoothing.SingleExponentialSmoothing(vector, 0.5);
+		smoothed = es.SingleExponentialSmoothing(vector, 0.5);
 		assert.deepEqual(smoothed, [1, 1.5, 1.75, 1.375, 3.1875]);
 		
-		smoothed = ExponentialSmoothing.SingleExponentialSmoothing(vector, 0);
+		smoothed = es.SingleExponentialSmoothing(vector, 0);
 		assert.deepEqual(smoothed, [1, 1, 1, 1, 1]);
     });
 	

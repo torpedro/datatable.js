@@ -1,4 +1,6 @@
-
+/**
+ * @module es
+ */
 module es {
 	export function SingleExponentialSmoothing(vector: Array<number>, alpha: number): Array<number> {
 		if (!vector || typeof alpha == 'undefined') throw "Not enough parameters given!";
