@@ -85,9 +85,10 @@ module.exports = function(grunt) {
             },
             src: {
                 options: {
-                    module: 'commonjs'
+                    module: 'commonjs',
+//                    declaration: true
                 },
-                src: ['<%= cfg.build %>/src/**/*.ts']
+                src: ['<%= cfg.build %>/src/**/*\.ts']
             },
             test: {
                 options: {

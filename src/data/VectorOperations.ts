@@ -23,8 +23,9 @@ module vec {
 	export function min(vector: Array<any>): any { return range(vector)[0]; }
 	export function max(vector: Array<any>): any { return range(vector)[1]; }
 	
-	export function detectDataType(vector: Array<any>, parseStrings?: boolean): string  {
+	export function detectDataType(vector: Array<any>, parseStrings?: boolean, convertTypes?: boolean): string  {
 		if (typeof parseStrings === 'undefined') parseStrings = true;
+		if (typeof convertTypes === 'undefined') convertTypes = false;
 		
 		var typeset = [];
 		for (var i = 0; i < vector.length; ++i) {
@@ -37,7 +38,9 @@ module vec {
 			
 			// Add to the typeset
 			if (typeset.indexOf(res.type) == -1) typeset.push(res.type);
+			if (convertTypes) vector[i] = res.value
 		}
+		
 		
 		if (typeset.length == 0) return types.kNull;
 		if (typeset.length == 1) return typeset[0];

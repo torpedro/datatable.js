@@ -5,15 +5,18 @@
  * @class CoreColumnTable
  * 
  * This table is implemented as a column store.
+ * TODO: enforce types
  */
 class CoreColumnTable implements CoreTableInterface {
 	protected _attributeVectors : Array<Array<any>>;
 	protected _fields : Array<string>;
+	protected _types : Array<string>;
 	
 	
-	constructor(fields: Array<string>) {
-		if (!(fields instanceof Array)) throw "Unexpected type for rows!";
+	constructor(fields: Array<string>, types?: Array<string>) {
+		if (!(fields instanceof Array)) throw "Unexpected type for fields!";
 		this._fields = fields;
+		this._types = types || [];
 		this._attributeVectors = [];
 		
 		for (var c = 0; c < fields.length; ++c) {
@@ -62,6 +65,11 @@ class CoreColumnTable implements CoreTableInterface {
 		return this._attributeVectors[<number>column][row];
 	}
 	
+	setValue(row: number, column: number|string, value: any) {
+		if (typeof column === 'string') column = this.getFieldNameIndex(<string>column);
+		return this._attributeVectors[<number>column][row] = value;
+	}
+	
 	addRow(row: Row) {
 		if (row.length > this.numFields()) throw "Row has too many fields!";
 		
@@ -79,15 +87,27 @@ class CoreColumnTable implements CoreTableInterface {
 		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
 	}
 	
-	addField(name: string) {
+	addField(name: string, type?: string, values?: Array<any>) {
 		this._fields.push(name);
 		
 		// Push null-values for existing rows
 		var vector = [];
 		for (var r = 0; r < this.size(); ++r) {
 			vector.push(null);
-		}	
+		}
 		this._attributeVectors.push(vector);
+		this._types.push(type);
+	}
+	
+	/**
+	 * Adds empty rows to the table, until the table has at least
+	 * as many rows as specified
+	 */
+	reserve(numRows: number) {
+		if (this.numFields() == 0) throw("Can't reserve rows on a table without fields!");
+		while (this.size() < numRows) {
+			this.addRow([]);
+		}
 	}
 	
 	column(c: number) {
