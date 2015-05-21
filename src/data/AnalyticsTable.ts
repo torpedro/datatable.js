@@ -38,7 +38,9 @@ class AnalyticsTable extends CoreColumnTable {
 		}
 		
 		// Create the result table
-		var result = new AnalyticsTable(outputFields);
+		var result = new AnalyticsTable({
+			fields: outputFields
+		});
 		var keys = map.keys();
 		for (var k = 0; k < keys.length; ++k) {
 			var row = [];
@@ -61,7 +63,9 @@ class AnalyticsTable extends CoreColumnTable {
 	
 	filter(predicate: Function): AnalyticsTable {
 		// TODO: Figer out how to be able to address columns in predicate by name
-		var result = new AnalyticsTable(this._fields);
+		var result = new AnalyticsTable({
+			fields: this._fields
+		});
 		for (var r = 0; r < this.size(); ++r) {
 			var row = this.row(r);
 			if (predicate(row)) {

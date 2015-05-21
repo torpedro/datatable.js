@@ -1,5 +1,10 @@
 /// <reference path="CoreTableInterface.ts" />
 
+interface TableDefinition {
+	fields: Array<string>,
+	types?: Array<string>,
+	columns?: Array<Array<any>>
+}
 
 /**
  * @class CoreColumnTable
@@ -12,27 +17,80 @@ class CoreColumnTable implements CoreTableInterface {
 	protected _fields : Array<string>;
 	protected _types : Array<string>;
 	
+	constructor(def: TableDefinition);
+	constructor(table: CoreColumnTable);
 	
-	constructor(fields: Array<string>, types?: Array<string>) {
-		if (!(fields instanceof Array)) throw "Unexpected type for fields!";
-		this._fields = fields;
-		this._types = types || [];
-		this._attributeVectors = [];
-		
-		for (var c = 0; c < fields.length; ++c) {
-			this._attributeVectors.push([]);
+	constructor(def: TableDefinition | CoreColumnTable) {
+		if (def instanceof CoreColumnTable) {
+			this._initializeByTable(<CoreColumnTable> def);
+		} else if (typeof def === 'object') {
+			this._initializeByTableDefinition(<TableDefinition> def);
+		} else {
+			console.error("Couldn't initialize Table with the given parameters!", arguments);
+			throw "Couldn't initialize Table with the given parameters!";
 		}
+	}
+	
+	
+	protected _initializeByTableDefinition(def: TableDefinition) {
+		if (def.fields.length == 0) throw "Number of fields can't be zero!";
+		
+		this._fields = def.fields;
+		
+		// Initialize the types
+		// If types are undefined, we set them to 'any' by default
+		if (def.types) {
+			if (def.fields.length != def.types.length)
+				throw "Number of fields and number of types do not match!";
+				
+			this._types = def.types;
+		} else {
+			this._types = [];
+			for (var c = 0; c < def.fields.length; ++c) {
+				this._types.push('any');
+			}
+		}
+		
+		// Initialize the attribute Vectors
+		this._attributeVectors = [];
+		if (def.columns) {
+			if (def.fields.length != def.columns.length)
+				throw "Number of fields and number of supplied columns do not match!";
+			
+			var numRows = def.columns[0].length;
+			for (var c = 0; c < def.fields.length; ++c) {
+				if (def.columns[c].length != numRows) {
+					throw "Number of rows in TableDefiniton is not uniform!";
+				}
+				
+				this._attributeVectors.push(def.columns[c].slice());
+			}
+			
+		} else {
+			for (var c = 0; c < def.fields.length; ++c) {
+				this._attributeVectors.push([]);
+			}	
+		}
+	}
+	
+	protected _initializeByTable(table: CoreColumnTable) {
+		this._initializeByTableDefinition({
+			fields: table.fields(),
+			types: table.types(),
+			columns: table.columns()
+		});
 	}
 	
 	
 	fields(): Array<string> { return this._fields; }
 	
-	numFields() : number { return this._attributeVectors.length; }
+	numFields() : number { return this._fields.length; }
+	
+	types(): Array<string> { return this._types; }
 	
 	empty() : boolean { return this.size() == 0; }
 	
 	size() : number {
-		if (this._attributeVectors.length == 0) return 0;
 		return this._attributeVectors[0].length;
 	}
 	
@@ -60,14 +118,11 @@ class CoreColumnTable implements CoreTableInterface {
 	}
 	
 	getValue(row: number, column: number|string) {
-		if (typeof column === 'string') column = this.getFieldNameIndex(<string>column);
-		
-		return this._attributeVectors[<number>column][row];
+		return this.column(column)[row];
 	}
 	
 	setValue(row: number, column: number|string, value: any) {
-		if (typeof column === 'string') column = this.getFieldNameIndex(<string>column);
-		return this._attributeVectors[<number>column][row] = value;
+		this.column(column)[row] = value
 	}
 	
 	addRow(row: Row) {
@@ -110,8 +165,9 @@ class CoreColumnTable implements CoreTableInterface {
 		}
 	}
 	
-	column(c: number) {
-		return this._attributeVectors[c];
+	column(field: number|string) {
+		if (typeof field === 'string') field = this.getFieldNameIndex(<string>field);
+		return this._attributeVectors[<number>field];
 	}
 	
 	columns() {

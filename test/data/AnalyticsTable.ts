@@ -4,7 +4,9 @@ import AnalyticsTable = require('../../src/data/AnalyticsTable');
 
 describe('AnalyticsTable', function() {
     it('filter', function() {
-		var table = new AnalyticsTable(['ID', 'First Name', 'Last Name']);
+		var table = new AnalyticsTable({
+			fields: ['ID', 'First Name', 'Last Name']
+		});
         
 		table.addRow([1, 'Max', 'Mustermann']);
 		table.addRow([2, 'John', 'Doe']);
@@ -14,7 +16,9 @@ describe('AnalyticsTable', function() {
     });
 	
     it('group by', function() {
-		var table = new AnalyticsTable(['Category', 'Score1', 'Score2']);
+		var table = new AnalyticsTable({
+			fields: ['Category', 'Score1', 'Score2']
+		});
         
 		table.addRow([1, 100, 1000]);
 		table.addRow([1, 100, 2000]);
@@ -46,7 +50,9 @@ describe('agg', function() {
 		[2, 'John', 200],
 		[2, 'Jeff', 300]
 	]
-	var table = new AnalyticsTable(fields);
+	var table = new AnalyticsTable({
+		fields: fields
+	});
 	table.addRows(data);
 	
 	

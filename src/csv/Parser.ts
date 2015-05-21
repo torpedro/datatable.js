@@ -59,15 +59,13 @@ class Parser {
 			}
 		}
 		
+		// Create the table
+		var table = new CoreColumnTable({
+			fields: fields,
+			types: types,
+			columns: attrVectors
+		});
 		
-		// TODO: Allow interface to directly set attribute vectors
-		var table = new CoreColumnTable(fields, types);
-		table.reserve(numRows);
-		for (var c = 0; c < fields.length; ++c) {
-			for (var r = 0; r < numRows; ++r) {
-				table.setValue(r, c, attrVectors[c][r]);
-			}
-		}
 		return table;
 	}
 }
