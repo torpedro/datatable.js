@@ -1,3 +1,4 @@
+/// <reference path="interfaces/SetInterface.ts" />
 /**
  * @class Set
  * 

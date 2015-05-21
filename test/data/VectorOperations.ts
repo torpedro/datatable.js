@@ -3,7 +3,7 @@ import assert = require("assert")
 import vec = require('../../src/data/VectorOperations');
 
 
-describe('VectorOperations', function() {
+describe('data.VectorOperations', function() {
     
     it('range', function() {
 		var vector: Array<any>;

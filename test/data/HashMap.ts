@@ -2,7 +2,7 @@
 import assert = require("assert");
 import HashMap = require('../../src/data/HashMap');
 
-describe('HashMap', function() {
+describe('data.HashMap', function() {
     it('equality map works', function() {
 		// Use the default/equality constructor
 		var map = new HashMap();

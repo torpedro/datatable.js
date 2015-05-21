@@ -3,7 +3,7 @@ import assert = require("assert")
 import ma = require('../../src/smooth/MovingAverage');
 
 
-describe('MovingAverage', function() {
+describe('smooth.MovingAverage', function() {
     
     it('SimpleMovingAverage', function() {
 		var vector: Array<number>;

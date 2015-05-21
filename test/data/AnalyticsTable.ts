@@ -1,8 +1,10 @@
 /// <reference path="../typings/tsd.d.ts" />
 import assert = require("assert");
 import AnalyticsTable = require('../../src/data/AnalyticsTable');
+import CoreColumnTable = require('../../src/data/CoreColumnTable');
 
-describe('AnalyticsTable', function() {
+
+describe('data.AnalyticsTable', function() {
     it('filter', function() {
 		var table = new AnalyticsTable({
 			fields: ['ID', 'First Name', 'Last Name']
@@ -14,6 +16,22 @@ describe('AnalyticsTable', function() {
 		var result = table.filter(function(row) { return row[0] < 2	});
 		assert.deepEqual(result.rows(), [[1, 'Max', 'Mustermann']]);
     });
+	
+	
+    it('can be created from CoreColumnTable', function() {
+		var table = new CoreColumnTable({
+			fields: ['ID', 'First Name', 'Last Name']
+		});
+        
+		table.addRow([1, 'Max', 'Mustermann']);
+		table.addRow([2, 'John', 'Doe']);
+		
+		var anaTable = new AnalyticsTable(table);
+		
+		var resultTable = anaTable.filter(function(row) { return row[0] < 2	});
+		assert.deepEqual(resultTable.rows(), [[1, 'Max', 'Mustermann']]);
+    });
+	
 	
     it('group by', function() {
 		var table = new AnalyticsTable({
@@ -42,7 +60,8 @@ describe('AnalyticsTable', function() {
     });
 });
 
-describe('agg', function() {
+
+describe('data.agg', function() {
 	var fields = ['Category', 'Person', 'Score'];
 	var data = [
 		[1, 'Max',  100],

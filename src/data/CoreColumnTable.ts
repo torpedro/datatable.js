@@ -26,7 +26,7 @@ class CoreColumnTable implements CoreTableInterface {
 		} else if (typeof def === 'object') {
 			this._initializeByTableDefinition(<TableDefinition> def);
 		} else {
-			console.error("Couldn't initialize Table with the given parameters!", arguments);
+			// console.error("Couldn't initialize Table with the given parameters!", arguments);
 			throw "Couldn't initialize Table with the given parameters!";
 		}
 	}

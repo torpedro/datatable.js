@@ -3,7 +3,7 @@ import assert = require("assert")
 import es = require('../../src/smooth/ExponentialSmoothing');
 
 
-describe('ExponentialSmoothing', function() {
+describe('smooth.ExponentialSmoothing', function() {
     
     it('SingleExponentialSmoothing', function() {
 		var vector: Array<number>;

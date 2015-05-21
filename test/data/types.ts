@@ -3,7 +3,7 @@ import assert = require("assert");
 import types = require('../../src/data/types');
 
 
-describe('types', function() {
+describe('data.types', function() {
 	
 	describe('detectDataTypeOfString', function() {
    

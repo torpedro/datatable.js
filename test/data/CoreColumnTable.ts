@@ -2,8 +2,7 @@
 import assert = require("assert")
 import CoreColumnTable = require('../../src/data/CoreColumnTable');
 
-
-describe('CoreColumnTable', function() {
+describe('data.CoreColumnTable', function() {
     
     it('should be defined empty', function() {
         var table = new CoreColumnTable({
