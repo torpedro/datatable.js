@@ -3,9 +3,9 @@ import HashMap = require('./HashMap');
 import Set = require('./Set');
 
 interface TableDefinition {
-	fields: Array<string>,
-	types?: Array<string>,
-	columns?: Array<Array<any>>
+	fields: Array<string>;
+	types?: Array<string>;
+	columns?: Array<Array<any>>;
 }
 
 /**
@@ -36,6 +36,7 @@ class CoreColumnTable implements CoreTableInterface {
 	
 	protected _initializeByTableDefinition(def: TableDefinition): void {
 		if (def.fields.length == 0) throw "Number of fields can't be zero!";
+	
 		
 		// Initialize the fields
 		this._fields = new Set<string>(def.fields);
@@ -55,7 +56,8 @@ class CoreColumnTable implements CoreTableInterface {
 			}
 		}
 		
-		// Initialize the attribute Vectors
+		// Initialize the attribute vectors
+		// TODO: Allow initialization with rows
 		this._attributeVectors = new HashMap<string, Array<any>>();
 		if (def.columns) {
 			if (def.fields.length != def.columns.length)

@@ -1,10 +1,26 @@
 /// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../../src/data/AnalyticsTable.ts" />
+
 import assert = require("assert");
+import agg = require('../../src/data/agg');
 import AnalyticsTable = require('../../src/data/AnalyticsTable');
+import FieldDescriptor = require('../../src/data/FieldDescriptor');
 import CoreColumnTable = require('../../src/data/CoreColumnTable');
 
 
 describe('data.AnalyticsTable', function() {
+	var table1 = new AnalyticsTable({
+		fields: ['Category', 'Score1', 'Score2']
+	});
+    
+	table1.addRows([
+		[1, 10, 100],
+		[1, 50, 300],
+		[2, 30, 200],
+		[3, 40, 400],
+		[1, 20, 500]
+	]);
+		
     it('filter', function() {
 		var table = new AnalyticsTable({
 			fields: ['ID', 'First Name', 'Last Name']
@@ -34,19 +50,13 @@ describe('data.AnalyticsTable', function() {
 	
 	
     it('group by', function() {
-		var table = new AnalyticsTable({
-			fields: ['Category', 'Score1', 'Score2']
-		});
-        
-		table.addRow([1, 100, 1000]);
-		table.addRow([1, 100, 2000]);
-		table.addRow([1, 200, 3000]);
-		table.addRow([2, 103, 4000]);
 		
-		var res1 = table.groupBy(['Category', 'Score1'], []);
-		assert.deepEqual(res1.rows(), [[1, 100], [1, 200], [2, 103]]);
+		var res1 = table1.groupBy(['Category', 'Score1'], []);
+		assert.deepEqual(res1.rows(), [[1, 10], [1, 50], [2, 30], [3, 40], [1, 20]]);
 		
-		var res2 = table.groupBy(['Category'], [
+		// Custom Function
+		// For the predefined aggregation function see the tests of agg-module below 
+		var res2 = table1.groupBy(['Category'], [
 			function SumScore1(rows) {
 				var sum = 0;
 				for (var i = 0; i < rows.length; ++i) {
@@ -55,21 +65,21 @@ describe('data.AnalyticsTable', function() {
 				return sum;
 			}
 		]);
-		assert.deepEqual(res2.rows(), [[1, 400], [2, 103]])
+		assert.deepEqual(res2.rows(), [[1, 80], [2, 30], [3, 40]])
 		assert.deepEqual(res2.fields(), ['Category', 'SumScore1'])
     });
 	
-	it('distinctValues', function() {
-		var table = new AnalyticsTable({
-			fields: ['Category', 'Score1', 'Score2']
-		});
-		table.addRow([1, 100, 1000]);
-		table.addRow([1, 100, 2000]);
-		table.addRow([1, 200, 3000]);
-		table.addRow([2, 103, 4000]);
+	it('group by function', function() {
+		var res1 = table1.groupBy([new FieldDescriptor(function(row) {
+			return Math.round(row.get('Category') / 2);
+		}, 'HalfCategories')])
 		
-		assert.deepEqual(table.distinctValues('Category').get(), [1, 2]);
-		assert.deepEqual(table.distinctValues('Score1').get(), [100, 103, 200]);
+		assert.deepEqual(res1.rows(), [[1], [2]])
+	});
+	
+	it('distinctValues', function() {
+		assert.deepEqual(table1.distinctValues('Category').get(), [1, 2, 3]);
+		assert.deepEqual(table1.distinctValues('Score1').get(), [10, 20, 30, 40, 50]);
 	});
 	
 	it('explodeColumn', function() {
@@ -83,7 +93,7 @@ describe('data.AnalyticsTable', function() {
 			]
 		});
 		
-		var result = table.explodeColumn('Category', 'TimeID');
+		var result = table.splitColumn('Category', 'TimeID');
 		assert.deepEqual(result.fields(), ['TimeID', 'Score (1)', 'Score (2)']);
 		assert.deepEqual(result.rows(), [
 			[1, 1, 5],
@@ -102,7 +112,7 @@ describe('data.AnalyticsTable', function() {
 			]
 		});
 		
-		result = table.explodeColumn('Category', 'TimeID');
+		result = table.splitColumn('Category', 'TimeID');
 		assert.deepEqual(result.fields(), ['TimeID', 'Score1 (1)', 'Score2 (1)', 'Score1 (2)', 'Score2 (2)']);
 		assert.deepEqual(result.rows(), [
 			[1, 1, 6, 5, 5],
@@ -121,13 +131,13 @@ describe('data.AnalyticsTable', function() {
 			]
 		});
 		
-		assert.deepEqual(table.select('TimeID', 'Category', 'Score').rows(), table.rows());
-		assert.deepEqual(table.select('Category', 'TimeID').columns(), [
+		assert.deepEqual(table.select(['TimeID', 'Category', 'Score']).rows(), table.rows());
+		assert.deepEqual(table.select(['Category', 'TimeID']).columns(), [
 			[1, 2, 1, 2, 2],
 			[1, 1, 2, 2, 3]
 		]);
 		
-		var other = table.select({what: 'TimeID', as: 'OtherName'}, 'Category', 'Score');
+		var other = table.select([new FieldDescriptor('TimeID', 'OtherName'), 'Category', 'Score']);
 		assert.deepEqual(other.rows(), table.rows());
 		assert.deepEqual(other.fields(), ['OtherName', 'Category', 'Score']);
 	});
@@ -142,12 +152,12 @@ describe('data.AnalyticsTable', function() {
 			]
 		});
 		
-		var double = table.select('Score', {
-			what: function(row) {
+		var double = table.select(['Score', new FieldDescriptor(
+			function(row) {
 				return row.get('Score') * 2
 			},
-			as: 'DoubleScore'
-		});
+			'DoubleScore'
+		)]);
 		
 		assert.deepEqual(double.columns(), [
 			[1,  5, 2, 3, 3],
@@ -165,11 +175,35 @@ describe('data.AnalyticsTable', function() {
 			]
 		});
 		
-		assert.deepEqual(table.select('$rownr', 'TimeID').columns(), [
+		assert.deepEqual(table.select(['$rownr', 'TimeID']).columns(), [
 			[0, 1, 2, 3, 4],
 			[1, 1, 2, 2, 3]
 		]);
 	});
+	
+	it('sort', function() {
+		var res1 = table1.sort(new FieldDescriptor('Score1'));
+		assert.deepEqual(res1.rows(), [
+			[1, 10, 100],
+			[1, 20, 500],
+			[2, 30, 200],
+			[3, 40, 400],
+			[1, 50, 300]
+		]);
+	});
+	
+	it('sort and groupby', function() {
+		var res = table1
+			.groupBy(['Category'], [agg.avg('Score2', 'AVG Score2')])
+			.sort('AVG Score2');
+			
+		assert.deepEqual(res.rows(),[
+			[2, 200],
+			[1, 300],
+			[3, 400]
+		]);
+		
+	})
 });
 
 

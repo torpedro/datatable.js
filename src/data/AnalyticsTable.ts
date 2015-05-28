@@ -1,35 +1,48 @@
 // @file AnalyticsTable.ts
 /// <reference path="../typings/underscore/underscore.d.ts" />
 
+///////////////////////////
+// <imports>
 import _ = require('underscore');
 import CoreColumnTable = require('./CoreColumnTable');
+import FieldDescriptor = require('./FieldDescriptor');
 import OrderedSet = require('./OrderedSet');
 import HashMap = require('./HashMap');
 import vec = require('./VectorOperations');
 import agg = require('./agg');
-
-interface SelectConfig {
-	what: string|Function,
-	as: string
-}
+// </imports>
+///////////////////////////
 
 
 /**
  * @class AnalyticsTable
  */
 class AnalyticsTable extends CoreColumnTable {
-	// Alias to the aggregation module
-	public agg = agg;
+	public agg = agg; // Alias to the aggregation module
 	
-	groupBy(columns: Array<string>|string, aggregations?: Array<Function>): AnalyticsTable {
-		// Format arguments
-		var groupColumns: Array<string>;
-		if (typeof columns === 'string') groupColumns = [columns];
-		else groupColumns = columns;
-		
+	
+	/**
+	 * Returns a table grouped by the specified fields
+	 * Can handle function selectors
+	 * 
+	 * @method groupBy
+	 */
+	groupBy(column: string|FieldDescriptor, aggregations?: Array<Function>): AnalyticsTable;
+	groupBy(columns: Array<string|FieldDescriptor>, aggregations?: Array<Function>): AnalyticsTable;
+	groupBy(_groupFields: any, aggregations?: Array<Function>): AnalyticsTable {
+		// If the function was called with a single group by column
+		// Call it again with an array
+		// Format the data input
+		if (!aggregations) aggregations = [];
+		if (!(_groupFields instanceof Array)) return this.groupBy([_groupFields], aggregations);
+		var fields: Array<FieldDescriptor> = convertListOfFieldDescriptors(_groupFields);
 		
 		// Create Result Field List
-		var outputFields = groupColumns.slice();
+		var outputFields = [];
+		for (var i = 0; i < fields.length; ++i) {
+			outputFields.push(fields[i].outputName);
+		}
+		
 		for (var k = 0; k < aggregations.length; ++k) {
 			if (aggregations[k]['aggName']) outputFields.push(aggregations[k]['aggName']);
 			else if (aggregations[k]['name']) outputFields.push(aggregations[k]['name']);
@@ -41,8 +54,8 @@ class AnalyticsTable extends CoreColumnTable {
 		
 		for (var r = 0; r < this.size(); ++r) {
 			var key = [];
-			for (var c = 0; c < groupColumns.length; ++c) {
-				key.push(this.getValue(r, groupColumns[c]));
+			for (var c = 0; c < fields.length; ++c) {
+				key.push(fields[c].getValue(this, r));
 			}
 			
 			if (map.contains(key)) {
@@ -76,6 +89,13 @@ class AnalyticsTable extends CoreColumnTable {
 		return result;
 	}
 	
+	
+	
+	/**
+	 * Returns a table with only rows where the predicate evaluated to true
+	 * 
+	 * @method filter
+	 */
 	filter(predicate: Function): AnalyticsTable {
 		// TODO: Figer out how to be able to address columns in predicate by name
 		var result = new AnalyticsTable({
@@ -90,55 +110,62 @@ class AnalyticsTable extends CoreColumnTable {
 		return result;
 	}
 	
+	
+	
+	/**
+	 * Returns all distinct values of the specified field
+	 * 
+	 * TODO: FieldDescriptor
+	 * TODO: mutltiple fields
+	 * 
+	 * @method distinctValues
+	 */
 	distinctValues(field: string): OrderedSet {
 		return new OrderedSet(this.column(field));
 	}
 	
-	select(...fields: Array<string|SelectConfig>): AnalyticsTable {
+	
+	
+	/**
+	 * Returns a Table with only the specified fields (Similar to SQLs SELECT clause)
+	 * Can handle FieldDescriptors functions
+	 * 
+	 * @method select
+	 */
+	select(field: string): AnalyticsTable;
+	select(field: FieldDescriptor): AnalyticsTable;
+	select(fields: Array<string|FieldDescriptor>): AnalyticsTable;
+	select(_fields: any): AnalyticsTable {
+		// Format the data input
+		if (!(_fields instanceof Array)) return this.select([_fields]);
+		var inFields: Array<FieldDescriptor> = convertListOfFieldDescriptors(_fields);
+		
 		var columns = [];
 		var resFields = [];
 		var types = [];
 		
-		for (var i = 0; i < fields.length; ++i) {
-			if (typeof fields[i] === 'string') {
+		for (var i = 0; i < inFields.length; ++i) {
+			var field = inFields[i];
+			
+			if (field.isStatic) {
 				// A simple field was selected
-				columns.push(this.column(<string>fields[i]).slice());
-				resFields.push(<string>fields[i]);
-				types.push(this.type(<string>fields[i]));
+				columns.push(this.column(field.name).slice());
+				types.push(this.type(field.name));
+				resFields.push(field.outputName);
 					
 			} else {
-				var selector = <SelectConfig>fields[i];
-				if (selector.what && selector.as) {
-					if (typeof selector.what === 'string') {
-						// A field was selected with a new alias
-						columns.push(this.column(<string>selector.what).slice());
-						types.push(this.type(<string>selector.what));
-						resFields.push(selector.as);
-						
-					} else {
-						// Function selector
-						// Build a new column vector
-						var vector = [];
-						var fn = <Function>selector.what;
-						var self = this;
-						for (var i = 0; i < this.size(); ++i) {
-							var row = this.row(i);
-							
-							// Attach a get function to the row
-							// so you can get the values through the field names
-							(<any>row).get = function(name: string) {
-								return self.getValue(i, name);	
-							}
-							
-							var value = fn(row);
-							vector.push(value);
-						}
-						
-						types.push(vec.detectDataType(vector));
-						columns.push(vector);
-						resFields.push(selector.as);
-					}
-				} else throw "Invalid select argument!"
+				resFields.push(field.outputName);
+				
+				// Function selector
+				// Build a new column vector
+				var vector = [];
+				for (var i = 0; i < this.size(); ++i) {
+					var value = field.getValue(this, i);
+					vector.push(value);
+				}
+				
+				types.push(vec.detectDataType(vector));
+				columns.push(vector);
 			}
 		}
 		
@@ -146,10 +173,18 @@ class AnalyticsTable extends CoreColumnTable {
 			fields: resFields,
 			types: types,
 			columns: columns
-		})
+		});
 	}
 	
-	explodeColumn(field: string, groupField: string): AnalyticsTable {
+	
+	/**
+	 * Returns a Table where the column was split into multiple columns
+	 * 
+	 * TODO: FieldDescriptor 
+	 * 
+	 * @method splitColumn
+	 */
+	splitColumn(field: string, groupField: string): AnalyticsTable {
 		// Find all result field names
 		var categories = this.distinctValues(field).get();
 		var fields = [groupField];
@@ -220,7 +255,92 @@ class AnalyticsTable extends CoreColumnTable {
 		
 		return result;
 	}
+	
+	
+	
+	/**
+	 * Return a table sorted by the given field
+	 * TODO: Currently only supports simple < comparison
+	 * TODO: Allow for customt comparator
+	 * 
+	 * Implemented as MergeSort
+	 * http://www.nczonline.net/blog/2012/10/02/computer-science-and-javascript-merge-sort/
+	 * 
+	 * @method sort
+	 */
+	sort(_field: string|FieldDescriptor): AnalyticsTable {
+		var field: FieldDescriptor = convertToFieldDescriptors(_field);
+		
+		var table = new AnalyticsTable({
+			fields: this.fields(),
+			types: this.types()
+		});
+		
+		// Materialize the rows
+		var rows = this.rows();
+		
+		// Sort the rows
+		var sortedRows = this._mergeSort(rows, field);
+		
+		// Add to out put table
+		table.addRows(sortedRows);
+		
+		return table;
+	}
+	
+	
+	private _mergeSort(rows: Array<any>, field: FieldDescriptor) {
+	    // Terminal case: 0 or 1 item arrays don't need sorting
+	    if (rows.length < 2) {
+	        return rows;
+	    }
+	
+	    var middle = Math.floor(rows.length / 2),
+	        left   = rows.slice(0, middle),
+	        right  = rows.slice(middle);
+	
+	    return this._merge(this._mergeSort(left, field), this._mergeSort(right, field), field);
+	}
+	
+	private _merge(left: Array<any>, right: Array<any>, field: FieldDescriptor) {
+	    var result  = [],
+	        il      = 0,
+	        ir      = 0;
+	
+	    while (il < left.length && ir < right.length) {
+			var leftValue = field.getValueFromRow(this, left[il]);
+			var rightValue = field.getValueFromRow(this, right[ir]);
+			
+	        if (leftValue < rightValue){
+	            result.push(left[il++]);
+	        } else {
+	            result.push(right[ir++]);
+	        }
+	    }
+	
+	    return result.concat(left.slice(il)).concat(right.slice(ir));
+	}
 }
+
+
+
+
+// Utility Functions
+function convertListOfFieldDescriptors(vals: Array<string|FieldDescriptor>): Array<FieldDescriptor> {
+	var desc = [];
+	for (var i = 0; i < vals.length; ++i) desc.push(convertToFieldDescriptors(vals[i]));
+	return desc;
+}
+
+function convertToFieldDescriptors(val: string|FieldDescriptor): FieldDescriptor {
+	if (typeof val === 'string') {
+		return new FieldDescriptor(val);
+	}
+	// else return the field descriptor that was put in
+	return <FieldDescriptor>val;
+}
+
+
 
 
 export = AnalyticsTable;
