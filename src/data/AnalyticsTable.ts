@@ -1,9 +1,9 @@
 // @file AnalyticsTable.ts
 /// <reference path="../typings/underscore/underscore.d.ts" />
 
-import _ = require('underscore')
-import CoreColumnTable = require('./CoreColumnTable')
-import OrderedSet = require('./OrderedSet')
+import _ = require('underscore');
+import CoreColumnTable = require('./CoreColumnTable');
+import OrderedSet = require('./OrderedSet');
 import HashMap = require('./HashMap');
 import agg = require('./agg');
 
@@ -30,7 +30,7 @@ class AnalyticsTable extends CoreColumnTable {
 		}
 		
 		// Create hash map
-		var map = new HashMap(false); // Map by equality
+		var map = new HashMap<any, Array<any>>(false); // Map by equality
 		
 		for (var r = 0; r < this.size(); ++r) {
 			var key = [];
@@ -72,7 +72,7 @@ class AnalyticsTable extends CoreColumnTable {
 	filter(predicate: Function): AnalyticsTable {
 		// TODO: Figer out how to be able to address columns in predicate by name
 		var result = new AnalyticsTable({
-			fields: this._fields
+			fields: this._fields.get()
 		});
 		for (var r = 0; r < this.size(); ++r) {
 			var row = this.row(r);
@@ -106,8 +106,8 @@ class AnalyticsTable extends CoreColumnTable {
 		var valueFields = [];
 		
 		for (var c = 0; c < this.numFields(); ++c) {
-			if (this._fields[c] !== field && this._fields[c] !== groupField) {
-				valueFields.push(this._fields[c]);
+			if (this._fields.get(c) !== field && this._fields.get(c) !== groupField) {
+				valueFields.push(this._fields.get(c));
 			}
 		}
 		
@@ -119,7 +119,7 @@ class AnalyticsTable extends CoreColumnTable {
 		}
 		
 		// Build Hash-Map
-		//map( group -> map( category -> Array(valueFields) ) )
+		// map( group -> map( category -> Array(valueFields) ) )
 		var map = new HashMap(false);
 		
 		for (var r = 0; r < this.size(); ++r) {

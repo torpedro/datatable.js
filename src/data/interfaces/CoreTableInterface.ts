@@ -3,7 +3,11 @@ type Row = Array<any>;
 
 interface CoreTableInterface {
 	
-	size(): number;
+	addRow(record: Row): void;
+	
+	column(name: string): Array<any>;
+	
+	columns(): Array<Array<any>>;
 	
 	empty(): boolean;
 	
@@ -11,11 +15,6 @@ interface CoreTableInterface {
 	
 	rows(): Array<Row>;
 	
-	column(c: number): Array<any>;
-	
-	columns(): Array<Array<any>>;
-	
-	addRow(record: Row): void;
-	
+	size(): number;
 	
 }

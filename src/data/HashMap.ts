@@ -7,7 +7,7 @@ import util = require('./util');
  * 
  * 
  */
-class HashMap {
+class HashMap<K, V> {
 	private _data = {};
 	
 	// Flag to indicate whether to use equality or identity
@@ -18,7 +18,7 @@ class HashMap {
 		else this._useIdentity = false;
 	}
 	
-	set(key: any, val: any): void {
+	set(key: K, val: V): void {
 		var bucket = this._getBucket(key);
 		var i = this._findKeyInBucket(key, bucket);
 		
@@ -27,7 +27,7 @@ class HashMap {
 	}	
 	
 	
-	get(key: any): any {
+	get(key: K): V {
 		var bucket = this._getBucket(key);
 		var i = this._findKeyInBucket(key, bucket);
 		
@@ -35,12 +35,12 @@ class HashMap {
 		else return null;
 	}
 	
-	contains(key: any): any {
+	contains(key: K): boolean {
 		var bucket = this._getBucket(key);
 		return this._findKeyInBucket(key, bucket) >= 0;
 	}
 	
-	keys(): Array<any> {
+	keys(): Array<K> {
 		var keys = [];
 		for (var hash in this._data) {
 			var bucket = this._data[hash];
@@ -51,7 +51,7 @@ class HashMap {
 		return keys;
 	}
 	
-	private _getBucket(key: any): Array<any> {
+	private _getBucket(key: K): Array<Array<any>> {
 		// Hash the key
 		var hash = util.hashCode(key);
 		// Create bucket if it doesn't exist
@@ -64,7 +64,7 @@ class HashMap {
 	 * returns index of key within bucket
 	 * returns -1 if key not found
 	 */
-	private _findKeyInBucket(key: any, bucket: Array<any>): number {
+	private _findKeyInBucket(key: K, bucket: Array<Array<any>>): number {
 		for (var i = 0; i < bucket.length; ++i) {
 			if (this._areEqual(key, bucket[i][0])) {
 				return i;

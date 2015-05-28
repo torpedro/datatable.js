@@ -1,4 +1,6 @@
-/// <reference path="CoreTableInterface.ts" />
+/// <reference path="interfaces/CoreTableInterface.ts" />
+import HashMap = require('./HashMap');
+import Set = require('./Set');
 
 interface TableDefinition {
 	fields: Array<string>,
@@ -13,9 +15,9 @@ interface TableDefinition {
  * TODO: enforce types
  */
 class CoreColumnTable implements CoreTableInterface {
-	protected _attributeVectors : Array<Array<any>>;
-	protected _fields : Array<string>;
-	protected _types : Array<string>;
+	protected _attributeVectors: HashMap<string, Array<any>>;
+	protected _fields: Set<string>;
+	protected _types: Array<string>;
 	
 	constructor(def: TableDefinition);
 	constructor(table: CoreColumnTable);
@@ -32,10 +34,12 @@ class CoreColumnTable implements CoreTableInterface {
 	}
 	
 	
-	protected _initializeByTableDefinition(def: TableDefinition) {
+	protected _initializeByTableDefinition(def: TableDefinition): void {
 		if (def.fields.length == 0) throw "Number of fields can't be zero!";
 		
-		this._fields = def.fields;
+		// Initialize the fields
+		this._fields = new Set<string>(def.fields);
+		if (def.fields.length != this._fields.size()) throw "No duplicate field names allowed!";
 		
 		// Initialize the types
 		// If types are undefined, we set them to 'any' by default
@@ -52,7 +56,7 @@ class CoreColumnTable implements CoreTableInterface {
 		}
 		
 		// Initialize the attribute Vectors
-		this._attributeVectors = [];
+		this._attributeVectors = new HashMap<string, Array<any>>();
 		if (def.columns) {
 			if (def.fields.length != def.columns.length)
 				throw "Number of fields and number of supplied columns do not match!";
@@ -63,17 +67,17 @@ class CoreColumnTable implements CoreTableInterface {
 					throw "Number of rows in TableDefiniton is not uniform!";
 				}
 				
-				this._attributeVectors.push(def.columns[c].slice());
+				this._attributeVectors.set(def.fields[c], def.columns[c].slice());
 			}
 			
 		} else {
 			for (var c = 0; c < def.fields.length; ++c) {
-				this._attributeVectors.push([]);
+				this._attributeVectors.set(def.fields[c], []);
 			}	
 		}
 	}
 	
-	protected _initializeByTable(table: CoreColumnTable) {
+	protected _initializeByTable(table: CoreColumnTable): void {
 		this._initializeByTableDefinition({
 			fields: table.fields(),
 			types: table.types(),
@@ -82,18 +86,18 @@ class CoreColumnTable implements CoreTableInterface {
 	}
 	
 	
-	fields(): Array<string> { return this._fields; }
+	fields(): Array<string> { return this._fields.get(); }
 	
-	numFields(): number { return this._fields.length; }
+	numFields(): number { return this._fields.size(); }
 	
-	hasField(name: string): boolean { return this._fields.indexOf(name) >= 0; }
+	hasField(name: string): boolean { return this._fields.contains(name); }
 	
 	types(): Array<string> { return this._types; }
 	
 	empty(): boolean { return this.size() == 0; }
 	
 	size(): number {
-		return this._attributeVectors[0].length;
+		return this.column(this._fields.get(0)).length;
 	}
 	
 	rows(): Array<Row> {
@@ -104,55 +108,55 @@ class CoreColumnTable implements CoreTableInterface {
 		return rows;
 	}
 	
-	row(r: number) : Row {
+	row(r: number): Row {
 		// Build the Row from the attribute vectors
 		var record : Row = [];
 		for (var c = 0; c < this.numFields(); ++c) {
-			record.push(this.getValue(r, c));
+			record.push(this.getValue(r, this._fields.get(c)));
 		}
 		return record;
 	}
 	
-	getFieldNameIndex(field: string) {
+	getFieldNameIndex(field: string): number {
 		var index = this._fields.indexOf(field);
 		if (index == -1) throw "Field '" + field + "' doesn't exist!";
 		return index;
 	}
 	
-	getValue(row: number, column: number|string) {
+	getValue(row: number, column: string): any {
 		return this.column(column)[row];
 	}
 	
-	setValue(row: number, column: number|string, value: any) {
+	setValue(row: number, column: string, value: any): void {
 		this.column(column)[row] = value
 	}
 	
-	addRow(row: Row) {
+	addRow(row: Row): void {
 		if (row.length > this.numFields()) throw "Row has too many fields!";
 		
 		for (var c = 0; c < row.length; ++c) {
-			this._attributeVectors[c].push(row[c]);
+			this.column(this._fields.get(c)).push(row[c]);
 		}
 		
 		// Push null-values for non-existant fields
 		for (var c = row.length; c < this.numFields(); ++c) {
-			this._attributeVectors[c].push(null);
+			this.column(this._fields.get(c)).push(null);
 		}
 	}
 	
-	addRows(rows: Array<Row>) {
+	addRows(rows: Array<Row>): void {
 		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
 	}
 	
-	addField(name: string, type?: string, values?: Array<any>) {
-		this._fields.push(name);
+	addField(name: string, type?: string, values?: Array<any>): void {
+		this._fields.add(name);
 		
 		// Push null-values for existing rows
 		var vector = [];
 		for (var r = 0; r < this.size(); ++r) {
 			vector.push(null);
 		}
-		this._attributeVectors.push(vector);
+		this._attributeVectors.set(name, vector);
 		this._types.push(type);
 	}
 	
@@ -160,20 +164,23 @@ class CoreColumnTable implements CoreTableInterface {
 	 * Adds empty rows to the table, until the table has at least
 	 * as many rows as specified
 	 */
-	reserve(numRows: number) {
+	reserve(numRows: number): void {
 		if (this.numFields() == 0) throw("Can't reserve rows on a table without fields!");
 		while (this.size() < numRows) {
 			this.addRow([]);
 		}
 	}
 	
-	column(field: number|string) {
-		if (typeof field === 'string') field = this.getFieldNameIndex(<string>field);
-		return this._attributeVectors[<number>field];
+	column(name: string): Array<any> {
+		return this._attributeVectors.get(name);
 	}
 	
-	columns() {
-		return this._attributeVectors;
+	columns(): Array<Array<any>> {
+		var columns = [];
+		for (var i = 0; i < this._fields.size(); ++i) {
+			columns.push(this.column(this._fields.get(i)).slice());
+		}
+		return columns;
 	}
 }
 

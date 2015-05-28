@@ -33,7 +33,7 @@ describe('data.CoreColumnTable', function() {
         table.addRow([1,  null, null]);
         
         assert.deepEqual(table.rows(), [[0, 'Max', null], [1, null, null]]);
-        assert.deepEqual(table.column(1), ['Max', null])
+        assert.deepEqual(table.column('Name'), ['Max', null])
     });
     
     
