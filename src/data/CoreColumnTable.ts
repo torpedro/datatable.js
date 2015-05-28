@@ -92,7 +92,20 @@ class CoreColumnTable implements CoreTableInterface {
 	
 	hasField(name: string): boolean { return this._fields.contains(name); }
 	
-	types(): Array<string> { return this._types; }
+	types(): Array<string> {
+		return this._types;
+	}
+	
+	type(name: string): string {
+		if (this._fields.contains(name)) {
+			return this._types[this.getFieldNameIndex(name)];	
+		} else {
+			// Check for special reserved system names
+			if (name === '$rownr') return 'number';
+			
+			throw "Couldn't find column: '" + name + " '!"
+		}
+	}
 	
 	empty(): boolean { return this.size() == 0; }
 	
@@ -177,7 +190,7 @@ class CoreColumnTable implements CoreTableInterface {
 			return this._attributeVectors.get(name);	
 		} else {
 			// Check for special reserved system names
-			if (name === '$rownr'); {
+			if (name === '$rownr') {
 				return this._createRowNrColumn();
 			}
 			

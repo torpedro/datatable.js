@@ -5,6 +5,7 @@ import _ = require('underscore');
 import CoreColumnTable = require('./CoreColumnTable');
 import OrderedSet = require('./OrderedSet');
 import HashMap = require('./HashMap');
+import vec = require('./VectorOperations');
 import agg = require('./agg');
 
 interface SelectConfig {
@@ -96,11 +97,14 @@ class AnalyticsTable extends CoreColumnTable {
 	select(...fields: Array<string|SelectConfig>): AnalyticsTable {
 		var columns = [];
 		var resFields = [];
+		var types = [];
+		
 		for (var i = 0; i < fields.length; ++i) {
 			if (typeof fields[i] === 'string') {
 				// A simple field was selected
 				columns.push(this.column(<string>fields[i]).slice());
 				resFields.push(<string>fields[i]);
+				types.push(this.type(<string>fields[i]));
 					
 			} else {
 				var selector = <SelectConfig>fields[i];
@@ -108,6 +112,7 @@ class AnalyticsTable extends CoreColumnTable {
 					if (typeof selector.what === 'string') {
 						// A field was selected with a new alias
 						columns.push(this.column(<string>selector.what).slice());
+						types.push(this.type(<string>selector.what));
 						resFields.push(selector.as);
 						
 					} else {
@@ -129,23 +134,26 @@ class AnalyticsTable extends CoreColumnTable {
 							vector.push(value);
 						}
 						
+						types.push(vec.detectDataType(vector));
 						columns.push(vector);
 						resFields.push(selector.as);
 					}
 				} else throw "Invalid select argument!"
 			}
 		}
+		
 		return new AnalyticsTable({
 			fields: resFields,
+			types: types,
 			columns: columns
 		})
 	}
 	
 	explodeColumn(field: string, groupField: string): AnalyticsTable {
-		
 		// Find all result field names
 		var categories = this.distinctValues(field).get();
 		var fields = [groupField];
+		var types = [this.type(groupField)];
 		var valueFields = [];
 		
 		for (var c = 0; c < this.numFields(); ++c) {
@@ -158,6 +166,7 @@ class AnalyticsTable extends CoreColumnTable {
 			for (var f = 0; f < valueFields.length; ++f) {
 				var newField = valueFields[f] + ' (' + categories[cat] + ')';
 				fields.push(newField);
+				types.push(this.type(valueFields[f]));
 			}
 		}
 		
@@ -181,7 +190,8 @@ class AnalyticsTable extends CoreColumnTable {
 		
 		
 		var result = new AnalyticsTable({
-			fields: fields
+			fields: fields,
+			types: types
 		});
 		
 		// Build Rows

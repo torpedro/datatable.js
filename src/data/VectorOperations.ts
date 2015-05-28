@@ -44,7 +44,8 @@ module vec {
 		
 		if (typeset.length == 0) return types.kNull;
 		if (typeset.length == 1) return typeset[0];
-		else return 'mixed'
+		else return 'any'; // Return an any type
+		// TODO: roll-up the types
 	}
 	
 	/**

@@ -42,6 +42,17 @@ module types {
 					var month = parseInt(match[2]) - 1;
 					return new Date(Date.UTC(match[3], month, match[1]));
 				}
+			},
+			
+			'iso-datetime': {
+				matchAndFormat: function(str: string): any {
+					// Check if it starts with a date
+					if (/^([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/.exec(str)) {
+						var date = new Date(str);
+						if (!isNaN(date.getTime())) return date;
+					}
+					return false;
+				}
 			}
 		},
 		'number': {
@@ -112,6 +123,12 @@ module types {
 							type: type,
 							value: newValue
 						}
+					}
+				} else if (detector.matchAndFormat) {
+					var res = detector.matchAndFormat(value);
+					if (res !== false) return {
+						type: type,
+						value: res
 					}
 				}
 			}

@@ -22,7 +22,7 @@ describe('data.VectorOperations', function() {
 		assert.equal(vec.detectDataType(vector), 'number');
 		
 		vector = [1, 2, 3, 4, 5, 2, 4, 10, -3, 5, 'sbl'];
-		assert.equal(vec.detectDataType(vector), 'mixed');
+		assert.equal(vec.detectDataType(vector), 'any');
 		
 		vector = ['2014-02-03', '2015-05-02', '2.3.2012', '5/10/2011', new Date()];
 		assert.equal(vec.detectDataType(vector), 'date');

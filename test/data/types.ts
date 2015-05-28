@@ -15,6 +15,11 @@ describe('data.types', function() {
 			assert.strictEqual(res.type, 'date');
 			assert.strictEqual(res.value.toISOString(), '2014-05-02T00:00:00.000Z');
 			
+			// ISO datetime
+			res = types.detectDataTypeOfString('2014-03-03T23:59:59');
+			assert.strictEqual(res.type, 'date');
+			assert.strictEqual(res.value.toISOString(), '2014-03-03T23:59:59.000Z');
+			
 			// US Dates
 			res = types.detectDataTypeOfString('05/02/2014');
 			assert.strictEqual(res.type, 'date');
@@ -32,6 +37,8 @@ describe('data.types', function() {
 			res = types.detectDataTypeOfString('2.5.2014');
 			assert.strictEqual(res.type, 'date');
 			assert.strictEqual(res.value.toISOString(), '2014-05-02T00:00:00.000Z');
+			
+			
 	    });
 		
 		it('detects numbers correctly', function() {
