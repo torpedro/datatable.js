@@ -173,7 +173,16 @@ class CoreColumnTable implements CoreTableInterface {
 	}
 	
 	column(name: string): Array<any> {
-		return this._attributeVectors.get(name);
+		if (this._fields.contains(name)) {
+			return this._attributeVectors.get(name);	
+		} else {
+			// Check for special reserved system names
+			if (name === '$rownr'); {
+				return this._createRowNrColumn();
+			}
+			
+			throw "Couldn't find column: '" + name + " '!"
+		}
 	}
 	
 	columns(): Array<Array<any>> {
@@ -182,6 +191,15 @@ class CoreColumnTable implements CoreTableInterface {
 			columns.push(this.column(this._fields.get(i)).slice());
 		}
 		return columns;
+	}
+	
+	
+	private _createRowNrColumn(): Array<number> {
+		var vector = [];
+		for (var r = 0; r < this.size(); ++r) {
+			vector.push(r);
+		}
+		return vector;
 	}
 }
 

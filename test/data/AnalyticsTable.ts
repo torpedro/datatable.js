@@ -154,6 +154,22 @@ describe('data.AnalyticsTable', function() {
 			[2, 10, 4, 6, 6]
 		])
 	});
+	
+	it('select system columns', function() {
+		var table = new AnalyticsTable({
+			fields: ['TimeID', 'Category', 'Score'],
+			columns: [
+				[1, 1, 2, 2, 3],
+				[1, 2, 1, 2, 2],
+				[1, 5, 2, 3, 3]
+			]
+		});
+		
+		assert.deepEqual(table.select('$rownr', 'TimeID').columns(), [
+			[0, 1, 2, 3, 4],
+			[1, 1, 2, 2, 3]
+		]);
+	});
 });
 
 

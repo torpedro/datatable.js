@@ -98,14 +98,18 @@ class AnalyticsTable extends CoreColumnTable {
 		var resFields = [];
 		for (var i = 0; i < fields.length; ++i) {
 			if (typeof fields[i] === 'string') {
+				// A simple field was selected
 				columns.push(this.column(<string>fields[i]).slice());
-				resFields.push(<string>fields[i]);	
+				resFields.push(<string>fields[i]);
+					
 			} else {
 				var selector = <SelectConfig>fields[i];
 				if (selector.what && selector.as) {
 					if (typeof selector.what === 'string') {
+						// A field was selected with a new alias
 						columns.push(this.column(<string>selector.what).slice());
 						resFields.push(selector.as);
+						
 					} else {
 						// Function selector
 						// Build a new column vector
