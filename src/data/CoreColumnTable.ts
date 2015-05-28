@@ -101,7 +101,7 @@ class CoreColumnTable implements CoreTableInterface {
 	}
 	
 	rows(): Array<Row> {
-		var rows : Array<Row> = [];
+		var rows: Array<Row> = [];
 		for (var r = 0; r < this.size(); ++r) {
 			rows.push(this.row(r));
 		}
@@ -110,10 +110,11 @@ class CoreColumnTable implements CoreTableInterface {
 	
 	row(r: number): Row {
 		// Build the Row from the attribute vectors
-		var record : Row = [];
+		var record: Row = [];
 		for (var c = 0; c < this.numFields(); ++c) {
 			record.push(this.getValue(r, this._fields.get(c)));
 		}
+		
 		return record;
 	}
 	

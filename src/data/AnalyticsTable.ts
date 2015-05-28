@@ -7,6 +7,12 @@ import OrderedSet = require('./OrderedSet');
 import HashMap = require('./HashMap');
 import agg = require('./agg');
 
+interface SelectConfig {
+	what: string|Function,
+	as: string
+}
+
+
 /**
  * @class AnalyticsTable
  */
@@ -87,13 +93,46 @@ class AnalyticsTable extends CoreColumnTable {
 		return new OrderedSet(this.column(field));
 	}
 	
-	select(...fields: Array<string>): AnalyticsTable {
+	select(...fields: Array<string|SelectConfig>): AnalyticsTable {
 		var columns = [];
+		var resFields = [];
 		for (var i = 0; i < fields.length; ++i) {
-			columns.push(this.column(fields[i]).slice());
+			if (typeof fields[i] === 'string') {
+				columns.push(this.column(<string>fields[i]).slice());
+				resFields.push(<string>fields[i]);	
+			} else {
+				var selector = <SelectConfig>fields[i];
+				if (selector.what && selector.as) {
+					if (typeof selector.what === 'string') {
+						columns.push(this.column(<string>selector.what).slice());
+						resFields.push(selector.as);
+					} else {
+						// Function selector
+						// Build a new column vector
+						var vector = [];
+						var fn = <Function>selector.what;
+						var self = this;
+						for (var i = 0; i < this.size(); ++i) {
+							var row = this.row(i);
+							
+							// Attach a get function to the row
+							// so you can get the values through the field names
+							(<any>row).get = function(name: string) {
+								return self.getValue(i, name);	
+							}
+							
+							var value = fn(row);
+							vector.push(value);
+						}
+						
+						columns.push(vector);
+						resFields.push(selector.as);
+					}
+				} else throw "Invalid select argument!"
+			}
 		}
 		return new AnalyticsTable({
-			fields: fields,
+			fields: resFields,
 			columns: columns
 		})
 	}

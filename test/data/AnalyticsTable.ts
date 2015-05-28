@@ -127,6 +127,32 @@ describe('data.AnalyticsTable', function() {
 			[1, 1, 2, 2, 3]
 		]);
 		
+		var other = table.select({what: 'TimeID', as: 'OtherName'}, 'Category', 'Score');
+		assert.deepEqual(other.rows(), table.rows());
+		assert.deepEqual(other.fields(), ['OtherName', 'Category', 'Score']);
+	});
+	
+	it('select function', function() {
+		var table = new AnalyticsTable({
+			fields: ['TimeID', 'Category', 'Score'],
+			columns: [
+				[1, 1, 2, 2, 3],
+				[1, 2, 1, 2, 2],
+				[1, 5, 2, 3, 3]
+			]
+		});
+		
+		var double = table.select('Score', {
+			what: function(row) {
+				return row.get('Score') * 2
+			},
+			as: 'DoubleScore'
+		});
+		
+		assert.deepEqual(double.columns(), [
+			[1,  5, 2, 3, 3],
+			[2, 10, 4, 6, 6]
+		])
 	});
 });
 
