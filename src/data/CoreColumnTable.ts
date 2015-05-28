@@ -84,17 +84,19 @@ class CoreColumnTable implements CoreTableInterface {
 	
 	fields(): Array<string> { return this._fields; }
 	
-	numFields() : number { return this._fields.length; }
+	numFields(): number { return this._fields.length; }
+	
+	hasField(name: string): boolean { return this._fields.indexOf(name) >= 0; }
 	
 	types(): Array<string> { return this._types; }
 	
-	empty() : boolean { return this.size() == 0; }
+	empty(): boolean { return this.size() == 0; }
 	
-	size() : number {
+	size(): number {
 		return this._attributeVectors[0].length;
 	}
 	
-	rows() : Array<Row> {
+	rows(): Array<Row> {
 		var rows : Array<Row> = [];
 		for (var r = 0; r < this.size(); ++r) {
 			rows.push(this.row(r));

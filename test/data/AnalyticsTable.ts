@@ -58,6 +58,76 @@ describe('data.AnalyticsTable', function() {
 		assert.deepEqual(res2.rows(), [[1, 400], [2, 103]])
 		assert.deepEqual(res2.fields(), ['Category', 'SumScore1'])
     });
+	
+	it('distinctValues', function() {
+		var table = new AnalyticsTable({
+			fields: ['Category', 'Score1', 'Score2']
+		});
+		table.addRow([1, 100, 1000]);
+		table.addRow([1, 100, 2000]);
+		table.addRow([1, 200, 3000]);
+		table.addRow([2, 103, 4000]);
+		
+		assert.deepEqual(table.distinctValues('Category').get(), [1, 2]);
+		assert.deepEqual(table.distinctValues('Score1').get(), [100, 103, 200]);
+	});
+	
+	it('explodeColumn', function() {
+		// 1st test
+		var table = new AnalyticsTable({
+			fields: ['TimeID', 'Category', 'Score'],
+			columns: [
+				[1, 1, 2, 2, 3],
+				[1, 2, 1, 2, 2],
+				[1, 5, 2, 3, 3]
+			]
+		});
+		
+		var result = table.explodeColumn('Category', 'TimeID');
+		assert.deepEqual(result.fields(), ['TimeID', 'Score (1)', 'Score (2)']);
+		assert.deepEqual(result.rows(), [
+			[1, 1, 5],
+			[2, 2, 3],
+			[3, null, 3]
+		]);
+		
+		// 2nd test
+		table = new AnalyticsTable({
+			fields: ['TimeID', 'Category', 'Score1', 'Score2'],
+			columns: [
+				[1, 1, 2, 2, 3],
+				[1, 2, 1, 2, 2],
+				[1, 5, 2, 3, 3],
+				[6, 5, 4, 2, 3]
+			]
+		});
+		
+		result = table.explodeColumn('Category', 'TimeID');
+		assert.deepEqual(result.fields(), ['TimeID', 'Score1 (1)', 'Score2 (1)', 'Score1 (2)', 'Score2 (2)']);
+		assert.deepEqual(result.rows(), [
+			[1, 1, 6, 5, 5],
+			[2, 2, 4, 3, 2],
+			[3, null, null, 3, 3]
+		]);
+	});
+	
+	it('select', function() {
+		var table = new AnalyticsTable({
+			fields: ['TimeID', 'Category', 'Score'],
+			columns: [
+				[1, 1, 2, 2, 3],
+				[1, 2, 1, 2, 2],
+				[1, 5, 2, 3, 3]
+			]
+		});
+		
+		assert.deepEqual(table.select('TimeID', 'Category', 'Score').rows(), table.rows());
+		assert.deepEqual(table.select('Category', 'TimeID').columns(), [
+			[1, 2, 1, 2, 2],
+			[1, 1, 2, 2, 3]
+		]);
+		
+	});
 });
 
 

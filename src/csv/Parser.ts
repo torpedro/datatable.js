@@ -9,6 +9,7 @@ class Parser {
 	constructor(options?: PapaParse.ParseConfig) {
 		if (!options) options = {};
 		if (typeof options.header === 'undefined') options.header = true;
+		if (typeof options.skipEmptyLines === 'undefined') options.skipEmptyLines = true;
 		this._options = options;
 	}
 	
