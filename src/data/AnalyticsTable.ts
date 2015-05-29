@@ -282,7 +282,7 @@ class AnalyticsTable extends CoreColumnTable {
 		// Sort the rows
 		var sortedRows = this._mergeSort(rows, field);
 		
-		// Add to out put table
+		// Add to output table
 		table.addRows(sortedRows);
 		
 		return table;

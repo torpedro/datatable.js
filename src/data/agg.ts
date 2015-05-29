@@ -43,6 +43,19 @@ module agg {
 		return aggf;
 	}
 	
+	export function first(targetField: string, outputName: string) {
+		var aggf = function(rows: Array<any>, table: Table) {
+			var c = table.getFieldNameIndex(targetField);
+			return rows[0][c];
+		};
+		
+		// Set output name
+		if (outputName) aggf['aggName'] = outputName;
+		else aggf['aggName'] = 'AVG(' + targetField + ')';
+		return aggf;
+		
+	}
+	
 }
 
 // modules.export

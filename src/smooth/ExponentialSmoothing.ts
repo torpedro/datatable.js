@@ -18,7 +18,33 @@ module es {
 		return result;
 	}
 	
-	// TODO: Double Exponential Smoothing
+	/**
+	 * Double Exponential Smoothing
+	 * 
+	 * TODO: Type checking
+	 * TODO: tests
+	 */
+	export function DoubleExponentialSmoothing(data: Array<number>, alpha: number, beta: number) {
+		if (!data || !alpha) return null;
+		
+		var s = []; // smoothed data
+		var b = []; // trend
+		var k = 1; // window size
+
+		s.push(data[0]);
+		b.push(data[1] - data[0]);
+
+		for (var t = 1; t < data.length; ++t) {
+			var val = alpha * data[t] + (1 - alpha) * (s[t - 1] + b[t - 1]);
+			s.push(val);
+
+			var trend = beta * (s[t] - s[t - 1]) + (1 - beta) * b[t - 1];
+			b.push(trend);
+		}
+
+		return s;
+	}
+	
 	// TODO: Triple Exponential Smoothing
 }
 

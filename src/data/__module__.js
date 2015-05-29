@@ -6,6 +6,7 @@ module.exports = {
 		
 	CoreColumnTable: require('./CoreColumnTable'),
 	AnalyticsTable: require('./AnalyticsTable'),
+	FieldDescriptor: require('./FieldDescriptor'),
 	Set: require('./Set'),
 	OrderedSet: require('./OrderedSet'),
 	HashMap: require('./HashMap')

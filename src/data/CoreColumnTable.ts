@@ -16,7 +16,7 @@ interface TableDefinition {
  */
 class CoreColumnTable implements CoreTableInterface {
 	protected _attributeVectors: HashMap<string, Array<any>>;
-	protected _fields: Set<string>;
+	protected _fields: Set;
 	protected _types: Array<string>;
 	
 	constructor(def: TableDefinition);
@@ -39,7 +39,7 @@ class CoreColumnTable implements CoreTableInterface {
 	
 		
 		// Initialize the fields
-		this._fields = new Set<string>(def.fields);
+		this._fields = new Set(def.fields);
 		if (def.fields.length != this._fields.size()) throw "No duplicate field names allowed!";
 		
 		// Initialize the types
