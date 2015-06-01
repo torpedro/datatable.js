@@ -3,12 +3,6 @@ import HashMap = require('../data/HashMap');
 import Set = require('../data/Set');
 import types = require('../data/types');
 
-//interface TableDefinition {
-//	fields: Array<string>;
-//	types?: Array<string>;
-//	columns?: Array<Array<any>>;
-//}
-
 /**
  * @class CoreColumnTable
  * 
@@ -89,6 +83,46 @@ class CoreColumnTable implements ITable {
 	}
 	
 	
+	addField(name: string, type?: string, values?: Array<any>): void {
+		this._fields.add(name);
+		
+		// Push null-values for existing rows
+		var vector = [];
+		for (var r = 0; r < this.size(); ++r) {
+			vector.push(null);
+		}
+		this._attributeVectors.set(name, vector);
+		
+		if (typeof type === 'undefined') this._types.push(types.kAny);
+		else this._types.push(type);
+	}
+	
+	addRow(row: Row): void {
+		if (row.length > this.numFields()) throw "Error when inserting! Row has too many fields!";
+		
+		// Typechecks
+		for (var c = 0; c < row.length; ++c) {
+			if (row[c] === undefined) throw "Error when inserting! Can not insert undefined!";
+			var v = types.convert(row[c], this.types()[c]);
+			if (typeof v === 'undefined') throw "Error when inserting! Types don't match!";
+			row[c] = v;
+		}
+		
+		// Insert the values
+		for (var c = 0; c < row.length; ++c) {
+			this.column(this._fields.get(c)).push(row[c]);
+		}
+		
+		// Push null-values for non-existant fields
+		for (var c = row.length; c < this.numFields(); ++c) {
+			this.column(this._fields.get(c)).push(null);
+		}
+	}
+	
+	addRows(rows: Array<Row>): void {
+		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
+	}
+	
 	fields(): Array<string> { return this._fields.get(); }
 	
 	numFields(): number { return this._fields.size(); }
@@ -146,37 +180,6 @@ class CoreColumnTable implements ITable {
 	
 	setValue(row: number, column: string, value: any): void {
 		this.column(column)[row] = value
-	}
-	
-	addRow(row: Row): void {
-		if (row.length > this.numFields()) throw "Row has too many fields!";
-		
-		for (var c = 0; c < row.length; ++c) {
-			this.column(this._fields.get(c)).push(row[c]);
-		}
-		
-		// Push null-values for non-existant fields
-		for (var c = row.length; c < this.numFields(); ++c) {
-			this.column(this._fields.get(c)).push(null);
-		}
-	}
-	
-	addRows(rows: Array<Row>): void {
-		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
-	}
-	
-	addField(name: string, type?: string, values?: Array<any>): void {
-		this._fields.add(name);
-		
-		// Push null-values for existing rows
-		var vector = [];
-		for (var r = 0; r < this.size(); ++r) {
-			vector.push(null);
-		}
-		this._attributeVectors.set(name, vector);
-		
-		if (typeof type === 'undefined') this._types.push(types.kAny);
-		else this._types.push(type);
 	}
 	
 	/**

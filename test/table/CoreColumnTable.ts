@@ -2,8 +2,7 @@
 import assert = require("assert")
 import CoreColumnTable = require('../../src/table/CoreColumnTable');
 
-describe('table.CoreColumnTable', function() {
-    
+describe('table.CoreColumnTable', function() {    
     it('should be defined empty', function() {
         var table = new CoreColumnTable({
             fields: ['ID']
@@ -20,6 +19,15 @@ describe('table.CoreColumnTable', function() {
         assert.throws(function() {
             new CoreColumnTable({fields: []}); // Should throw an exception
         });
+        
+        // Type errors
+        assert.throws(function() {
+            var t = new CoreColumnTable({
+                fields: ['A', 'B'],
+                types: ['number', 'boolean']
+            });
+            t.addRow(['abc', false]);
+        })
     });
     
     
@@ -55,6 +63,7 @@ describe('table.CoreColumnTable', function() {
         assert.deepEqual(table.rows(), [[0, 'Max', null], [1, null, null]]);
     });
     
+    
     it('should have copy constructor', function() {
         var header = ['ID', 'Name', 'Address'];
         
@@ -72,6 +81,17 @@ describe('table.CoreColumnTable', function() {
         
         assert.deepEqual(table.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK'], ['3', 'Peter', 'France']]);
         assert.deepEqual(copy.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK']]);
+    });
+    
+    
+    it('should convert types', function() {
+        var t = new CoreColumnTable({
+            fields: ['A', 'B'],
+            types: ['number', 'boolean']
+        });
+        t.addRow(['1', 'false']);
         
+        assert.strictEqual(t.value(0, 'A'), 1);
+        assert.strictEqual(t.value(0, 'B'), false);
     });
 });
