@@ -1,12 +1,13 @@
-/// <reference path="interfaces/CoreTableInterface.ts" />
-import HashMap = require('./HashMap');
-import Set = require('./Set');
+/// <reference path="../typedefs/ITable.ts" />
+import HashMap = require('../data/HashMap');
+import Set = require('../data/Set');
+import types = require('../data/types');
 
-interface TableDefinition {
-	fields: Array<string>;
-	types?: Array<string>;
-	columns?: Array<Array<any>>;
-}
+//interface TableDefinition {
+//	fields: Array<string>;
+//	types?: Array<string>;
+//	columns?: Array<Array<any>>;
+//}
 
 /**
  * @class CoreColumnTable
@@ -14,7 +15,7 @@ interface TableDefinition {
  * This table is implemented as a column store.
  * TODO: enforce types
  */
-class CoreColumnTable implements CoreTableInterface {
+class CoreColumnTable implements ITable {
 	protected _attributeVectors: HashMap<string, Array<any>>;
 	protected _fields: Set;
 	protected _types: Array<string>;
@@ -52,7 +53,7 @@ class CoreColumnTable implements CoreTableInterface {
 		} else {
 			this._types = [];
 			for (var c = 0; c < def.fields.length; ++c) {
-				this._types.push('any');
+				this._types.push(types.kAny);
 			}
 		}
 		
@@ -103,7 +104,7 @@ class CoreColumnTable implements CoreTableInterface {
 			return this._types[this.getFieldNameIndex(name)];	
 		} else {
 			// Check for special reserved system names
-			if (name === '$rownr') return 'number';
+			if (name === '$rownr') return types.kNumber;
 			
 			throw "Couldn't find column: '" + name + " '!"
 		}
@@ -127,7 +128,7 @@ class CoreColumnTable implements CoreTableInterface {
 		// Build the Row from the attribute vectors
 		var record: Row = [];
 		for (var c = 0; c < this.numFields(); ++c) {
-			record.push(this.getValue(r, this._fields.get(c)));
+			record.push(this.value(r, this._fields.get(c)));
 		}
 		
 		return record;
@@ -139,7 +140,7 @@ class CoreColumnTable implements CoreTableInterface {
 		return index;
 	}
 	
-	getValue(row: number, column: string): any {
+	value(row: number, column: string): any {
 		return this.column(column)[row];
 	}
 	
@@ -173,7 +174,9 @@ class CoreColumnTable implements CoreTableInterface {
 			vector.push(null);
 		}
 		this._attributeVectors.set(name, vector);
-		this._types.push(type);
+		
+		if (typeof type === 'undefined') this._types.push(types.kAny);
+		else this._types.push(type);
 	}
 	
 	/**

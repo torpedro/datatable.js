@@ -1,9 +1,9 @@
 /// <reference path="../typings/papaparse/papaparse.d.ts" />
-import CoreColumnTable = require('../data/CoreColumnTable');
+import CoreColumnTable = require('../table/CoreColumnTable');
 import vec = require('../data/VectorOperations');
 import Papa = require('papaparse');
 
-class Parser {
+class CSVParser {
 	private _options: PapaParse.ParseConfig;
 	
 	constructor(options?: PapaParse.ParseConfig) {
@@ -74,4 +74,4 @@ class Parser {
 
 
 // module.export
-export = Parser;
+export = CSVParser;

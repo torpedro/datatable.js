@@ -1,8 +1,8 @@
 /// <reference path="../typings/tsd.d.ts" />
 import assert = require("assert")
-import CoreColumnTable = require('../../src/data/CoreColumnTable');
+import CoreColumnTable = require('../../src/table/CoreColumnTable');
 
-describe('data.CoreColumnTable', function() {
+describe('table.CoreColumnTable', function() {
     
     it('should be defined empty', function() {
         var table = new CoreColumnTable({

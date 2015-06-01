@@ -1,4 +1,4 @@
-/// <reference path="interfaces/SetInterface.ts" />
+/// <reference path="../typedefs/ISet.ts" />
 /**
  * @class Set
  * 
@@ -7,12 +7,12 @@
  * 
  * TODO: Allow option to set deep-equal
  */
-class Set implements SetInterface {
+class Set implements ISet {
 	_isSet_ = true;
 	protected _data: Array<any>;
 	
 	constructor();
-	constructor(set: SetInterface);
+	constructor(set: ISet);
 	constructor(data: Array<any>);
 	constructor(data?: any) {
 		// Initialize empty
@@ -24,7 +24,7 @@ class Set implements SetInterface {
 			}
 		} else if (data && data._isSet_) {
 			// This is a set
-			var set = <SetInterface>data;
+			var set = <ISet>data;
 			for (var i = 0; i < set.size(); ++i) {
 				this.add(set.get(i));
 			}
@@ -45,7 +45,7 @@ class Set implements SetInterface {
 		return this._data.indexOf(val) >= 0;
 	}
 	
-	difference(other: SetInterface): Set {
+	difference(other: ISet): Set {
 		var set = new Set(this);
 		for (var i = 0; i < other.size(); ++i) {
 			set.remove(other.get(i));
@@ -67,7 +67,7 @@ class Set implements SetInterface {
 		return this._data.indexOf(val);	
 	}
 	
-	intersection(other: SetInterface): Set {
+	intersection(other: ISet): Set {
 		var set = new Set();
 		for (var i = 0; i < this.size(); ++i) {
 			if (other.contains(this._data[i])) {
@@ -78,7 +78,7 @@ class Set implements SetInterface {
 	}
 	
 	
-	isDisjoint(other: SetInterface): boolean {
+	isDisjoint(other: ISet): boolean {
 		for (var i = 0; i < this.size(); ++i) {
 			if (other.contains(this._data[i])) {
 				return false;
@@ -88,12 +88,12 @@ class Set implements SetInterface {
 	}
 	
 	
-	isEqual(other: SetInterface): boolean {
+	isEqual(other: ISet): boolean {
 		return this.isSubset(other) && this.isSuperset(other);
 	}
 	
 	
-	isSubset(other: SetInterface): boolean {
+	isSubset(other: ISet): boolean {
 		for (var i = 0; i < this.size(); ++i) {
 			if (!other.contains(this._data[i])) {
 				return false;
@@ -103,7 +103,7 @@ class Set implements SetInterface {
 	}
 	
 	
-	isSuperset(other: SetInterface): boolean {
+	isSuperset(other: ISet): boolean {
 		return other.isSubset(this);
 	}
 	
@@ -128,7 +128,7 @@ class Set implements SetInterface {
 	}
 	
 	
-	union(other: SetInterface): Set {
+	union(other: ISet): Set {
 		var set = new Set(this);
 		for (var i = 0; i < other.size(); ++i) {
 			set.add(other.get(i));

@@ -1,4 +1,4 @@
-import Table = require('./AnalyticsTable');
+import AnalyticsTable = require('../AnalyticsTable');
 
 /**
  * @module agg
@@ -7,7 +7,7 @@ import Table = require('./AnalyticsTable');
  */
 module agg {
 	export function sum(targetField: string, outputName?: string) {
-		var aggf = function(rows: Array<any>, table: Table) {
+		var aggf = function(rows: Array<any>, table: AnalyticsTable) {
 			// TODO: type-switch		
 			
 			// number	
@@ -26,7 +26,7 @@ module agg {
 	}
 		
 	export function avg(targetField: string, outputName: string) {
-		var aggf = function(rows: Array<any>, table: Table) {
+		var aggf = function(rows: Array<any>, table: AnalyticsTable) {
 			// TODO: type-switch
 			// number
 			var sum = 0;
@@ -44,7 +44,7 @@ module agg {
 	}
 	
 	export function first(targetField: string, outputName: string) {
-		var aggf = function(rows: Array<any>, table: Table) {
+		var aggf = function(rows: Array<any>, table: AnalyticsTable) {
 			var c = table.getFieldNameIndex(targetField);
 			return rows[0][c];
 		};

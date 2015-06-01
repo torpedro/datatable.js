@@ -14,7 +14,7 @@ class OrderedSet extends Set {
 	}
 	
 	
-	difference(other: SetInterface): OrderedSet {
+	difference(other: ISet): OrderedSet {
 		var set = new OrderedSet(this);
 		for (var i = 0; i < other.size(); ++i) {
 			set.remove(other.get(i));
@@ -28,7 +28,7 @@ class OrderedSet extends Set {
 	}
 	
 	
-	intersection(other: SetInterface): OrderedSet {
+	intersection(other: ISet): OrderedSet {
 		var set = new OrderedSet();
 		for (var i = 0; i < this.size(); ++i) {
 			if (other.contains(this._data[i])) {
@@ -39,7 +39,7 @@ class OrderedSet extends Set {
 	}
 	
 	
-	union(other: SetInterface): OrderedSet {
+	union(other: ISet): OrderedSet {
 		var set = new OrderedSet(this);
 		for (var i = 0; i < other.size(); ++i) {
 			set.add(other.get(i));

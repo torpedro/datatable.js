@@ -9,8 +9,8 @@ interface TypeDetection {
  * @module types
  */
 module types {
-	
 	// These are the data types that can be detected
+	export var kAny = 'any';
 	export var kString = 'string';
 	export var kNumber = 'number';
 	export var kData = 'date';

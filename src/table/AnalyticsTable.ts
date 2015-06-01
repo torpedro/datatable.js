@@ -6,10 +6,10 @@
 import _ = require('underscore');
 import CoreColumnTable = require('./CoreColumnTable');
 import FieldDescriptor = require('./FieldDescriptor');
-import OrderedSet = require('./OrderedSet');
-import HashMap = require('./HashMap');
-import vec = require('./VectorOperations');
-import agg = require('./agg');
+import OrderedSet = require('../data/OrderedSet');
+import HashMap = require('../data/HashMap');
+import vec = require('../data/VectorOperations');
+import agg = require('./operators/agg');
 // </imports>
 ///////////////////////////
 
@@ -210,16 +210,16 @@ class AnalyticsTable extends CoreColumnTable {
 		var map = new HashMap(false);
 		
 		for (var r = 0; r < this.size(); ++r) {
-			var key = this.getValue(r, groupField);
+			var key = this.value(r, groupField);
 			if (!map.contains(key)) {
 				map.set(key, {});
 			}
 			
-			var category = this.getValue(r, field);
+			var category = this.value(r, field);
 			var obj = map.get(key);
 			obj[category] = [];
 			for (var f = 0; f < valueFields.length; ++f) {
-				obj[category].push(this.getValue(r, valueFields[f]));
+				obj[category].push(this.value(r, valueFields[f]));
 			}
 		}
 		

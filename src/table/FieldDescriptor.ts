@@ -29,12 +29,12 @@ class FieldDescriptor {
 	}
 	
 	getValue(table: CoreColumnTable, rowNr: number): any {
-		if (this.isStatic) return table.getValue(rowNr, this.name);
+		if (this.isStatic) return table.value(rowNr, this.name);
 		else {
 			var row = table.row(rowNr);
 			
 			(<any>row).get = function(name: string) {
-				return table.getValue(rowNr, name);	
+				return table.value(rowNr, name);	
 			}
 			
 			var value = this.fn(row);
