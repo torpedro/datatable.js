@@ -260,6 +260,7 @@ class AnalyticsTable extends CoreColumnTable {
 	
 	/**
 	 * Return a table sorted by the given field
+	 * Default Order: Descending
 	 * TODO: Currently only supports simple < comparison
 	 * TODO: Allow for customt comparator
 	 * 
@@ -268,7 +269,8 @@ class AnalyticsTable extends CoreColumnTable {
 	 * 
 	 * @method sort
 	 */
-	sort(_field: string|FieldDescriptor): AnalyticsTable {
+	sort(_field: string|FieldDescriptor, asc?: boolean): AnalyticsTable {
+		if (!asc) asc = false;
 		var field: FieldDescriptor = convertToFieldDescriptors(_field);
 		
 		var table = new AnalyticsTable({
@@ -280,7 +282,7 @@ class AnalyticsTable extends CoreColumnTable {
 		var rows = this.rows();
 		
 		// Sort the rows
-		var sortedRows = this._mergeSort(rows, field);
+		var sortedRows = this._mergeSort(rows, field, asc);
 		
 		// Add to output table
 		table.addRows(sortedRows);
@@ -289,7 +291,7 @@ class AnalyticsTable extends CoreColumnTable {
 	}
 	
 	
-	private _mergeSort(rows: Array<any>, field: FieldDescriptor) {
+	private _mergeSort(rows: Array<any>, field: FieldDescriptor, asc: boolean) {
 	    // Terminal case: 0 or 1 item arrays don't need sorting
 	    if (rows.length < 2) {
 	        return rows;
@@ -299,10 +301,10 @@ class AnalyticsTable extends CoreColumnTable {
 	        left   = rows.slice(0, middle),
 	        right  = rows.slice(middle);
 	
-	    return this._merge(this._mergeSort(left, field), this._mergeSort(right, field), field);
+	    return this._merge(this._mergeSort(left, field, asc), this._mergeSort(right, field, asc), field, asc);
 	}
 	
-	private _merge(left: Array<any>, right: Array<any>, field: FieldDescriptor) {
+	private _merge(left: Array<any>, right: Array<any>, field: FieldDescriptor, asc: boolean) {
 	    var result  = [],
 	        il      = 0,
 	        ir      = 0;
@@ -311,7 +313,11 @@ class AnalyticsTable extends CoreColumnTable {
 			var leftValue = field.getValueFromRow(this, left[il]);
 			var rightValue = field.getValueFromRow(this, right[ir]);
 			
-	        if (leftValue < rightValue){
+			var comp = false;
+			if (asc) comp = leftValue < rightValue;
+			else comp = leftValue > rightValue;
+			
+	        if (comp) {
 	            result.push(left[il++]);
 	        } else {
 	            result.push(right[ir++]);

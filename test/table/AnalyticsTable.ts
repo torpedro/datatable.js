@@ -182,7 +182,7 @@ describe('table.AnalyticsTable', function() {
 	});
 	
 	it('sort', function() {
-		var res1 = table1.sort(new FieldDescriptor('Score1'));
+		var res1 = table1.sort(new FieldDescriptor('Score1'), true);
 		assert.deepEqual(res1.rows(), [
 			[1, 10, 100],
 			[1, 20, 500],
@@ -195,7 +195,7 @@ describe('table.AnalyticsTable', function() {
 	it('sort and groupby', function() {
 		var res = table1
 			.groupBy(['Category'], [agg.avg('Score2', 'AVG Score2')])
-			.sort('AVG Score2');
+			.sort('AVG Score2', true);
 			
 		assert.deepEqual(res.rows(),[
 			[2, 200],

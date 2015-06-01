@@ -42,6 +42,12 @@ module types {
 			// Convert numbers
 			if (toType == 'string') return ''+value;
 		}
+		
+		if (fromType == 'object') {
+			if (toType == 'date') {
+				if (value instanceof Date) return value;
+			}
+		}
 		// Can't convert anys
 		// Can't convert booleans
 		// Can't convert objects other than dates
