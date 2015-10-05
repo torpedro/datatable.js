@@ -962,10 +962,16 @@ var CoreColumnTable = (function () {
         for (var c = 0; c < row.length; ++c) {
             if (row[c] === undefined)
                 throw "Error when inserting! Can not insert undefined!";
-            var v = types.convert(row[c], this.types()[c]);
-            if (typeof v === 'undefined')
-                throw "Error when inserting! Types don't match!";
-            row[c] = v;
+            if (row[c] === null ||
+                (row[c] === '' && this.types()[c] !== 'string')) {
+                row[c] = null;
+            }
+            else {
+                var v = types.convert(row[c], this.types()[c]);
+                if (typeof v === 'undefined')
+                    throw "Error when inserting! Types don't match!";
+                row[c] = v;
+            }
         }
         for (var c = 0; c < row.length; ++c) {
             this.column(this._fields.get(c)).push(row[c]);

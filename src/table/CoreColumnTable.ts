@@ -8,6 +8,7 @@ import types = require('../data/types');
  * 
  * This table is implemented as a column store.
  * TODO: enforce types
+ * TODO: remove row
  */
 class CoreColumnTable implements ITable {
 	protected _attributeVectors: HashMap<string, Array<any>>;
@@ -104,10 +105,14 @@ class CoreColumnTable implements ITable {
 		for (var c = 0; c < row.length; ++c) {
 			if (row[c] === undefined) throw "Error when inserting! Can not insert undefined!";
 
+			// Check for null
 			// If the inserted value is empty string and the datatype is not string
 			// insert null
-			if (row[c] === '' && this.types()[c] !== 'string') {
+			if (row[c] === null ||
+				(row[c] === '' && this.types()[c] !== 'string')) {
 				row[c] = null;
+				// TODO: allow definition of "not null"-constraint
+
 			} else {
 				// Try to convert
 				var v = types.convert(row[c], this.types()[c]);

@@ -97,5 +97,9 @@ describe('table.CoreColumnTable', function() {
         t.addRow(['', 'true']);
         assert.strictEqual(t.value(1, 'A'), null);
         assert.strictEqual(t.value(1, 'B'), true);
+
+        t.addRow(['23.5', null]);
+        assert.strictEqual(t.value(2, 'A'), 23.5);
+        assert.strictEqual(t.value(2, 'B'), null);
     });
 });
