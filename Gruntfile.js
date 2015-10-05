@@ -86,21 +86,17 @@ module.exports = function(grunt) {
 		
 		
         // Compile the Typescript files to JavaScript
-        typescript: {
+        ts: {
             options: {
-                sourceMap: true
+                compiler: "node_modules/typescript/bin/tsc",
+        		module: 'commonjs',
+                failOnTypeErrors: true,
+                fast: "watch"
             },
             src: {
-                options: {
-                    module: 'commonjs',
-                    // declaration: true
-                },
                 src: ['<%= cfg.build %>/src/**/*\.ts']
             },
             test: {
-                options: {
-                    module: 'commonjs'
-                },
                 src: ['<%= cfg.build %>/test/**/*.ts']
             }
         },
@@ -145,19 +141,20 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-typescript');
+    grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.registerTask('build', [
         'clean:build',
         'copy:src',
-        'typescript:src',
+        'ts:src',
         'browserify'
     ]);
     
     grunt.registerTask('only-test', [
         'copy:test',
-        'typescript:test',
+        'ts:test',
         'mochaTest'
     ]);
     

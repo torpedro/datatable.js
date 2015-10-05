@@ -1,5 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sci = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// top-level namespace
 var data = require("./data/__module__");
 var smooth = require("./smooth/__module__");
 var io = require("./io/__module__");
@@ -15,11 +14,6 @@ module.exports = {
 /// <reference path="../typings/underscore/underscore.d.ts" />
 var _ = require('underscore');
 var util = require('./util');
-/**
- * @class HashMap
- *
- *
- */
 var HashMap = (function () {
     function HashMap(useIdentity) {
         this._data = {};
@@ -59,18 +53,11 @@ var HashMap = (function () {
         return keys;
     };
     HashMap.prototype._getBucket = function (key) {
-        // Hash the key
         var hash = util.hashCode(key);
-        // Create bucket if it doesn't exist
         if (!(hash in this._data))
             this._data[hash] = [];
-        // Return the bucket
         return this._data[hash];
     };
-    /**
-     * returns index of key within bucket
-     * returns -1 if key not found
-     */
     HashMap.prototype._findKeyInBucket = function (key, bucket) {
         for (var i = 0; i < bucket.length; ++i) {
             if (this._areEqual(key, bucket[i][0])) {
@@ -90,18 +77,12 @@ var HashMap = (function () {
 module.exports = HashMap;
 
 },{"./util":8,"underscore":20}],3:[function(require,module,exports){
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Set = require('./Set');
-/**
- * @class OrderedSet
- *
- * Keeps values in order
- */
 var OrderedSet = (function (_super) {
     __extends(OrderedSet, _super);
     function OrderedSet() {
@@ -139,10 +120,6 @@ var OrderedSet = (function (_super) {
         }
         return set;
     };
-    /**
-     * returns the index, if the element was found
-     * and the index where it should be inserted, if not found
-     */
     OrderedSet.prototype._binarySearch = function (val, low, high) {
         if (low > high)
             return [-1, low];
@@ -160,18 +137,9 @@ module.exports = OrderedSet;
 
 },{"./Set":4}],4:[function(require,module,exports){
 /// <reference path="../typedefs/ISet.ts" />
-/**
- * @class Set
- *
- * Keeps values in the order they are inserted (Important!)
- * ES6 has a native Set object. Probably replace this Set with that.
- *
- * TODO: Allow option to set deep-equal
- */
 var Set = (function () {
     function Set(data) {
         this._isSet_ = true;
-        // Initialize empty
         this._data = [];
         if (data instanceof Array) {
             for (var i = 0; i < data.length; ++i) {
@@ -179,7 +147,6 @@ var Set = (function () {
             }
         }
         else if (data && data._isSet_) {
-            // This is a set
             var set = data;
             for (var i = 0; i < set.size(); ++i) {
                 this.add(set.get(i));
@@ -275,9 +242,6 @@ module.exports = Set;
 
 },{}],5:[function(require,module,exports){
 var types = require('./types');
-/**
- * @module vec
- */
 var vec;
 (function (vec) {
     function range(vector, dataType) {
@@ -287,7 +251,6 @@ var vec;
         var range = [vector[0], vector[0]];
         for (var n = 1; n < size; ++n) {
             var value = vector[n];
-            // TODO: Handle different datatypes
             if (value < range[0])
                 range[0] = value;
             if (value > range[1])
@@ -309,10 +272,8 @@ var vec;
         for (var i = 0; i < vector.length; ++i) {
             var value = vector[i];
             var res = types.detectDataType(value, parseStrings);
-            // Ignore nulls, they have no type
             if (res.type == types.kNull)
                 continue;
-            // Add to the typeset
             if (typeset.indexOf(res.type) == -1)
                 typeset.push(res.type);
             if (convertTypes)
@@ -323,15 +284,9 @@ var vec;
         if (typeset.length == 1)
             return typeset[0];
         else
-            return 'any'; // Return an any type
-        // TODO: roll-up the types
+            return 'any';
     }
     vec.detectDataType = detectDataType;
-    /**
-     * @name groupByPositions
-     *
-     * not type safe
-     */
     function groupByPositions(vector) {
         var map = {};
         for (var i = 0; i < vector.length; ++i) {
@@ -346,9 +301,6 @@ var vec;
         return map;
     }
     vec.groupByPositions = groupByPositions;
-    /**
-     * list all distinct values within the array
-     */
     function distinctValues(vector) {
         var values = [];
         for (var i = 0; i < vector.length; ++i) {
@@ -379,12 +331,8 @@ module.exports = {
 };
 
 },{"./HashMap":2,"./OrderedSet":3,"./Set":4,"./VectorOperations":5,"./types":7,"./util":8}],7:[function(require,module,exports){
-/**
- * @module types
- */
 var types;
 (function (types_1) {
-    // These are the data types that can be detected
     var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null'];
     types_1.kAny = types[0];
     types_1.kString = types[1];
@@ -400,9 +348,6 @@ var types;
         _typeDetectors[type].push(typeDetector);
     }
     types_1.registerTypeDetector = registerTypeDetector;
-    /**
-     *
-     */
     function convert(value, toType) {
         if (toType == 'any')
             return value;
@@ -410,11 +355,9 @@ var types;
         if (fromType == toType)
             return value;
         if (fromType == 'string') {
-            // Convert strings
             return convertString(value, toType);
         }
         if (fromType == 'number') {
-            // Convert numbers
             if (toType == 'string')
                 return '' + value;
         }
@@ -424,47 +367,31 @@ var types;
                     return value;
             }
         }
-        // Can't convert anys
-        // Can't convert booleans
-        // Can't convert objects other than dates
-        // Can't convert nulls
         return undefined;
     }
     types_1.convert = convert;
-    /**
-     *
-     */
     function detectDataType(value, parseStrings) {
         if (typeof parseStrings === 'undefined')
             parseStrings = true;
-        // Get the javascript built-in type
         var type = typeof value;
-        // For values of 'undefined' or 'null'
-        // we assign the type 'null'  
         if (value === null || value === undefined)
             type = 'null';
-        // Check if its a basic data type and just return it
         if (type == 'number' ||
             type == 'boolean' ||
             type == 'null' ||
             (type == 'string' && !parseStrings)) {
             return { type: type, value: value };
         }
-        // Check for Date objects
         if (type == 'object') {
             if (value instanceof Date)
                 type = 'date';
             return { type: type, value: value };
         }
-        // Parse the string
         if (type == 'string') {
             return detectDataTypeOfString(value);
         }
     }
     types_1.detectDataType = detectDataType;
-    /**
-     *
-     */
     function convertString(value, toType) {
         if (toType in _typeDetectors) {
             for (var i = 0; i < _typeDetectors[toType].length; ++i) {
@@ -473,8 +400,6 @@ var types;
                     var match = detector.regex.exec(value);
                     if (match !== null) {
                         var newValue = detector.format(match);
-                        // Type deteced!
-                        // Return it
                         return newValue;
                     }
                 }
@@ -488,13 +413,8 @@ var types;
         return undefined;
     }
     types_1.convertString = convertString;
-    /**
-     *
-     */
     function detectDataTypeOfString(value) {
-        // Iterate over all types
         for (var type in _typeDetectors) {
-            // Try to convert and check result
             var res = convertString(value, type);
             if (res !== undefined) {
                 return {
@@ -510,9 +430,6 @@ var types;
     }
     types_1.detectDataTypeOfString = detectDataTypeOfString;
 })(types || (types = {}));
-/**
- * Date Detectors
- */
 types.registerTypeDetector('date', {
     regex: /^([0-9]?[0-9])\.([0-9]?[0-9])\.([0-9][0-9][0-9][0-9])$/,
     format: function (match) {
@@ -536,7 +453,6 @@ types.registerTypeDetector('date', {
 });
 types.registerTypeDetector('date', {
     matchAndFormat: function (str) {
-        // Check if it starts with a date
         if (/^([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/.exec(str)) {
             var date = new Date(str);
             if (!isNaN(date.getTime()))
@@ -545,9 +461,6 @@ types.registerTypeDetector('date', {
         return false;
     }
 });
-/**
- * Number Detectors
- */
 types.registerTypeDetector('number', {
     regex: /^\s*-?[0-9]+(?:\,[0-9][0-9][0-9])*(?:\.[0-9]+)?\s*$/,
     format: function (match) {
@@ -560,9 +473,6 @@ types.registerTypeDetector('number', {
         return parseFloat(match[0].replace(".", "").replace(",", "."));
     }
 });
-/**
- * boolean
- */
 types.registerTypeDetector('boolean', {
     regex: /^[Ff][Aa][Ll][Ss][Ee]$/,
     format: function (match) { return false; }
@@ -574,12 +484,8 @@ types.registerTypeDetector('boolean', {
 module.exports = types;
 
 },{}],8:[function(require,module,exports){
-/**
- * @module util
- */
 var util;
 (function (util) {
-    // http://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
     function toHex(num) {
         var ret = ((num < 0 ? 0x8 : 0) + ((num >> 28) & 0x7)).toString(16) + (num & 0xfffffff).toString(16);
         while (ret.length < 8)
@@ -587,7 +493,6 @@ var util;
         return ret;
     }
     util.toHex = toHex;
-    // http://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
     function hashCode(o, l) {
         l = l || 2;
         var i, c, r = [];
@@ -662,29 +567,24 @@ var CSVParser = (function () {
         var attrVectors = [];
         if (result.meta.fields) {
             fields = result.meta.fields;
-            // Create attribute vectors
             for (var c = 0; c < fields.length; ++c) {
                 var vector = [];
                 for (var r = 0; r < numRows; ++r) {
                     vector.push(result.data[r][fields[c]]);
                 }
-                // Detect data-types of vectors and convert all values to their types
                 var type = vec.detectDataType(vector, true, true);
                 types.push(type);
                 attrVectors.push(vector);
             }
         }
         else {
-            // Find the number of columns needed for all rows
             var numColumns = 0;
             for (var r = 0; r < numRows; ++r) {
                 numColumns = Math.max(numColumns, result.data[r].length);
             }
-            // Initialize fields
             for (var c = 0; c < numColumns; ++c) {
                 fields.push('Column ' + (c + 1));
             }
-            // Fill Attribute Vectors
             for (var c = 0; c < numColumns; ++c) {
                 var vector = [];
                 for (var r = 0; r < numRows; ++r) {
@@ -694,7 +594,6 @@ var CSVParser = (function () {
                 types.push(vec.detectDataType(vector, true, true));
             }
         }
-        // Create the table
         var table = new CoreColumnTable({
             fields: fields,
             types: types,
@@ -713,9 +612,6 @@ module.exports = {
 };
 
 },{"./CSVParser":9}],11:[function(require,module,exports){
-/**
- * @module es
- */
 var es;
 (function (es) {
     function SingleExponentialSmoothing(vector, alpha) {
@@ -723,8 +619,8 @@ var es;
             throw "Not enough parameters given!";
         if (0 > alpha || alpha > 1)
             throw "Alpha has to be in [0,1]!";
-        var result = []; // smoothed data
-        var k = 1; // window size
+        var result = [];
+        var k = 1;
         result.push(vector[0]);
         for (var t = 1; t < vector.length; ++t) {
             var val = alpha * vector[t] + (1 - alpha) * result[t - 1];
@@ -733,18 +629,12 @@ var es;
         return result;
     }
     es.SingleExponentialSmoothing = SingleExponentialSmoothing;
-    /**
-     * Double Exponential Smoothing
-     *
-     * TODO: Type checking
-     * TODO: tests
-     */
     function DoubleExponentialSmoothing(data, alpha, beta) {
         if (!data || !alpha)
             return null;
-        var s = []; // smoothed data
-        var b = []; // trend
-        var k = 1; // window size
+        var s = [];
+        var b = [];
+        var k = 1;
         s.push(data[0]);
         b.push(data[1] - data[0]);
         for (var t = 1; t < data.length; ++t) {
@@ -760,23 +650,17 @@ var es;
 module.exports = es;
 
 },{}],12:[function(require,module,exports){
-/**
- * @module ma
- */
 var ma;
 (function (ma) {
     function SimpleMovingAverage(vector, k) {
         var result = [];
-        // For first k-records use their partial average
         for (var i = 0; i < k && i < vector.length; ++i) {
-            // Calculate the partial average
             var sum = 0;
             for (var j = i; j >= 0; --j) {
                 sum += vector[j];
             }
             result.push(sum / (i + 1));
         }
-        // For the other records use the average of the k-1 past records
         for (var i = k; i < vector.length; ++i) {
             var sum = 0;
             for (var j = i; j > i - k; --j) {
@@ -801,11 +685,10 @@ module.exports = {
 },{"./ExponentialSmoothing":11,"./MovingAverage":12}],14:[function(require,module,exports){
 // @file AnalyticsTable.ts
 /// <reference path="../typings/underscore/underscore.d.ts" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var CoreColumnTable = require('./CoreColumnTable');
 var FieldDescriptor = require('./FieldDescriptor');
@@ -813,27 +696,18 @@ var OrderedSet = require('../data/OrderedSet');
 var HashMap = require('../data/HashMap');
 var vec = require('../data/VectorOperations');
 var agg = require('./operators/agg');
-// </imports>
-///////////////////////////
-/**
- * @class AnalyticsTable
- */
 var AnalyticsTable = (function (_super) {
     __extends(AnalyticsTable, _super);
     function AnalyticsTable() {
         _super.apply(this, arguments);
-        this.agg = agg; // Alias to the aggregation module
+        this.agg = agg;
     }
     AnalyticsTable.prototype.groupBy = function (_groupFields, aggregations) {
-        // If the function was called with a single group by column
-        // Call it again with an array
-        // Format the data input
         if (!aggregations)
             aggregations = [];
         if (!(_groupFields instanceof Array))
             return this.groupBy([_groupFields], aggregations);
         var fields = convertListOfFieldDescriptors(_groupFields);
-        // Create Result Field List
         var outputFields = [];
         for (var i = 0; i < fields.length; ++i) {
             outputFields.push(fields[i].outputName);
@@ -846,8 +720,7 @@ var AnalyticsTable = (function (_super) {
             else
                 outputFields.push('Aggregation ' + k);
         }
-        // Create hash map
-        var map = new HashMap(false); // Map by equality
+        var map = new HashMap(false);
         for (var r = 0; r < this.size(); ++r) {
             var key = [];
             for (var c = 0; c < fields.length; ++c) {
@@ -860,18 +733,15 @@ var AnalyticsTable = (function (_super) {
                 map.set(key, [this.row(r)]);
             }
         }
-        // Create the result table
         var result = new AnalyticsTable({
             fields: outputFields
         });
         var keys = map.keys();
         for (var k = 0; k < keys.length; ++k) {
             var row = [];
-            // Add the grouped columns
             for (var c = 0; c < keys[k].length; ++c) {
                 row.push(keys[k][c]);
             }
-            // Add the aggregated columns
             for (var a = 0; a < aggregations.length; ++a) {
                 row.push(aggregations[a](map.get(keys[k]), this));
             }
@@ -879,13 +749,7 @@ var AnalyticsTable = (function (_super) {
         }
         return result;
     };
-    /**
-     * Returns a table with only rows where the predicate evaluated to true
-     *
-     * @method filter
-     */
     AnalyticsTable.prototype.filter = function (predicate) {
-        // TODO: Figer out how to be able to address columns in predicate by name
         var result = new AnalyticsTable({
             fields: this._fields.get(),
             types: this._types.slice()
@@ -898,19 +762,10 @@ var AnalyticsTable = (function (_super) {
         }
         return result;
     };
-    /**
-     * Returns all distinct values of the specified field
-     *
-     * TODO: FieldDescriptor
-     * TODO: mutltiple fields
-     *
-     * @method distinctValues
-     */
     AnalyticsTable.prototype.distinctValues = function (field) {
         return new OrderedSet(this.column(field));
     };
     AnalyticsTable.prototype.select = function (_fields) {
-        // Format the data input
         if (!(_fields instanceof Array))
             return this.select([_fields]);
         var inFields = convertListOfFieldDescriptors(_fields);
@@ -920,15 +775,12 @@ var AnalyticsTable = (function (_super) {
         for (var i = 0; i < inFields.length; ++i) {
             var field = inFields[i];
             if (field.isStatic) {
-                // A simple field was selected
                 columns.push(this.column(field.name).slice());
                 types.push(this.type(field.name));
                 resFields.push(field.outputName);
             }
             else {
                 resFields.push(field.outputName);
-                // Function selector
-                // Build a new column vector
                 var vector = [];
                 for (var i = 0; i < this.size(); ++i) {
                     var value = field.getValue(this, i);
@@ -944,15 +796,7 @@ var AnalyticsTable = (function (_super) {
             columns: columns
         });
     };
-    /**
-     * Returns a Table where the column was split into multiple columns
-     *
-     * TODO: FieldDescriptor
-     *
-     * @method splitColumn
-     */
     AnalyticsTable.prototype.splitColumn = function (field, groupField) {
-        // Find all result field names
         var categories = this.distinctValues(field).get();
         var fields = [groupField];
         var types = [this.type(groupField)];
@@ -969,8 +813,6 @@ var AnalyticsTable = (function (_super) {
                 types.push(this.type(valueFields[f]));
             }
         }
-        // Build Hash-Map
-        // map( group -> map( category -> Array(valueFields) ) )
         var map = new HashMap(false);
         for (var r = 0; r < this.size(); ++r) {
             var key = this.value(r, groupField);
@@ -988,12 +830,10 @@ var AnalyticsTable = (function (_super) {
             fields: fields,
             types: types
         });
-        // Build Rows
         var keys = map.keys();
         for (var k = 0; k < keys.length; ++k) {
             var obj = map.get(keys[k]);
             var row = [keys[k]];
-            // Loop over categories and valueFields
             for (var c = 0; c < categories.length; ++c) {
                 if (!(categories[c] in obj)) {
                     for (var f = 0; f < valueFields.length; ++f) {
@@ -1011,17 +851,6 @@ var AnalyticsTable = (function (_super) {
         }
         return result;
     };
-    /**
-     * Return a table sorted by the given field
-     * Default Order: Descending
-     * TODO: Currently only supports simple < comparison
-     * TODO: Allow for customt comparator
-     *
-     * Implemented as MergeSort
-     * http://www.nczonline.net/blog/2012/10/02/computer-science-and-javascript-merge-sort/
-     *
-     * @method sort
-     */
     AnalyticsTable.prototype.sort = function (_field, asc) {
         if (!asc)
             asc = false;
@@ -1030,16 +859,12 @@ var AnalyticsTable = (function (_super) {
             fields: this.fields(),
             types: this.types()
         });
-        // Materialize the rows
         var rows = this.rows();
-        // Sort the rows
         var sortedRows = this._mergeSort(rows, field, asc);
-        // Add to output table
         table.addRows(sortedRows);
         return table;
     };
     AnalyticsTable.prototype._mergeSort = function (rows, field, asc) {
-        // Terminal case: 0 or 1 item arrays don't need sorting
         if (rows.length < 2) {
             return rows;
         }
@@ -1067,7 +892,6 @@ var AnalyticsTable = (function (_super) {
     };
     return AnalyticsTable;
 })(CoreColumnTable);
-// Utility Functions
 function convertListOfFieldDescriptors(vals) {
     var desc = [];
     for (var i = 0; i < vals.length; ++i)
@@ -1078,7 +902,6 @@ function convertToFieldDescriptors(val) {
     if (typeof val === 'string') {
         return new FieldDescriptor(val);
     }
-    // else return the field descriptor that was put in
     return val;
 }
 module.exports = AnalyticsTable;
@@ -1088,12 +911,6 @@ module.exports = AnalyticsTable;
 var HashMap = require('../data/HashMap');
 var Set = require('../data/Set');
 var types = require('../data/types');
-/**
- * @class CoreColumnTable
- *
- * This table is implemented as a column store.
- * TODO: enforce types
- */
 var CoreColumnTable = (function () {
     function CoreColumnTable(def) {
         if (def instanceof CoreColumnTable) {
@@ -1103,19 +920,15 @@ var CoreColumnTable = (function () {
             this._initializeByTableDefinition(def);
         }
         else {
-            // console.error("Couldn't initialize Table with the given parameters!", arguments);
             throw "Couldn't initialize Table with the given parameters!";
         }
     }
     CoreColumnTable.prototype._initializeByTableDefinition = function (def) {
         if (def.fields.length == 0)
             throw "Number of fields can't be zero!";
-        // Initialize the fields
         this._fields = new Set(def.fields);
         if (def.fields.length != this._fields.size())
             throw "No duplicate field names allowed!";
-        // Initialize the types
-        // If types are undefined, we set them to 'any' by default
         if (def.types) {
             if (def.fields.length != def.types.length)
                 throw "Number of fields and number of types do not match!";
@@ -1127,8 +940,6 @@ var CoreColumnTable = (function () {
                 this._types.push(types.kAny);
             }
         }
-        // Initialize the attribute vectors
-        // TODO: Allow initialization with rows
         this._attributeVectors = new HashMap();
         if (def.columns) {
             if (def.fields.length != def.columns.length)
@@ -1156,7 +967,6 @@ var CoreColumnTable = (function () {
     };
     CoreColumnTable.prototype.addField = function (name, type, values) {
         this._fields.add(name);
-        // Push null-values for existing rows
         var vector = [];
         for (var r = 0; r < this.size(); ++r) {
             vector.push(null);
@@ -1170,7 +980,6 @@ var CoreColumnTable = (function () {
     CoreColumnTable.prototype.addRow = function (row) {
         if (row.length > this.numFields())
             throw "Error when inserting! Row has too many fields!";
-        // Typechecks
         for (var c = 0; c < row.length; ++c) {
             if (row[c] === undefined)
                 throw "Error when inserting! Can not insert undefined!";
@@ -1179,11 +988,9 @@ var CoreColumnTable = (function () {
                 throw "Error when inserting! Types don't match!";
             row[c] = v;
         }
-        // Insert the values
         for (var c = 0; c < row.length; ++c) {
             this.column(this._fields.get(c)).push(row[c]);
         }
-        // Push null-values for non-existant fields
         for (var c = row.length; c < this.numFields(); ++c) {
             this.column(this._fields.get(c)).push(null);
         }
@@ -1203,7 +1010,6 @@ var CoreColumnTable = (function () {
             return this._types[this.getFieldNameIndex(name)];
         }
         else {
-            // Check for special reserved system names
             if (name === '$rownr')
                 return types.kNumber;
             throw "Couldn't find column: '" + name + " '!";
@@ -1221,7 +1027,6 @@ var CoreColumnTable = (function () {
         return rows;
     };
     CoreColumnTable.prototype.row = function (r) {
-        // Build the Row from the attribute vectors
         var record = [];
         for (var c = 0; c < this.numFields(); ++c) {
             record.push(this.value(r, this._fields.get(c)));
@@ -1240,10 +1045,6 @@ var CoreColumnTable = (function () {
     CoreColumnTable.prototype.setValue = function (row, column, value) {
         this.column(column)[row] = value;
     };
-    /**
-     * Adds empty rows to the table, until the table has at least
-     * as many rows as specified
-     */
     CoreColumnTable.prototype.reserve = function (numRows) {
         if (this.numFields() == 0)
             throw ("Can't reserve rows on a table without fields!");
@@ -1256,7 +1057,6 @@ var CoreColumnTable = (function () {
             return this._attributeVectors.get(name);
         }
         else {
-            // Check for special reserved system names
             if (name === '$rownr') {
                 return this._createRowNrColumn();
             }
@@ -1282,13 +1082,9 @@ var CoreColumnTable = (function () {
 module.exports = CoreColumnTable;
 
 },{"../data/HashMap":2,"../data/Set":4,"../data/types":7}],16:[function(require,module,exports){
-/**
- * @class FieldDescriptor
- */
 var FieldDescriptor = (function () {
     function FieldDescriptor(what, as) {
         if (typeof what === 'string') {
-            // what is a static field selector
             this.isStatic = true;
             this.name = what;
             if (as)
@@ -1297,7 +1093,6 @@ var FieldDescriptor = (function () {
                 this.outputName = what;
         }
         else {
-            // what is a function selector
             this.isStatic = false;
             this.fn = what;
             this.outputName = as;
@@ -1344,17 +1139,11 @@ module.exports = {
 };
 
 },{"./AnalyticsTable":14,"./CoreColumnTable":15,"./FieldDescriptor":16}],18:[function(require,module,exports){
-/**
- * @module agg
- *
- * Used in group-by operations
- */
 var agg;
 (function (agg) {
     function sum(targetField, outputName) {
         var aggf = function (rows, table) {
             // TODO: type-switch		
-            // number	
             var sum = 0;
             var c = table.getFieldNameIndex(targetField);
             for (var r = 0; r < rows.length; ++r) {
@@ -1362,7 +1151,6 @@ var agg;
             }
             return sum;
         };
-        // Set output name
         if (outputName)
             aggf['aggName'] = outputName;
         else
@@ -1372,8 +1160,6 @@ var agg;
     agg.sum = sum;
     function avg(targetField, outputName) {
         var aggf = function (rows, table) {
-            // TODO: type-switch
-            // number
             var sum = 0;
             var c = table.getFieldNameIndex(targetField);
             for (var r = 0; r < rows.length; ++r) {
@@ -1381,7 +1167,6 @@ var agg;
             }
             return (sum / rows.length);
         };
-        // Set output name
         if (outputName)
             aggf['aggName'] = outputName;
         else
@@ -1394,7 +1179,6 @@ var agg;
             var c = table.getFieldNameIndex(targetField);
             return rows[0][c];
         };
-        // Set output name
         if (outputName)
             aggf['aggName'] = outputName;
         else

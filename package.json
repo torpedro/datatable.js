@@ -5,7 +5,6 @@
   "homepage": "https://github.com/torpedro/datasci.js",
   "main": "datasci.js",
   "devDependencies": {
-    "grunt-typescript": "~0.6.1",
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-contrib-copy": "~0.8.0",
@@ -20,5 +19,9 @@
   },
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test"
+  },
+  "dependencies": {
+    "grunt-ts": "^4.2.0",
+    "typescript": "^1.6.2"
   }
 }
