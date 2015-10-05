@@ -93,5 +93,9 @@ describe('table.CoreColumnTable', function() {
         
         assert.strictEqual(t.value(0, 'A'), 1);
         assert.strictEqual(t.value(0, 'B'), false);
+
+        t.addRow(['', 'true']);
+        assert.strictEqual(t.value(1, 'A'), null);
+        assert.strictEqual(t.value(1, 'B'), true);
     });
 });

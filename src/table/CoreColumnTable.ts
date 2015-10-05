@@ -103,9 +103,17 @@ class CoreColumnTable implements ITable {
 		// Typechecks
 		for (var c = 0; c < row.length; ++c) {
 			if (row[c] === undefined) throw "Error when inserting! Can not insert undefined!";
-			var v = types.convert(row[c], this.types()[c]);
-			if (typeof v === 'undefined') throw "Error when inserting! Types don't match!";
-			row[c] = v;
+
+			// If the inserted value is empty string and the datatype is not string
+			// insert null
+			if (row[c] === '' && this.types()[c] !== 'string') {
+				row[c] = null;
+			} else {
+				// Try to convert
+				var v = types.convert(row[c], this.types()[c]);
+				if (typeof v === 'undefined') throw "Error when inserting! Types don't match!";
+				row[c] = v;
+			}
 		}
 		
 		// Insert the values
