@@ -1,5 +1,1 @@
-import CSVParser = require("./CSVParser");
-
-export = {
-	CSVParser: CSVParser
-};
+export import CSVParser = require("./CSVParser");

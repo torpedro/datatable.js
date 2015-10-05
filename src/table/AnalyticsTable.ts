@@ -9,7 +9,7 @@ import FieldDescriptor = require('./FieldDescriptor');
 import OrderedSet = require('../data/OrderedSet');
 import HashMap = require('../data/HashMap');
 import vec = require('../data/VectorOperations');
-import agg = require('./operators/agg');
+import aggs = require('./operators/agg');
 // </imports>
 ///////////////////////////
 
@@ -18,7 +18,7 @@ import agg = require('./operators/agg');
  * @class AnalyticsTable
  */
 class AnalyticsTable extends CoreColumnTable {
-	public agg = agg; // Alias to the aggregation module
+	public agg = aggs; // Alias to the aggregation module
 	
 	
 	/**

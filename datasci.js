@@ -1,14 +1,8 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sci = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var data = require("./data/__module__");
-var smooth = require("./smooth/__module__");
-var io = require("./io/__module__");
-var table = require("./table/__module__");
-module.exports = {
-    data: data,
-    smooth: smooth,
-    io: io,
-    table: table
-};
+exports.data = require("./data/__module__");
+exports.smooth = require("./smooth/__module__");
+exports.io = require("./io/__module__");
+exports.table = require("./table/__module__");
 
 },{"./data/__module__":6,"./io/__module__":10,"./smooth/__module__":13,"./table/__module__":17}],2:[function(require,module,exports){
 /// <reference path="../typings/underscore/underscore.d.ts" />
@@ -315,20 +309,12 @@ var vec;
 module.exports = vec;
 
 },{"./types":7}],6:[function(require,module,exports){
-var VectorOperations = require("./VectorOperations");
-var types = require("./types");
-var util = require("./util");
-var Set = require("./Set");
-var OrderedSet = require("./OrderedSet");
-var HashMap = require("./HashMap");
-module.exports = {
-    vec: VectorOperations,
-    types: types,
-    util: util,
-    Set: Set,
-    OrderedSet: OrderedSet,
-    HashMap: HashMap
-};
+exports.vec = require("./VectorOperations");
+exports.types = require("./types");
+exports.util = require("./util");
+exports.Set = require("./Set");
+exports.OrderedSet = require("./OrderedSet");
+exports.HashMap = require("./HashMap");
 
 },{"./HashMap":2,"./OrderedSet":3,"./Set":4,"./VectorOperations":5,"./types":7,"./util":8}],7:[function(require,module,exports){
 var types;
@@ -606,10 +592,7 @@ var CSVParser = (function () {
 module.exports = CSVParser;
 
 },{"../data/VectorOperations":5,"../table/CoreColumnTable":15,"papaparse":19}],10:[function(require,module,exports){
-var CSVParser = require("./CSVParser");
-module.exports = {
-    CSVParser: CSVParser
-};
+exports.CSVParser = require("./CSVParser");
 
 },{"./CSVParser":9}],11:[function(require,module,exports){
 var es;
@@ -675,12 +658,8 @@ var ma;
 module.exports = ma;
 
 },{}],13:[function(require,module,exports){
-var MovingAverage = require("./MovingAverage");
-var ExponentialSmoothing = require("./ExponentialSmoothing");
-module.exports = {
-    ma: MovingAverage,
-    es: ExponentialSmoothing
-};
+exports.ma = require("./MovingAverage");
+exports.es = require("./ExponentialSmoothing");
 
 },{"./ExponentialSmoothing":11,"./MovingAverage":12}],14:[function(require,module,exports){
 // @file AnalyticsTable.ts
@@ -695,12 +674,12 @@ var FieldDescriptor = require('./FieldDescriptor');
 var OrderedSet = require('../data/OrderedSet');
 var HashMap = require('../data/HashMap');
 var vec = require('../data/VectorOperations');
-var agg = require('./operators/agg');
+var aggs = require('./operators/agg');
 var AnalyticsTable = (function (_super) {
     __extends(AnalyticsTable, _super);
     function AnalyticsTable() {
         _super.apply(this, arguments);
-        this.agg = agg;
+        this.agg = aggs;
     }
     AnalyticsTable.prototype.groupBy = function (_groupFields, aggregations) {
         if (!aggregations)
@@ -1129,14 +1108,9 @@ var FieldDescriptor = (function () {
 module.exports = FieldDescriptor;
 
 },{}],17:[function(require,module,exports){
-var AnalyticsTable = require("./AnalyticsTable");
-var CoreColumnTable = require("./CoreColumnTable");
-var FieldDescriptor = require("./FieldDescriptor");
-module.exports = {
-    AnalyticsTable: AnalyticsTable,
-    CoreColumnTable: CoreColumnTable,
-    FieldDescriptor: FieldDescriptor
-};
+exports.AnalyticsTable = require("./AnalyticsTable");
+exports.CoreColumnTable = require("./CoreColumnTable");
+exports.FieldDescriptor = require("./FieldDescriptor");
 
 },{"./AnalyticsTable":14,"./CoreColumnTable":15,"./FieldDescriptor":16}],18:[function(require,module,exports){
 var agg;

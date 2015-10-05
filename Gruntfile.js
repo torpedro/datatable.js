@@ -94,6 +94,9 @@ module.exports = function(grunt) {
                 fast: "watch"
             },
             src: {
+                options: {
+                    declaration: true
+                },
                 src: ['<%= cfg.build %>/src/**/*\.ts']
             },
             test: {

@@ -1,9 +1,3 @@
-import AnalyticsTable = require("./AnalyticsTable");
-import CoreColumnTable = require("./CoreColumnTable");
-import FieldDescriptor = require("./FieldDescriptor");
-
-export = {
-	AnalyticsTable: AnalyticsTable,
-	CoreColumnTable: CoreColumnTable,
-	FieldDescriptor: FieldDescriptor
-};
+export import AnalyticsTable = require("./AnalyticsTable");
+export import CoreColumnTable = require("./CoreColumnTable");
+export import FieldDescriptor = require("./FieldDescriptor");

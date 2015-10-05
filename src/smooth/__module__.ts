@@ -1,7 +1,2 @@
-import MovingAverage = require("./MovingAverage");
-import ExponentialSmoothing = require("./ExponentialSmoothing");
-
-export = {
-	ma: MovingAverage,
-	es: ExponentialSmoothing
-}
+export import ma = require("./MovingAverage");
+export import es = require("./ExponentialSmoothing");
