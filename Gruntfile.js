@@ -74,6 +74,13 @@ module.exports = function(grunt) {
                     src: ['**/*'],
                     dest: '<%= cfg.build %>/test/'
                 }]
+            },
+
+            release: {
+                files: [{
+                    src: "build/datasci.js-full.js",
+                    dest: "datasci.js"
+                }]
             }
 		},
 		
@@ -86,7 +93,7 @@ module.exports = function(grunt) {
             src: {
                 options: {
                     module: 'commonjs',
-//                    declaration: true
+                    // declaration: true
                 },
                 src: ['<%= cfg.build %>/src/**/*\.ts']
             },
@@ -125,7 +132,7 @@ module.exports = function(grunt) {
         
         // Uglify for release
         uglify: {
-            my_target: {
+            browser: {
                 files: {
                     '<%= cfg.build %>/<%= cfg.libName %>-full-min.js': ['<%= cfg.build %>/<%= cfg.libName %>-full.js']
                 }
@@ -164,7 +171,8 @@ module.exports = function(grunt) {
     grunt.registerTask('release', [
         'build',
         'only-test',
-        'uglify' 
+        'uglify:browser',
+        'copy:release'
     ]);
 
     grunt.registerTask('default', ['test']);

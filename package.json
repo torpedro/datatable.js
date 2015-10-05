@@ -1,6 +1,9 @@
 {
   "name": "datasci.js",
+  "version": "0.1.2",
   "author": "Pedro Flemming",
+  "homepage": "https://github.com/torpedro/datasci.js",
+  "main": "datasci.js",
   "devDependencies": {
     "grunt-typescript": "~0.6.1",
     "grunt-contrib-clean": "~0.6.0",

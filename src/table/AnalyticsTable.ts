@@ -99,7 +99,8 @@ class AnalyticsTable extends CoreColumnTable {
 	filter(predicate: Function): AnalyticsTable {
 		// TODO: Figer out how to be able to address columns in predicate by name
 		var result = new AnalyticsTable({
-			fields: this._fields.get()
+			fields: this._fields.get(),
+			types: this._types.slice()
 		});
 		for (var r = 0; r < this.size(); ++r) {
 			var row = this.row(r);

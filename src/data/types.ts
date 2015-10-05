@@ -1,14 +1,15 @@
 
 
-interface TypeDetection {
-	type: string;
-	value: any;
-}
 
 /**
  * @module types
  */
 module types {
+	export interface TypeDetection {
+		type: string;
+		value: any;
+	}
+
 	// These are the data types that can be detected
 	var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null'];
 	export var kAny     = types[0];
