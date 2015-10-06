@@ -1,27 +1,35 @@
 {
   "name": "datasci.js",
-  "version": "0.1.51",
+  "version": "0.1.52",
   "author": "Pedro Flemming",
+  "license": "MIT License",
   "homepage": "https://github.com/torpedro/datasci.js",
   "main": "datasci.js",
   "devDependencies": {
+    "mocha": "~2.3.3",
+    "underscore": "~1.8.3",
+    "papaparse": "~4.1.1",
+    "typescript": "^1.6.2",
+    "grunt": "~0.4.5",
+    "grunt-cli": "~0.1.13",
+    "grunt-contrib-uglify": "~0.9.1",
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-contrib-copy": "~0.8.0",
-    "grunt-browserify": "~3.8.0",
-    "grunt-contrib-uglify": "~0.9.1",
-    "mocha": "~2.2.5",
+    "grunt-browserify": "~4.0.1",
     "grunt-mocha-test": "~0.12.7",
-    "underscore": "~1.8.3",
-    "papaparse": "~4.1.1",
-    "grunt": "~0.4.5",
-    "grunt-cli": "~0.1.13"
+    "grunt-ts": "^5.0.0-beta.5"
   },
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test"
   },
   "dependencies": {
-    "grunt-ts": "^4.2.0",
-    "typescript": "^1.6.2"
+  },
+  "bugs": {
+    "url": "https://github.com/torpedro/datasci.js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/torpedro/account-crawler.git"
   }
 }
