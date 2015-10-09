@@ -1,3 +1,6 @@
+/// <reference path="../typings/underscore/underscore.d.ts" />
+import _ = require('underscore');
+
 import types = require('./types');
 
 /**
@@ -46,6 +49,13 @@ module vec {
 		if (typeset.length == 1) return typeset[0];
 		else return 'any'; // Return an any type
 		// TODO: roll-up the types
+	}
+	
+	export function convertToType(vector: any[], targetType: string): any[] {
+		var newVec = _.map(vector, function(value, i) {
+			return types.convert(value, targetType);
+		});
+		return newVec;
 	}
 	
 	/**

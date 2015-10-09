@@ -28,13 +28,8 @@ class CSVParser {
 			for (var c = 0; c < fields.length; ++c) {
 				var vector = [];	
 				for (var r = 0; r < numRows; ++r) {
-					vector.push(result.data[r][fields[c]]);	
+					vector.push(result.data[r][fields[c]]);
 				}
-				
-				// Detect data-types of vectors and convert all values to their types
-				var type = vec.detectDataType(vector, true, true);
-				
-				types.push(type);
 				attrVectors.push(vector);
 			}
 		} else {
@@ -56,18 +51,33 @@ class CSVParser {
 					vector.push(result.data[r][c]);
 				}
 				attrVectors.push(vector);
-				types.push(vec.detectDataType(vector, true, true));
 			}
 		}
 		
 		// Create the table
 		var table = new CoreColumnTable({
 			fields: fields,
-			types: types,
 			columns: attrVectors
 		});
+		table.detectTypes(true);
 		
 		return table;
+	}
+
+
+	dumpString(table: CoreColumnTable): string {
+		var csv = "";
+		
+		csv += table.fields().join(this._options.delimiter)
+		csv += "\n";
+		for (var i = 0; i < table.size()-1; ++i) {
+			var row = table.row(i);
+			csv += row.join(this._options.delimiter);
+			csv += "\n";
+		}
+		csv += table.row(table.size() - 1).join(this._options.delimiter);
+		
+		return csv;
 	}
 }
 

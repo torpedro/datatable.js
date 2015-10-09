@@ -1,7 +1,11 @@
 /// <reference path="../typedefs/ITable.ts" />
+
+import _ = require("underscore")
+
 import HashMap = require('../data/HashMap');
 import Set = require('../data/Set');
 import types = require('../data/types');
+import vec = require('../data/VectorOperations');
 
 /**
  * @class CoreColumnTable
@@ -136,11 +140,17 @@ class CoreColumnTable implements ITable {
 		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
 	}
 	
-	fields(): Array<string> { return this._fields.get(); }
+	fields(): Array<string> {
+		return this._fields.get();
+	}
 	
-	numFields(): number { return this._fields.size(); }
+	numFields(): number {
+		return this._fields.size();
+	}
 	
-	hasField(name: string): boolean { return this._fields.contains(name); }
+	hasField(name: string): boolean {
+		return this._fields.contains(name);
+	}
 	
 	types(): Array<string> {
 		return this._types;
@@ -157,7 +167,9 @@ class CoreColumnTable implements ITable {
 		}
 	}
 	
-	empty(): boolean { return this.size() == 0; }
+	empty(): boolean {
+		return this.size() == 0;
+	}
 	
 	size(): number {
 		return this.column(this._fields.get(0)).length;
@@ -227,6 +239,29 @@ class CoreColumnTable implements ITable {
 		return columns;
 	}
 	
+	detectTypes(setTypes: boolean): string[] {
+		var me = this;
+		var types = _.map(this._fields.get(), function(name: string, c: number) {
+			return vec.detectDataType(me._attributeVectors.get(name));
+		});
+		if (setTypes) {
+			for (var i = 0; i < types.length; ++i) {
+				this.setType(this._fields.get(i), types[i]);
+			}
+		}
+		return types;
+	}
+	
+	setType(field: string, type: string): void {
+		var i = this.getFieldNameIndex(field);
+		if (type !== this._types[i]) {
+			this._types[i] = type;
+			
+			// Convert Types
+			var oldVector = this._attributeVectors.get(field);
+			this._attributeVectors.set(field, vec.convertToType(oldVector, type));
+		}
+	}
 	
 	private _createRowNrColumn(): Array<number> {
 		var vector = [];
