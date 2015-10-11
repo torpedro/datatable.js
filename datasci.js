@@ -235,6 +235,8 @@ var Set = (function () {
 module.exports = Set;
 
 },{}],5:[function(require,module,exports){
+/// <reference path="../typings/underscore/underscore.d.ts" />
+var _ = require('underscore');
 var types = require('./types');
 var vec;
 (function (vec) {
@@ -281,6 +283,13 @@ var vec;
             return 'any';
     }
     vec.detectDataType = detectDataType;
+    function convertToType(vector, targetType) {
+        var newVec = _.map(vector, function (value, i) {
+            return types.convert(value, targetType);
+        });
+        return newVec;
+    }
+    vec.convertToType = convertToType;
     function groupByPositions(vector) {
         var map = {};
         for (var i = 0; i < vector.length; ++i) {
@@ -308,7 +317,7 @@ var vec;
 })(vec || (vec = {}));
 module.exports = vec;
 
-},{"./types":7}],6:[function(require,module,exports){
+},{"./types":7,"underscore":20}],6:[function(require,module,exports){
 exports.vec = require("./VectorOperations");
 exports.types = require("./types");
 exports.util = require("./util");
@@ -319,7 +328,7 @@ exports.HashMap = require("./HashMap");
 },{"./HashMap":2,"./OrderedSet":3,"./Set":4,"./VectorOperations":5,"./types":7,"./util":8}],7:[function(require,module,exports){
 var types;
 (function (types_1) {
-    var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null'];
+    var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null', 'function'];
     types_1.kAny = types[0];
     types_1.kString = types[1];
     types_1.kNumber = types[2];
@@ -327,6 +336,7 @@ var types;
     types_1.kObject = types[4];
     types_1.kBoolean = types[5];
     types_1.kNull = types[6];
+    types_1.kFunction = types[7];
     var _typeDetectors = {};
     function registerTypeDetector(type, typeDetector) {
         if (!(type in _typeDetectors))
@@ -335,10 +345,10 @@ var types;
     }
     types_1.registerTypeDetector = registerTypeDetector;
     function convert(value, toType) {
-        if (toType == 'any')
-            return value;
         var fromType = typeof value;
         if (fromType == toType)
+            return value;
+        if (toType == 'any')
             return value;
         if (fromType == 'string') {
             return convertString(value, toType);
@@ -359,23 +369,31 @@ var types;
     function detectDataType(value, parseStrings) {
         if (typeof parseStrings === 'undefined')
             parseStrings = true;
-        var type = typeof value;
-        if (value === null || value === undefined)
-            type = 'null';
-        if (type == 'number' ||
-            type == 'boolean' ||
-            type == 'null' ||
-            (type == 'string' && !parseStrings)) {
-            return { type: type, value: value };
+        var jsType = typeof value;
+        if (value === null ||
+            value === undefined) {
+            return { type: types_1.kNull, value: null };
         }
-        if (type == 'object') {
-            if (value instanceof Date)
-                type = 'date';
-            return { type: type, value: value };
+        if (jsType == 'number')
+            return { type: types_1.kNumber, value: value };
+        if (jsType == 'boolean')
+            return { type: types_1.kBoolean, value: value };
+        if (jsType == 'function')
+            return { type: types_1.kFunction, value: value };
+        if (jsType == 'string' && !parseStrings)
+            return { type: types_1.kString, value: value };
+        if (jsType == 'object') {
+            if (value instanceof Date) {
+                return { type: types_1.kDate, value: value };
+            }
+            else {
+                return { type: types_1.kObject, value: value };
+            }
         }
-        if (type == 'string') {
+        if (jsType == 'string' && parseStrings) {
             return detectDataTypeOfString(value);
         }
+        throw "Unable to detect data type!";
     }
     types_1.detectDataType = detectDataType;
     function convertString(value, toType) {
@@ -533,7 +551,6 @@ module.exports = util;
 },{}],9:[function(require,module,exports){
 /// <reference path="../typings/papaparse/papaparse.d.ts" />
 var CoreColumnTable = require('../table/CoreColumnTable');
-var vec = require('../data/VectorOperations');
 var Papa = require('papaparse');
 var CSVParser = (function () {
     function CSVParser(options) {
@@ -558,8 +575,6 @@ var CSVParser = (function () {
                 for (var r = 0; r < numRows; ++r) {
                     vector.push(result.data[r][fields[c]]);
                 }
-                var type = vec.detectDataType(vector, true, true);
-                types.push(type);
                 attrVectors.push(vector);
             }
         }
@@ -577,21 +592,32 @@ var CSVParser = (function () {
                     vector.push(result.data[r][c]);
                 }
                 attrVectors.push(vector);
-                types.push(vec.detectDataType(vector, true, true));
             }
         }
         var table = new CoreColumnTable({
             fields: fields,
-            types: types,
             columns: attrVectors
         });
+        table.detectTypes(true);
         return table;
+    };
+    CSVParser.prototype.dumpString = function (table) {
+        var csv = "";
+        csv += table.fields().join(this._options.delimiter);
+        csv += "\n";
+        for (var i = 0; i < table.size() - 1; ++i) {
+            var row = table.row(i);
+            csv += row.join(this._options.delimiter);
+            csv += "\n";
+        }
+        csv += table.row(table.size() - 1).join(this._options.delimiter);
+        return csv;
     };
     return CSVParser;
 })();
 module.exports = CSVParser;
 
-},{"../data/VectorOperations":5,"../table/CoreColumnTable":15,"papaparse":19}],10:[function(require,module,exports){
+},{"../table/CoreColumnTable":15,"papaparse":19}],10:[function(require,module,exports){
 exports.CSVParser = require("./CSVParser");
 
 },{"./CSVParser":9}],11:[function(require,module,exports){
@@ -887,9 +913,11 @@ module.exports = AnalyticsTable;
 
 },{"../data/HashMap":2,"../data/OrderedSet":3,"../data/VectorOperations":5,"./CoreColumnTable":15,"./FieldDescriptor":16,"./operators/agg":18}],15:[function(require,module,exports){
 /// <reference path="../typedefs/ITable.ts" />
+var _ = require("underscore");
 var HashMap = require('../data/HashMap');
 var Set = require('../data/Set');
 var types = require('../data/types');
+var vec = require('../data/VectorOperations');
 var CoreColumnTable = (function () {
     function CoreColumnTable(def) {
         if (def instanceof CoreColumnTable) {
@@ -909,8 +937,9 @@ var CoreColumnTable = (function () {
         if (def.fields.length != this._fields.size())
             throw "No duplicate field names allowed!";
         if (def.types) {
-            if (def.fields.length != def.types.length)
+            if (def.fields.length != def.types.length) {
                 throw "Number of fields and number of types do not match!";
+            }
             this._types = def.types;
         }
         else {
@@ -984,9 +1013,15 @@ var CoreColumnTable = (function () {
         for (var r = 0; r < rows.length; ++r)
             this.addRow(rows[r]);
     };
-    CoreColumnTable.prototype.fields = function () { return this._fields.get(); };
-    CoreColumnTable.prototype.numFields = function () { return this._fields.size(); };
-    CoreColumnTable.prototype.hasField = function (name) { return this._fields.contains(name); };
+    CoreColumnTable.prototype.fields = function () {
+        return this._fields.get();
+    };
+    CoreColumnTable.prototype.numFields = function () {
+        return this._fields.size();
+    };
+    CoreColumnTable.prototype.hasField = function (name) {
+        return this._fields.contains(name);
+    };
     CoreColumnTable.prototype.types = function () {
         return this._types;
     };
@@ -1000,7 +1035,9 @@ var CoreColumnTable = (function () {
             throw "Couldn't find column: '" + name + " '!";
         }
     };
-    CoreColumnTable.prototype.empty = function () { return this.size() == 0; };
+    CoreColumnTable.prototype.empty = function () {
+        return this.size() == 0;
+    };
     CoreColumnTable.prototype.size = function () {
         return this.column(this._fields.get(0)).length;
     };
@@ -1055,6 +1092,26 @@ var CoreColumnTable = (function () {
         }
         return columns;
     };
+    CoreColumnTable.prototype.detectTypes = function (setTypes) {
+        var me = this;
+        var types = _.map(this._fields.get(), function (name, c) {
+            return vec.detectDataType(me._attributeVectors.get(name));
+        });
+        if (setTypes) {
+            for (var i = 0; i < types.length; ++i) {
+                this.setType(this._fields.get(i), types[i]);
+            }
+        }
+        return types;
+    };
+    CoreColumnTable.prototype.setType = function (field, type) {
+        var i = this.getFieldNameIndex(field);
+        if (type !== this._types[i]) {
+            this._types[i] = type;
+            var oldVector = this._attributeVectors.get(field);
+            this._attributeVectors.set(field, vec.convertToType(oldVector, type));
+        }
+    };
     CoreColumnTable.prototype._createRowNrColumn = function () {
         var vector = [];
         for (var r = 0; r < this.size(); ++r) {
@@ -1066,7 +1123,7 @@ var CoreColumnTable = (function () {
 })();
 module.exports = CoreColumnTable;
 
-},{"../data/HashMap":2,"../data/Set":4,"../data/types":7}],16:[function(require,module,exports){
+},{"../data/HashMap":2,"../data/Set":4,"../data/VectorOperations":5,"../data/types":7,"underscore":20}],16:[function(require,module,exports){
 var FieldDescriptor = (function () {
     function FieldDescriptor(what, as) {
         if (typeof what === 'string') {

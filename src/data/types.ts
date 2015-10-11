@@ -11,14 +11,15 @@ module types {
 	}
 
 	// These are the data types that can be detected
-	var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null'];
-	export var kAny     = types[0];
-	export var kString  = types[1];
-	export var kNumber  = types[2];
-	export var kDate    = types[3];
-	export var kObject  = types[4];
-	export var kBoolean = types[5];
-	export var kNull    = types[6];
+	var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null', 'function'];
+	export var kAny      = types[0];
+	export var kString   = types[1];
+	export var kNumber   = types[2];
+	export var kDate     = types[3];
+	export var kObject   = types[4];
+	export var kBoolean  = types[5];
+	export var kNull     = types[6];
+	export var kFunction = types[7];
 	
 	
 	var _typeDetectors = {}
@@ -31,17 +32,19 @@ module types {
 	 * 
 	 */
 	export function convert(value: any, toType: string): any {
+		var fromType: string = typeof value;
+		
+		if (fromType == toType) return value;
 		if (toType == 'any') return value;
 		
-		var fromType = typeof value;
-		if (fromType == toType) return value;
 		if (fromType == 'string') {
 			// Convert strings
 			return convertString(value, toType);
 		}
+		
 		if (fromType == 'number') {
 			// Convert numbers
-			if (toType == 'string') return ''+value;
+			if (toType == 'string') return '' + value;
 		}
 		
 		if (fromType == 'object') {
@@ -58,38 +61,48 @@ module types {
 	}
 	
 	/**
-	 * 
+	 * Possible Types that can be result of JavaScript typeof operator
+	 *  - undefined (-> kNull)
+	 *  - object (null is an object in JS)  (-> kObject | kDate | kNull)
+	 *  - boolean (-> kBoolaen)
+	 *  - number (-> kNumber)
+	 *  - string
+	 *  - function (-> kFunction)
+	 *  - symbol (ES6) (-> error)
 	 */
 	export function detectDataType(value: any, parseStrings?: boolean): TypeDetection {
 		if (typeof parseStrings === 'undefined') parseStrings = true;
 		
 		// Get the javascript built-in type
-		var type: string = typeof value;
+		var jsType: string = typeof value;
 		
 		// For values of 'undefined' or 'null'
-		// we assign the type 'null'  
-		if (value === null || value === undefined) type = 'null';
-		
-		// Check if its a basic data type and just return it
-		if (type == 'number' ||
-			type == 'boolean' ||
-			type == 'null' ||
-			(type == 'string' && !parseStrings)) {
-			
-			return {type: type, value: value};
+		// we assign the type 'null'
+		if (value === null ||
+			value === undefined) {
+			return { type: kNull, value: null };
 		}
 		
+		if (jsType == 'number') return { type: kNumber, value: value };
+		if (jsType == 'boolean') return { type: kBoolean, value: value };
+		if (jsType == 'function') return { type: kFunction, value: value };
+		if (jsType == 'string' && !parseStrings) return { type: kString, value: value };
+		
 		// Check for Date objects
-		if (type == 'object') {
-			if (value instanceof Date) type = 'date';
-			
-			return {type: type, value: value};
+		if (jsType == 'object') {
+			if (value instanceof Date) {
+				return { type: kDate, value: value };
+			} else {
+				return { type: kObject, value: value };
+			}
 		}
 		
 		// Parse the string
-		if (type == 'string') {
+		if (jsType == 'string' && parseStrings) {
 			return detectDataTypeOfString(value);
 		}
+		
+		throw "Unable to detect data type!";
 	}
 	
 	/**

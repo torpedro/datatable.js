@@ -13,22 +13,21 @@ import vec = require('../data/VectorOperations');
  * This table is implemented as a column store.
  * TODO: enforce types
  * TODO: remove row
+ * TODO: allow to define constraints/validators
  */
 class CoreColumnTable implements ITable {
-	protected _attributeVectors: HashMap<string, Array<any>>;
+	protected _attributeVectors: HashMap<string, any[]>;
 	protected _fields: Set;
-	protected _types: Array<string>;
+	protected _types: string[];
 	
 	constructor(def: TableDefinition);
 	constructor(table: CoreColumnTable);
-	
 	constructor(def: TableDefinition | CoreColumnTable) {
 		if (def instanceof CoreColumnTable) {
 			this._initializeByTable(<CoreColumnTable> def);
 		} else if (typeof def === 'object') {
 			this._initializeByTableDefinition(<TableDefinition> def);
 		} else {
-			// console.error("Couldn't initialize Table with the given parameters!", arguments);
 			throw "Couldn't initialize Table with the given parameters!";
 		}
 	}
@@ -37,7 +36,6 @@ class CoreColumnTable implements ITable {
 	protected _initializeByTableDefinition(def: TableDefinition): void {
 		if (def.fields.length == 0) throw "Number of fields can't be zero!";
 	
-		
 		// Initialize the fields
 		this._fields = new Set(def.fields);
 		if (def.fields.length != this._fields.size()) throw "No duplicate field names allowed!";
@@ -45,9 +43,9 @@ class CoreColumnTable implements ITable {
 		// Initialize the types
 		// If types are undefined, we set them to 'any' by default
 		if (def.types) {
-			if (def.fields.length != def.types.length)
+			if (def.fields.length != def.types.length) {
 				throw "Number of fields and number of types do not match!";
-				
+			}	
 			this._types = def.types;
 		} else {
 			this._types = [];
