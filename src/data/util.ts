@@ -8,7 +8,7 @@ module util {
 		while (ret.length < 8) ret = '0'+ret;
 		return ret;
 	}
-	
+
 	// http://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
 	export function hashCode(o: any, l?: number): string {
 		l = l || 2;
@@ -27,7 +27,7 @@ module util {
 			if (o instanceof Function) return 'm:'+o.toString().replace(/([\\\\;])/g,'\\$1');
 			if (o instanceof Array) {
 				r=[];
-				for (i=0; i<o.length; i++) 
+				for (i=0; i<o.length; i++)
 					r.push(stringify(o[i]));
 				return 'a:'+r.join(';');
 			}

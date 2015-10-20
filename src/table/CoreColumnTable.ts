@@ -9,7 +9,7 @@ import vec = require('../data/VectorOperations');
 
 /**
  * @class CoreColumnTable
- * 
+ *
  * This table is implemented as a column store.
  * TODO: enforce types
  * TODO: remove row
@@ -19,7 +19,7 @@ class CoreColumnTable implements ITable {
 	protected _attributeVectors: HashMap<string, any[]>;
 	protected _fields: Set;
 	protected _types: string[];
-	
+
 	constructor(def: TableDefinition);
 	constructor(table: CoreColumnTable);
 	constructor(def: TableDefinition | CoreColumnTable) {
@@ -31,21 +31,21 @@ class CoreColumnTable implements ITable {
 			throw "Couldn't initialize Table with the given parameters!";
 		}
 	}
-	
-	
+
+
 	protected _initializeByTableDefinition(def: TableDefinition): void {
 		if (def.fields.length == 0) throw "Number of fields can't be zero!";
-	
+
 		// Initialize the fields
 		this._fields = new Set(def.fields);
 		if (def.fields.length != this._fields.size()) throw "No duplicate field names allowed!";
-		
+
 		// Initialize the types
 		// If types are undefined, we set them to 'any' by default
 		if (def.types) {
 			if (def.fields.length != def.types.length) {
 				throw "Number of fields and number of types do not match!";
-			}	
+			}
 			this._types = def.types;
 		} else {
 			this._types = [];
@@ -53,30 +53,30 @@ class CoreColumnTable implements ITable {
 				this._types.push(types.kAny);
 			}
 		}
-		
+
 		// Initialize the attribute vectors
 		// TODO: Allow initialization with rows
 		this._attributeVectors = new HashMap<string, Array<any>>();
 		if (def.columns) {
 			if (def.fields.length != def.columns.length)
 				throw "Number of fields and number of supplied columns do not match!";
-			
+
 			var numRows = def.columns[0].length;
 			for (var c = 0; c < def.fields.length; ++c) {
 				if (def.columns[c].length != numRows) {
 					throw "Number of rows in TableDefiniton is not uniform!";
 				}
-				
+
 				this._attributeVectors.set(def.fields[c], def.columns[c].slice());
 			}
-			
+
 		} else {
 			for (var c = 0; c < def.fields.length; ++c) {
 				this._attributeVectors.set(def.fields[c], []);
-			}	
+			}
 		}
 	}
-	
+
 	protected _initializeByTable(table: CoreColumnTable): void {
 		this._initializeByTableDefinition({
 			fields: table.fields(),
@@ -84,25 +84,25 @@ class CoreColumnTable implements ITable {
 			columns: table.columns()
 		});
 	}
-	
-	
+
+
 	addField(name: string, type?: string, values?: Array<any>): void {
 		this._fields.add(name);
-		
+
 		// Push null-values for existing rows
 		var vector = [];
 		for (var r = 0; r < this.size(); ++r) {
 			vector.push(null);
 		}
 		this._attributeVectors.set(name, vector);
-		
+
 		if (typeof type === 'undefined') this._types.push(types.kAny);
 		else this._types.push(type);
 	}
-	
+
 	addRow(row: Row): void {
 		if (row.length > this.numFields()) throw "Error when inserting! Row has too many fields!";
-		
+
 		// Typechecks
 		for (var c = 0; c < row.length; ++c) {
 			if (row[c] === undefined) throw "Error when inserting! Can not insert undefined!";
@@ -122,57 +122,57 @@ class CoreColumnTable implements ITable {
 				row[c] = v;
 			}
 		}
-		
+
 		// Insert the values
 		for (var c = 0; c < row.length; ++c) {
 			this.column(this._fields.get(c)).push(row[c]);
 		}
-		
+
 		// Push null-values for non-existant fields
 		for (var c = row.length; c < this.numFields(); ++c) {
 			this.column(this._fields.get(c)).push(null);
 		}
 	}
-	
+
 	addRows(rows: Array<Row>): void {
 		for (var r = 0; r < rows.length; ++r) this.addRow(rows[r]);
 	}
-	
+
 	fields(): Array<string> {
 		return this._fields.get();
 	}
-	
+
 	numFields(): number {
 		return this._fields.size();
 	}
-	
+
 	hasField(name: string): boolean {
 		return this._fields.contains(name);
 	}
-	
+
 	types(): Array<string> {
 		return this._types;
 	}
-	
+
 	type(name: string): string {
 		if (this._fields.contains(name)) {
-			return this._types[this.getFieldNameIndex(name)];	
+			return this._types[this.getFieldNameIndex(name)];
 		} else {
 			// Check for special reserved system names
 			if (name === '$rownr') return types.kNumber;
-			
+
 			throw "Couldn't find column: '" + name + " '!"
 		}
 	}
-	
+
 	empty(): boolean {
 		return this.size() == 0;
 	}
-	
+
 	size(): number {
 		return this.column(this._fields.get(0)).length;
 	}
-	
+
 	rows(): Array<Row> {
 		var rows: Array<Row> = [];
 		for (var r = 0; r < this.size(); ++r) {
@@ -180,31 +180,31 @@ class CoreColumnTable implements ITable {
 		}
 		return rows;
 	}
-	
+
 	row(r: number): Row {
 		// Build the Row from the attribute vectors
 		var record: Row = [];
 		for (var c = 0; c < this.numFields(); ++c) {
 			record.push(this.value(r, this._fields.get(c)));
 		}
-		
+
 		return record;
 	}
-	
+
 	getFieldNameIndex(field: string): number {
 		var index = this._fields.indexOf(field);
 		if (index == -1) throw "Field '" + field + "' doesn't exist!";
 		return index;
 	}
-	
+
 	value(row: number, column: string): any {
 		return this.column(column)[row];
 	}
-	
+
 	setValue(row: number, column: string, value: any): void {
 		this.column(column)[row] = value
 	}
-	
+
 	/**
 	 * Adds empty rows to the table, until the table has at least
 	 * as many rows as specified
@@ -215,20 +215,20 @@ class CoreColumnTable implements ITable {
 			this.addRow([]);
 		}
 	}
-	
+
 	column(name: string): Array<any> {
 		if (this._fields.contains(name)) {
-			return this._attributeVectors.get(name);	
+			return this._attributeVectors.get(name);
 		} else {
 			// Check for special reserved system names
 			if (name === '$rownr') {
 				return this._createRowNrColumn();
 			}
-			
+
 			throw "Couldn't find column: '" + name + " '!"
 		}
 	}
-	
+
 	columns(): Array<Array<any>> {
 		var columns = [];
 		for (var i = 0; i < this._fields.size(); ++i) {
@@ -236,7 +236,7 @@ class CoreColumnTable implements ITable {
 		}
 		return columns;
 	}
-	
+
 	detectTypes(setTypes: boolean): string[] {
 		var me = this;
 		var types = _.map(this._fields.get(), function(name: string, c: number) {
@@ -249,18 +249,18 @@ class CoreColumnTable implements ITable {
 		}
 		return types;
 	}
-	
+
 	setType(field: string, type: string): void {
 		var i = this.getFieldNameIndex(field);
 		if (type !== this._types[i]) {
 			this._types[i] = type;
-			
+
 			// Convert Types
 			var oldVector = this._attributeVectors.get(field);
 			this._attributeVectors.set(field, vec.convertToType(oldVector, type));
 		}
 	}
-	
+
 	private _createRowNrColumn(): Array<number> {
 		var vector = [];
 		for (var r = 0; r < this.size(); ++r) {

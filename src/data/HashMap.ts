@@ -4,8 +4,8 @@ import util = require("./util");
 
 /**
  * @class HashMap
- * 
- * 
+ *
+ *
  */
 class HashMap<K, V> {
 	private _data = {};

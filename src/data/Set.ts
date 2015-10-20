@@ -1,10 +1,10 @@
 /// <reference path="../typedefs/ISet.ts" />
 /**
  * @class Set
- * 
+ *
  * Keeps values in the order they are inserted (Important!)
- * ES6 has a native Set object. Probably replace this Set with that. 
- * 
+ * ES6 has a native Set object. Probably replace this Set with that.
+ *
  * TODO: Allow option to set deep-equal
  */
 class Set implements ISet {
@@ -65,7 +65,7 @@ class Set implements ISet {
 	}
 
 	indexOf(val: any): number {
-		return this._data.indexOf(val); 
+		return this._data.indexOf(val);
 	}
 
 	intersection(other: ISet): Set {

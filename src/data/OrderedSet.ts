@@ -1,7 +1,7 @@
 import Set = require("./Set");
 /**
  * @class OrderedSet
- * 
+ *
  * Keeps values in order
  */
 class OrderedSet extends Set {

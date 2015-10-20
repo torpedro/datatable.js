@@ -1,5 +1,53 @@
-module.exports = function(grunt) {
 
+function loadPlugins(grunt) {
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-tslint');
+    grunt.loadNpmTasks("grunt-shell");
+    grunt.loadNpmTasks("grunt-ts");
+}
+
+function registerTasks(grunt) {
+    grunt.registerTask('lint', [
+        "clean:reports",
+        "tslint:all"
+    ]);
+
+    grunt.registerTask('build', [
+        'clean:build',
+        'copy:src',
+        'ts:src',
+        'browserify'
+    ]);
+    
+    grunt.registerTask('only-test', [
+        'copy:test',
+        'ts:test',
+        'mochaTest'
+    ]);
+    
+    // Build and Test
+    grunt.registerTask('test', [
+        'build',
+        'only-test'
+    ]);
+    
+    // Build, Test and Minify
+    grunt.registerTask('release', [
+        'build',
+        'only-test',
+        'uglify:browser',
+        'copy:release'
+    ]);
+
+    grunt.registerTask('default', ['test']);
+}
+
+function configureGrunt(grunt) {
     grunt.initConfig({
         cfg: {
             'libName': 'datasci.js',
@@ -46,8 +94,8 @@ module.exports = function(grunt) {
                 }]
             }
         },
-		
-		
+        
+        
         copy: {
             bower: {
                 // Copy all bower files
@@ -62,7 +110,7 @@ module.exports = function(grunt) {
             
             
             src: {
-				// Copy all src files to the build-directory
+                // Copy all src files to the build-directory
                 files: [{
                     dot: true,
                     expand: true,
@@ -73,7 +121,7 @@ module.exports = function(grunt) {
             },
             
             test: {
-				// Copy all test files to the build-directory
+                // Copy all test files to the build-directory
                 files: [{
                     dot: true,
                     expand: true,
@@ -89,14 +137,14 @@ module.exports = function(grunt) {
                     dest: "datasci.js"
                 }]
             }
-		},
-		
-		
+        },
+        
+        
         // Compile the Typescript files to JavaScript
         ts: {
             options: {
                 compiler: "node_modules/typescript/bin/tsc",
-        		module: 'commonjs',
+                module: 'commonjs',
                 failOnTypeErrors: true,
                 fast: "watch"
             },
@@ -160,49 +208,27 @@ module.exports = function(grunt) {
                     ]
                 }
             }
+        },
+
+        shell: {
+            removeTrailingWhitespaces: {
+                command: "find src/ -type f -name '*.ts' -exec sed --in-place 's/[[:space:]]\+$//' {} \+"
+            }
         }
     });
+}
 
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks("grunt-ts");
-    grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-tslint');
 
-    grunt.registerTask('lint', [
-        "clean:reports",
-        "tslint:all"
-    ]);
+/**
+ * grunt entrypoint
+ */
+module.exports = function(grunt) {
+    // load all plugins
+    loadPlugins(grunt);
 
-    grunt.registerTask('build', [
-        'clean:build',
-        'copy:src',
-        'ts:src',
-        'browserify'
-    ]);
-    
-    grunt.registerTask('only-test', [
-        'copy:test',
-        'ts:test',
-        'mochaTest'
-    ]);
-    
-    // Build and Test
-    grunt.registerTask('test', [
-        'build',
-        'only-test'
-    ]);
-    
-    // Build, Test and Minify
-    grunt.registerTask('release', [
-        'build',
-        'only-test',
-        'uglify:browser',
-        'copy:release'
-    ]);
+    // configure all plugins
+    configureGrunt(grunt);
 
-    grunt.registerTask('default', ['test']);
+    // register tasks
+    registerTasks(grunt);
 };
