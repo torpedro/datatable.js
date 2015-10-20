@@ -41,7 +41,7 @@ function registerTasks(grunt) {
         'test',
         "continue:on", // --force for linting
         'lint',
-        "continue:off", // --force for linting
+        "continue:off", // unset --force
         'lint-test'
     ]);
     
@@ -56,15 +56,15 @@ function registerTasks(grunt) {
     grunt.registerTask('default', ['test']);
 
 
-    grunt.registerTask('lint-test', 'Checks whether the amount of warnings exceeds our limit.', function() {
-        var warningsLimit = 530;
-        var warnings = grunt.file.read("reports/tslint.txt").split("\n");
-        var warningsCount = warnings.length - 1;
+    grunt.registerTask('lint-test', 'Checks whether the amount of errors exceeds our limit.', function() {
+        var errors = grunt.file.read("reports/tslint.txt").split("\n");
+        var numErrors = errors.length - 1;
+        var errorLimit = 506;
 
-        if (warningsCount > warningsLimit) {
-            grunt.warn("Number of tslint warnings (" + warningsCount + ") exceeds limit (" + warningsLimit + ")!");
+        if (numErrors > errorLimit) {
+            grunt.warn("Number of tslint errors (" + numErrors + ") exceeds limit (" + errorLimit + ")!");
         } else {
-            grunt.log.writeln("Number of tslint warnings (" + warningsCount + ") is lower than the limit (" + warningsLimit + ").")
+            grunt.log.writeln("Number of tslint errors (" + numErrors + ") is within than the limit (" + errorLimit + ").");
         }
     });
 }
