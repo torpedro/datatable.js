@@ -293,24 +293,24 @@ class AnalyticsTable extends CoreColumnTable {
 	
 	
 	private _mergeSort(rows: Array<any>, field: FieldDescriptor, asc: boolean) {
-	    // Terminal case: 0 or 1 item arrays don't need sorting
-	    if (rows.length < 2) {
-	        return rows;
-	    }
+		// Terminal case: 0 or 1 item arrays don't need sorting
+		if (rows.length < 2) {
+			return rows;
+		}
 	
-	    var middle = Math.floor(rows.length / 2),
-	        left   = rows.slice(0, middle),
-	        right  = rows.slice(middle);
+		var middle = Math.floor(rows.length / 2),
+			left   = rows.slice(0, middle),
+			right  = rows.slice(middle);
 	
-	    return this._merge(this._mergeSort(left, field, asc), this._mergeSort(right, field, asc), field, asc);
+		return this._merge(this._mergeSort(left, field, asc), this._mergeSort(right, field, asc), field, asc);
 	}
 	
 	private _merge(left: Array<any>, right: Array<any>, field: FieldDescriptor, asc: boolean) {
-	    var result  = [],
-	        il      = 0,
-	        ir      = 0;
+		var result  = [],
+			il      = 0,
+			ir      = 0;
 	
-	    while (il < left.length && ir < right.length) {
+		while (il < left.length && ir < right.length) {
 			var leftValue = field.getValueFromRow(this, left[il]);
 			var rightValue = field.getValueFromRow(this, right[ir]);
 			
@@ -318,14 +318,14 @@ class AnalyticsTable extends CoreColumnTable {
 			if (asc) comp = leftValue < rightValue;
 			else comp = leftValue > rightValue;
 			
-	        if (comp) {
-	            result.push(left[il++]);
-	        } else {
-	            result.push(right[ir++]);
-	        }
-	    }
+			if (comp) {
+				result.push(left[il++]);
+			} else {
+				result.push(right[ir++]);
+			}
+		}
 	
-	    return result.concat(left.slice(il)).concat(right.slice(ir));
+		return result.concat(left.slice(il)).concat(right.slice(ir));
 	}
 }
 

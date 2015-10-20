@@ -1,6 +1,6 @@
 /// <reference path="../typings/underscore/underscore.d.ts" />
-import _ = require('underscore');
-import util = require('./util');
+import _ = require("underscore");
+import util = require("./util");
 
 /**
  * @class HashMap
@@ -9,37 +9,37 @@ import util = require('./util');
  */
 class HashMap<K, V> {
 	private _data = {};
-	
-	// Flag to indicate whether to use equality or identity
+
+	// flag to indicate whether to use equality or identity
 	private _useIdentity: boolean;
-	
+
 	constructor(useIdentity?: boolean) {
 		if (useIdentity) this._useIdentity = true;
 		else this._useIdentity = false;
 	}
-	
+
 	set(key: K, val: V): void {
 		var bucket = this._getBucket(key);
 		var i = this._findKeyInBucket(key, bucket);
-		
+
 		if (i >= 0) bucket[i][1] = val;
 		else bucket.push([key, val]);
-	}	
-	
-	
+	}
+
+
 	get(key: K): V {
 		var bucket = this._getBucket(key);
 		var i = this._findKeyInBucket(key, bucket);
-		
+
 		if (i >= 0) return bucket[i][1];
 		else return null;
 	}
-	
+
 	contains(key: K): boolean {
 		var bucket = this._getBucket(key);
 		return this._findKeyInBucket(key, bucket) >= 0;
 	}
-	
+
 	keys(): Array<K> {
 		var keys = [];
 		for (var hash in this._data) {
@@ -50,16 +50,16 @@ class HashMap<K, V> {
 		}
 		return keys;
 	}
-	
+
 	private _getBucket(key: K): Array<Array<any>> {
-		// Hash the key
+		// hash the key
 		var hash = util.hashCode(key);
-		// Create bucket if it doesn't exist
+		// create bucket if it doesn't exist
 		if (!(hash in this._data)) this._data[hash] = [];
-		// Return the bucket
-		return this._data[hash];	
+		// return the bucket
+		return this._data[hash];
 	}
-	
+
 	/**
 	 * returns index of key within bucket
 	 * returns -1 if key not found
@@ -72,12 +72,12 @@ class HashMap<K, V> {
 		}
 		return -1;
 	}
-	
+
 	private _areEqual(a: any, b: any) {
 		if (this._useIdentity) return a === b;
 		else return _.isEqual(a, b);
 	}
-	
+
 }
 
 // modules.export

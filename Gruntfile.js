@@ -8,6 +8,7 @@ module.exports = function(grunt) {
             'src': './src',
             'test': './test',
             'build': './build',
+            'reports': './reports',
             'bower': './bower_components',
         },
 
@@ -36,6 +37,12 @@ module.exports = function(grunt) {
                 files: [{
                     dot: true,
                     src: '<%= cfg.build %>/*'
+                }]
+            },
+            reports: {
+                files: [{
+                    dot: true,
+                    src: '<%= cfg.reports %>/'
                 }]
             }
         },
@@ -136,6 +143,23 @@ module.exports = function(grunt) {
                     '<%= cfg.build %>/<%= cfg.libName %>-full-min.js': ['<%= cfg.build %>/<%= cfg.libName %>-full.js']
                 }
             }
+        },
+
+        tslint: {
+            all: {
+                options: {
+                    configuration: grunt.file.readJSON("tslint.json"),
+                    outputFile: "<%= cfg.reports %>/tslint.txt",
+                    formatter: "verbose",
+                    appendToOutput: true
+                },
+                files: {
+                    src: [
+                        'src/**/*.ts',
+                        '!src/typings/**/*'
+                    ]
+                }
+            }
         }
     });
 
@@ -146,6 +170,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-tslint');
+
+    grunt.registerTask('lint', [
+        "clean:reports",
+        "tslint:all"
+    ]);
 
     grunt.registerTask('build', [
         'clean:build',

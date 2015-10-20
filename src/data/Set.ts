@@ -10,41 +10,42 @@
 class Set implements ISet {
 	_isSet_ = true;
 	protected _data: Array<any>;
-	
+
 	constructor();
 	constructor(set: ISet);
 	constructor(data: Array<any>);
 	constructor(data?: any) {
-		// Initialize empty
+		// initialize empty
+		var i;
 		this._data = [];
-		
+
 		if (data instanceof Array) {
-			for (var i = 0; i < data.length; ++i) {
+			for (i = 0; i < data.length; ++i) {
 				this.add(data[i]);
 			}
 		} else if (data && data._isSet_) {
 			// This is a set
-			var set = <ISet>data;
-			for (var i = 0; i < set.size(); ++i) {
+			var set = <ISet> data;
+			for (i = 0; i < set.size(); ++i) {
 				this.add(set.get(i));
 			}
 		}
 	}
-	
+
 	add(val: any) {
-		if (this._data.indexOf(val) == -1) {
+		if (this._data.indexOf(val) === -1) {
 			this._data.push(val);
 		}
 	}
-	
+
 	clear() {
 		this._data = [];
 	}
-	
+
 	contains(val: any) {
 		return this._data.indexOf(val) >= 0;
 	}
-	
+
 	difference(other: ISet): Set {
 		var set = new Set(this);
 		for (var i = 0; i < other.size(); ++i) {
@@ -52,21 +53,21 @@ class Set implements ISet {
 		}
 		return set;
 	}
-	
-	get() : Array<any>;
+
+	get() : any[];
 	get(index: number): any;
 	get(index?: number): any {
-		if (typeof index === 'undefined') {
+		if (typeof index === "undefined") {
 			return this._data;
 		} else {
 			return this._data[index];
 		}
 	}
-	
+
 	indexOf(val: any): number {
-		return this._data.indexOf(val);	
+		return this._data.indexOf(val); 
 	}
-	
+
 	intersection(other: ISet): Set {
 		var set = new Set();
 		for (var i = 0; i < this.size(); ++i) {
@@ -76,8 +77,7 @@ class Set implements ISet {
 		}
 		return set;
 	}
-	
-	
+
 	isDisjoint(other: ISet): boolean {
 		for (var i = 0; i < this.size(); ++i) {
 			if (other.contains(this._data[i])) {
@@ -86,13 +86,11 @@ class Set implements ISet {
 		}
 		return true;
 	}
-	
-	
+
 	isEqual(other: ISet): boolean {
 		return this.isSubset(other) && this.isSuperset(other);
 	}
-	
-	
+
 	isSubset(other: ISet): boolean {
 		for (var i = 0; i < this.size(); ++i) {
 			if (!other.contains(this._data[i])) {
@@ -101,12 +99,11 @@ class Set implements ISet {
 		}
 		return true;
 	}
-	
-	
+
 	isSuperset(other: ISet): boolean {
 		return other.isSubset(this);
 	}
-	
+
 	pop(): any {
 		if (this.size() > 0) {
 			var elem = this._data[0];
@@ -114,20 +111,18 @@ class Set implements ISet {
 			return elem;
 		}
 	}
-	
+
 	remove(val: any) {
 		var index = this.indexOf(val);
 		if (index >= 0) {
 			this._data.splice(index, 1);
 		}
 	}
-	
-	
+
 	size() {
 		return this._data.length;
 	}
-	
-	
+
 	union(other: ISet): Set {
 		var set = new Set(this);
 		for (var i = 0; i < other.size(); ++i) {
