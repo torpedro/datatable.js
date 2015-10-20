@@ -6,8 +6,8 @@ exports.table = require("./table/__module__");
 
 },{"./data/__module__":6,"./io/__module__":10,"./smooth/__module__":13,"./table/__module__":17}],2:[function(require,module,exports){
 /// <reference path="../typings/underscore/underscore.d.ts" />
-var _ = require('underscore');
-var util = require('./util');
+var _ = require("underscore");
+var util = require("./util");
 var HashMap = (function () {
     function HashMap(useIdentity) {
         this._data = {};
@@ -76,7 +76,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Set = require('./Set');
+var Set = require("./Set");
 var OrderedSet = (function (_super) {
     __extends(OrderedSet, _super);
     function OrderedSet() {
@@ -84,7 +84,7 @@ var OrderedSet = (function (_super) {
     }
     OrderedSet.prototype.add = function (val) {
         var search = this._binarySearch(val, 0, this._data.length);
-        if (search[0] == -1) {
+        if (search[0] === -1) {
             this._data.splice(search[1], 0, val);
         }
     };
@@ -118,7 +118,7 @@ var OrderedSet = (function (_super) {
         if (low > high)
             return [-1, low];
         var mid = Math.floor((low + high) / 2);
-        if (this._data[mid] == val)
+        if (this._data[mid] === val)
             return [mid, mid];
         else if (this._data[mid] < val)
             return this._binarySearch(val, mid + 1, high);
@@ -134,21 +134,22 @@ module.exports = OrderedSet;
 var Set = (function () {
     function Set(data) {
         this._isSet_ = true;
+        var i;
         this._data = [];
         if (data instanceof Array) {
-            for (var i = 0; i < data.length; ++i) {
+            for (i = 0; i < data.length; ++i) {
                 this.add(data[i]);
             }
         }
         else if (data && data._isSet_) {
             var set = data;
-            for (var i = 0; i < set.size(); ++i) {
+            for (i = 0; i < set.size(); ++i) {
                 this.add(set.get(i));
             }
         }
     }
     Set.prototype.add = function (val) {
-        if (this._data.indexOf(val) == -1) {
+        if (this._data.indexOf(val) === -1) {
             this._data.push(val);
         }
     };
@@ -166,7 +167,7 @@ var Set = (function () {
         return set;
     };
     Set.prototype.get = function (index) {
-        if (typeof index === 'undefined') {
+        if (typeof index === "undefined") {
             return this._data;
         }
         else {
@@ -328,7 +329,7 @@ exports.HashMap = require("./HashMap");
 },{"./HashMap":2,"./OrderedSet":3,"./Set":4,"./VectorOperations":5,"./types":7,"./util":8}],7:[function(require,module,exports){
 var types;
 (function (types_1) {
-    var types = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null', 'function'];
+    var types = ["any", "string", "number", "date", "object", "boolean", "null", "function"];
     types_1.kAny = types[0];
     types_1.kString = types[1];
     types_1.kNumber = types[2];
@@ -348,17 +349,17 @@ var types;
         var fromType = typeof value;
         if (fromType == toType)
             return value;
-        if (toType == 'any')
+        if (toType == "any")
             return value;
-        if (fromType == 'string') {
+        if (fromType == "string") {
             return convertString(value, toType);
         }
-        if (fromType == 'number') {
-            if (toType == 'string')
-                return '' + value;
+        if (fromType == "number") {
+            if (toType == "string")
+                return "" + value;
         }
-        if (fromType == 'object') {
-            if (toType == 'date') {
+        if (fromType == "object") {
+            if (toType == "date") {
                 if (value instanceof Date)
                     return value;
             }
@@ -367,22 +368,22 @@ var types;
     }
     types_1.convert = convert;
     function detectDataType(value, parseStrings) {
-        if (typeof parseStrings === 'undefined')
+        if (typeof parseStrings === "undefined")
             parseStrings = true;
         var jsType = typeof value;
         if (value === null ||
             value === undefined) {
             return { type: types_1.kNull, value: null };
         }
-        if (jsType == 'number')
+        if (jsType == "number")
             return { type: types_1.kNumber, value: value };
-        if (jsType == 'boolean')
+        if (jsType == "boolean")
             return { type: types_1.kBoolean, value: value };
-        if (jsType == 'function')
+        if (jsType == "function")
             return { type: types_1.kFunction, value: value };
-        if (jsType == 'string' && !parseStrings)
+        if (jsType == "string" && !parseStrings)
             return { type: types_1.kString, value: value };
-        if (jsType == 'object') {
+        if (jsType == "object") {
             if (value instanceof Date) {
                 return { type: types_1.kDate, value: value };
             }
@@ -390,7 +391,7 @@ var types;
                 return { type: types_1.kObject, value: value };
             }
         }
-        if (jsType == 'string' && parseStrings) {
+        if (jsType == "string" && parseStrings) {
             return detectDataTypeOfString(value);
         }
         throw "Unable to detect data type!";
@@ -428,34 +429,34 @@ var types;
             }
         }
         return {
-            type: 'string',
+            type: "string",
             value: value
         };
     }
     types_1.detectDataTypeOfString = detectDataTypeOfString;
 })(types || (types = {}));
-types.registerTypeDetector('date', {
+types.registerTypeDetector("date", {
     regex: /^([0-9]?[0-9])\.([0-9]?[0-9])\.([0-9][0-9][0-9][0-9])$/,
     format: function (match) {
         var month = parseInt(match[2]) - 1;
         return new Date(Date.UTC(match[3], month, match[1]));
     }
 });
-types.registerTypeDetector('date', {
+types.registerTypeDetector("date", {
     regex: /^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])$/,
     format: function (match) {
         var month = parseInt(match[2]) - 1;
         return new Date(Date.UTC(match[1], month, match[3]));
     }
 });
-types.registerTypeDetector('date', {
+types.registerTypeDetector("date", {
     regex: /^([0-9]?[0-9])\/([0-9]?[0-9])\/([0-9][0-9][0-9][0-9])$/,
     format: function (match) {
         var month = parseInt(match[1]) - 1;
         return new Date(Date.UTC(match[3], month, match[2]));
     }
 });
-types.registerTypeDetector('date', {
+types.registerTypeDetector("date", {
     matchAndFormat: function (str) {
         if (/^([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/.exec(str)) {
             var date = new Date(str);
@@ -465,23 +466,23 @@ types.registerTypeDetector('date', {
         return false;
     }
 });
-types.registerTypeDetector('number', {
+types.registerTypeDetector("number", {
     regex: /^\s*-?[0-9]+(?:\,[0-9][0-9][0-9])*(?:\.[0-9]+)?\s*$/,
     format: function (match) {
-        return parseFloat(match[0].replace(',', ''));
+        return parseFloat(match[0].replace(",", ""));
     }
 });
-types.registerTypeDetector('number', {
+types.registerTypeDetector("number", {
     regex: /^\s*-?[0-9]+(?:\.[0-9][0-9][0-9])*(?:\,[0-9]+)?\s*$/,
     format: function (match) {
         return parseFloat(match[0].replace(".", "").replace(",", "."));
     }
 });
-types.registerTypeDetector('boolean', {
+types.registerTypeDetector("boolean", {
     regex: /^[Ff][Aa][Ll][Ss][Ee]$/,
     format: function (match) { return false; }
 });
-types.registerTypeDetector('boolean', {
+types.registerTypeDetector("boolean", {
     regex: /^[Tt][Rr][Uu][Ee]$/,
     format: function (match) { return true; }
 });
@@ -493,7 +494,7 @@ var util;
     function toHex(num) {
         var ret = ((num < 0 ? 0x8 : 0) + ((num >> 28) & 0x7)).toString(16) + (num & 0xfffffff).toString(16);
         while (ret.length < 8)
-            ret = '0' + ret;
+            ret = "0" + ret;
         return ret;
     }
     util.toHex = toHex;
@@ -505,31 +506,31 @@ var util;
         function stringify(o) {
             var i, r;
             if (o === null)
-                return 'n';
+                return "n";
             if (o === true)
-                return 't';
+                return "t";
             if (o === false)
-                return 'f';
+                return "f";
             if (o instanceof Date)
-                return 'd:' + (0 + o);
+                return "d:" + (0 + o);
             i = typeof o;
-            if (i === 'string')
-                return 's:' + o.replace(/([\\\\;])/g, '\\$1');
-            if (i === 'number')
-                return 'n:' + o;
+            if (i === "string")
+                return "s:" + o.replace(/([\\\\;])/g, "\\$1");
+            if (i === "number")
+                return "n:" + o;
             if (o instanceof Function)
-                return 'm:' + o.toString().replace(/([\\\\;])/g, '\\$1');
+                return "m:" + o.toString().replace(/([\\\\;])/g, "\\$1");
             if (o instanceof Array) {
                 r = [];
                 for (i = 0; i < o.length; i++)
                     r.push(stringify(o[i]));
-                return 'a:' + r.join(';');
+                return "a:" + r.join(";");
             }
             r = [];
             for (i in o) {
-                r.push(i + ':' + stringify(o[i]));
+                r.push(i + ":" + stringify(o[i]));
             }
-            return 'o:' + r.join(';');
+            return "o:" + r.join(";");
         }
         o = stringify(o);
         for (i = 0; i < o.length; i++) {
@@ -542,7 +543,7 @@ var util;
         for (i = 0; i < r.length; i++) {
             r[i] = toHex(r[i]);
         }
-        return r.join('');
+        return r.join("");
     }
     util.hashCode = hashCode;
 })(util || (util = {}));
@@ -1180,7 +1181,7 @@ var agg;
 (function (agg) {
     function sum(targetField, outputName) {
         var aggf = function (rows, table) {
-            // TODO: type-switch		
+            // TODO: type-switch
             var sum = 0;
             var c = table.getFieldNameIndex(targetField);
             for (var r = 0; r < rows.length; ++r) {
