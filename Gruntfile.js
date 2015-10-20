@@ -6,6 +6,7 @@ function loadPlugins(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-continue');
     grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-ts");
@@ -35,6 +36,14 @@ function registerTasks(grunt) {
         'build',
         'only-test'
     ]);
+
+    grunt.registerTask('test-and-lint', [
+        'test',
+        "continue:on", // --force for linting
+        'lint',
+        "continue:off", // --force for linting
+        'lint-test'
+    ]);
     
     // Build, Test and Minify
     grunt.registerTask('release', [
@@ -45,6 +54,19 @@ function registerTasks(grunt) {
     ]);
 
     grunt.registerTask('default', ['test']);
+
+
+    grunt.registerTask('lint-test', 'Checks whether the amount of warnings exceeds our limit.', function() {
+        var warningsLimit = 530;
+        var warnings = grunt.file.read("reports/tslint.txt").split("\n");
+        var warningsCount = warnings.length - 1;
+
+        if (warningsCount > warningsLimit) {
+            grunt.warn("Number of tslint warnings (" + warningsCount + ") exceeds limit (" + warningsLimit + ")!");
+        } else {
+            grunt.log.writeln("Number of tslint warnings (" + warningsCount + ") is lower than the limit (" + warningsLimit + ").")
+        }
+    });
 }
 
 function configureGrunt(grunt) {
