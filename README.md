@@ -1,6 +1,7 @@
-# datasci.js - The JavaScript Data Library
-
 [![Build Status](https://api.travis-ci.org/torpedro/datasci.js.svg?branch=master)](http://travis-ci.org/torpedro/datasci.js)
+[![npm version](https://badge.fury.io/js/datasci.js.svg)](https://badge.fury.io/js/datasci.js)
+
+# datasci.js - The JavaScript Data Library
 
 **datasci.js** is a analytics library for JavaScript. The library contains sophisticated implementations of a Table and useful statistical functionality to interact with data. The Table implementation allows **SQL-like** interaction. **datasci.js** also holds functionality to turn Tables directly into **charts**.
 
@@ -8,69 +9,85 @@
 
 # Usage
 
-Include the JavaScript library in your HTML page.
+## Installation
+
+**node.js**: Install the package and import the library.
+
+    npm install datasci.js
+    
+    var sci = require("datasci.js")
+
+**Browser**: Include the JavaScript library in your HTML page.
 
     <script src="build/datasci.js-full-min.js"></script>
-	
-# Modules
 
-The library is separated into several modules. All modules are accessible through on global namespace `sci`. I.e. if you want to access the `data` module you will call `sci.data`.
+## Classes
 
-**data**
+This is a list of all currently usable classes and modules in the library.
 
-This module contains the core features of **datasci.js**. It contains our implementation of a DataTable, HashMap, Sets and other functionality.
+* sci.table
+  * CoreColumnTable
+  * AnalyticsTable
+* sci.data
+  * Set
+  * OrderedSet
+  * HashMap
+  * vec (module, contains various functions to work on arrays/vectors)
+* sci.io
+  * CSVParser
+* sci.smooth
+  * ma (module, contains moving average smoothing functionality)
+  * es (module, contains exponential smoothing functionality)
 
-**csv**
+## Examples
 
-`sci.csv` handles all CSV interoperability. Such as parsing CSV strings into a Table or writing a table to a CSV string.
+Creating a table and adding rows to it.
 
-**smooth**
+```typescript
+var table = new sci.table.AnalyticsTable({
+    fields: ["id", "name", "city", "age"],
+    types: ["number", "string", "string", "number"]
+});
 
-`sci.smooth` contains statistical methods to smooth data series. I.e. exponential smoothing and moving average implementations can be found here.
+table.addRow([1, "Max", "Mustermann", 23]); // works
+table.addRow([2, "John", "Doe", 26]); // works
+table.addRow([3, "John", "Doe", "blank"]); // throws type-mismatch error
 
-**chart**
+console.log(table.rows()); // prints an array containing all rows
+```
 
-The charting module `sci.chart` contains functionality to plot tables into charts.
+---
 
-# Functionality
+Calculate a average age of persons from a city.
 
-Planned:
+```typescript
+var table = new sci.table.AnalyticsTable({
+    fields: ["id", "name", "city", "age"],
+    types: ["number", "string", "string", "number"]
+});
 
-* **Soon**
-  * Data Table Structure
-  * Advanced Data Structures (Set, Tree, ...)
-  * Smoothing Algorithms (SES, DES, MA, ...)
-  * Charting (Line charts, ...)
-  * CSV interop (Load and Save)
-  
-* **Future**
-  * Table Compression (Dict, RLE)
-  * Forecasting Algorithms (Regression)
-  * Classification (Bayes, SVM, DT)
+// fill some data...
 
-
-# Development
-
-Install the dependencies:
-
-    npm install
+var result = table.groupBy("city", table.agg.avg("age", "average_age");
+console.log(result.rows());
+```
 
 
-## Build the library
+# Contributing / Development
 
-    grunt build
+```bash
+# install dependencies
+npm install
 
+# build the library
+grunt build
 
-## Testing
+# run mocha tests
+grunt test
 
-We use Mocha for testing. Run with:
+# run linter
+grunt test-and-lint
 
-    grunt test
-	
-	
-## Create the minified sources
-
-    grunt release
-	
-	
-	
+# create minified sources
+grunt release
+```
