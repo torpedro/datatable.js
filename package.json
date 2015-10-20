@@ -2,7 +2,7 @@
   "name": "datasci.js",
   "version": "0.2.0",
   "author": "Pedro Flemming",
-  "license": "MIT License",
+  "license": "MIT",
   "homepage": "https://github.com/torpedro/datasci.js",
   "main": "datasci.js",
   "devDependencies": {
