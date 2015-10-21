@@ -21,9 +21,10 @@
 
     <script src="build/datasci.js-full-min.js"></script>
 
-## Classes
+## Classes & Modules
 
 This is a list of all currently usable classes and modules in the library.
+It also contains some features that are planned in the near future (marked with "todo").
 
 * sci.table
   * CoreColumnTable
@@ -35,6 +36,10 @@ This is a list of all currently usable classes and modules in the library.
   * vec (module, contains various functions to work on arrays/vectors)
 * sci.io
   * CSVParser
+  * *AjaxLoader (todo)*
+* sci.plot
+  * *LinePlot (todo)*
+  * *BarChart (todo)*
 * sci.smooth
   * ma (module, contains moving average smoothing functionality)
   * es (module, contains exponential smoothing functionality)
