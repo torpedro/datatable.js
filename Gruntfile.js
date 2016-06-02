@@ -72,8 +72,8 @@ function registerTasks(grunt) {
 function configureGrunt(grunt) {
     grunt.initConfig({
         cfg: {
-            'libName': 'datasci.js',
-            'libNamespace': 'sci',
+            'libName': 'datatable.js',
+            'libNamespace': 'dt',
              
             'src': './src',
             'test': './test',

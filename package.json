@@ -1,10 +1,10 @@
 {
-  "name": "datasci.js",
+  "name": "datatable.js",
   "version": "0.2.1",
   "author": "Pedro Flemming",
   "license": "MIT",
-  "homepage": "https://github.com/torpedro/datasci.js",
-  "main": "datasci.js",
+  "homepage": "https://github.com/torpedro/datatable.js",
+  "main": "datatable.js",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
@@ -28,10 +28,10 @@
     "test": "grunt test-and-lint"
   },
   "bugs": {
-    "url": "https://github.com/torpedro/datasci.js/issues"
+    "url": "https://github.com/torpedro/datatable.js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/torpedro/datasci.js.git"
+    "url": "https://github.com/torpedro/datatable.js.git"
   }
 }

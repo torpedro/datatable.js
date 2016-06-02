@@ -1,9 +1,9 @@
-[![Build Status](https://api.travis-ci.org/torpedro/datasci.js.svg?branch=master)](http://travis-ci.org/torpedro/datasci.js)
-[![npm version](https://badge.fury.io/js/datasci.js.svg)](https://badge.fury.io/js/datasci.js)
+[![Build Status](https://api.travis-ci.org/torpedro/datatable.js.svg?branch=master)](http://travis-ci.org/torpedro/datatable.js)
+[![npm version](https://badge.fury.io/js/datatable.js.svg)](https://badge.fury.io/js/datatable.js)
 
-# datasci.js - The JavaScript Data Library
+# datatable.js - The JavaScript Data Library
 
-**datasci.js** is a analytics library for JavaScript. The library contains sophisticated implementations of a Table and useful statistical functionality to interact with data. The Table implementation allows **SQL-like** interaction. **datasci.js** also holds functionality to turn Tables directly into **charts**.
+**datatable.js** is an analytics library for JavaScript. The library contains sophisticated implementations of a Table and useful statistical functionality to interact with data. The Table implementation allows **SQL-like** interaction. **datatable.js** also holds functionality to turn Tables directly into **charts**.
 
 
 
@@ -13,34 +13,34 @@
 
 **node.js**: Install the package and import the library.
 
-    npm install datasci.js
+    npm install datatable.js
     
-    var sci = require("datasci.js")
+    var dt = require("datatable.js")
 
 **Browser**: Include the JavaScript library in your HTML page.
 
-    <script src="build/datasci.js-full-min.js"></script>
+    <script src="dist/datatable.js.min.js"></script>
 
 ## Classes & Modules
 
 This is a list of all currently usable classes and modules in the library.
 It also contains some features that are planned in the near future (marked with "todo").
 
-* sci.table
+* dt.table
   * CoreColumnTable
   * AnalyticsTable
-* sci.data
+* dt.data
   * Set
   * OrderedSet
   * HashMap
   * vec (module, contains various functions to work on arrays/vectors)
-* sci.io
+* dt.io
   * CSVParser
   * *AjaxLoader (todo)*
-* sci.plot
+* dt.plot
   * *LinePlot (todo)*
   * *BarChart (todo)*
-* sci.smooth
+* dt.smooth
   * ma (module, contains moving average smoothing functionality)
   * es (module, contains exponential smoothing functionality)
 
@@ -49,7 +49,7 @@ It also contains some features that are planned in the near future (marked with 
 Creating a table and adding rows to it.
 
 ```typescript
-var table = new sci.table.AnalyticsTable({
+var table = new dt.table.AnalyticsTable({
     fields: ["id", "name", "city", "age"],
     types: ["number", "string", "string", "number"]
 });
@@ -66,7 +66,7 @@ console.log(table.rows()); // prints an array containing all rows
 Calculate a average age of persons from a city.
 
 ```typescript
-var table = new sci.table.AnalyticsTable({
+var table = new dt.table.AnalyticsTable({
     fields: ["id", "name", "city", "age"],
     types: ["number", "string", "string", "number"]
 });
