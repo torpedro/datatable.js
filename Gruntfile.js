@@ -8,14 +8,14 @@ function loadPlugins(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-continue');
     grunt.loadNpmTasks('grunt-tslint');
-    grunt.loadNpmTasks("grunt-shell");
-    grunt.loadNpmTasks("grunt-ts");
+    grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-ts');
 }
 
 function registerTasks(grunt) {
     grunt.registerTask('lint', [
-        "clean:reports",
-        "tslint:all"
+        'clean:reports',
+        'tslint:all'
     ]);
 
     grunt.registerTask('build', [
@@ -39,9 +39,9 @@ function registerTasks(grunt) {
 
     grunt.registerTask('test-and-lint', [
         'test',
-        "continue:on", // --force for linting
+        'continue:on', // --force for linting
         'lint',
-        "continue:off", // unset --force
+        'continue:off', // unset --force
         'lint-test'
     ]);
     
@@ -57,14 +57,14 @@ function registerTasks(grunt) {
 
 
     grunt.registerTask('lint-test', 'Checks whether the amount of errors exceeds our limit.', function() {
-        var errors = grunt.file.read("reports/tslint.txt").split("\n");
+        var errors = grunt.file.read('reports/tslint.txt').split('\n');
         var numErrors = errors.length - 1;
         var errorLimit = 533;
 
         if (numErrors > errorLimit) {
-            grunt.warn("Number of tslint errors (" + numErrors + ") exceeds limit (" + errorLimit + ")!");
+            grunt.warn('Number of tslint errors (' + numErrors + ') exceeds limit (' + errorLimit + ')!');
         } else {
-            grunt.log.writeln("Number of tslint errors (" + numErrors + ") is within than the limit (" + errorLimit + ").");
+            grunt.log.writeln('Number of tslint errors (' + numErrors + ') is within than the limit (' + errorLimit + ').');
         }
     });
 }
@@ -155,8 +155,11 @@ function configureGrunt(grunt) {
 
             release: {
                 files: [{
-                    src: "build/datasci.js-full.js",
-                    dest: "datasci.js"
+                    src: 'build/<%= cfg.libName %>.js',
+                    dest: 'dist/<%= cfg.libName %>.js'
+                }, {
+                    src: 'build/<%= cfg.libName %>.min.js',
+                    dest: 'dist/<%= cfg.libName %>.min.js'
                 }]
             }
         },
@@ -165,10 +168,10 @@ function configureGrunt(grunt) {
         // Compile the Typescript files to JavaScript
         ts: {
             options: {
-                compiler: "node_modules/typescript/bin/tsc",
+                compiler: 'node_modules/typescript/bin/tsc',
                 module: 'commonjs',
                 failOnTypeErrors: true,
-                fast: "watch"
+                fast: 'watch'
             },
             src: {
                 options: {
@@ -202,7 +205,7 @@ function configureGrunt(grunt) {
             },
             src: {
                 src: '<%= cfg.build %>/src/app.js',
-                dest: '<%= cfg.build %>/<%= cfg.libName %>-full.js'
+                dest: '<%= cfg.build %>/<%= cfg.libName %>.js'
             }
         },
         
@@ -210,7 +213,7 @@ function configureGrunt(grunt) {
         uglify: {
             browser: {
                 files: {
-                    '<%= cfg.build %>/<%= cfg.libName %>-full-min.js': ['<%= cfg.build %>/<%= cfg.libName %>-full.js']
+                    '<%= cfg.build %>/<%= cfg.libName %>.min.js': ['<%= cfg.build %>/<%= cfg.libName %>.js']
                 }
             }
         },
@@ -218,9 +221,9 @@ function configureGrunt(grunt) {
         tslint: {
             all: {
                 options: {
-                    configuration: grunt.file.readJSON("tslint.json"),
-                    outputFile: "<%= cfg.reports %>/tslint.txt",
-                    formatter: "verbose",
+                    configuration: grunt.file.readJSON('tslint.json'),
+                    outputFile: '<%= cfg.reports %>/tslint.txt',
+                    formatter: 'verbose',
                     appendToOutput: true
                 },
                 files: {

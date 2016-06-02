@@ -25,7 +25,7 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "test": "./node_modules/grunt-cli/bin/grunt test-and-lint"
+    "test": "grunt test-and-lint"
   },
   "bugs": {
     "url": "https://github.com/torpedro/datasci.js/issues"

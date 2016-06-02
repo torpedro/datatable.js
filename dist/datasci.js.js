@@ -1,11 +1,12 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sci = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
 exports.data = require("./data/__module__");
 exports.smooth = require("./smooth/__module__");
 exports.io = require("./io/__module__");
 exports.table = require("./table/__module__");
 
 },{"./data/__module__":6,"./io/__module__":10,"./smooth/__module__":13,"./table/__module__":17}],2:[function(require,module,exports){
-/// <reference path="../typings/underscore/underscore.d.ts" />
+"use strict";
 var _ = require("underscore");
 var util = require("./util");
 var HashMap = (function () {
@@ -67,10 +68,11 @@ var HashMap = (function () {
             return _.isEqual(a, b);
     };
     return HashMap;
-})();
+}());
 module.exports = HashMap;
 
 },{"./util":8,"underscore":20}],3:[function(require,module,exports){
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -126,11 +128,11 @@ var OrderedSet = (function (_super) {
             return this._binarySearch(val, low, mid - 1);
     };
     return OrderedSet;
-})(Set);
+}(Set));
 module.exports = OrderedSet;
 
 },{"./Set":4}],4:[function(require,module,exports){
-/// <reference path="../typedefs/ISet.ts" />
+"use strict";
 var Set = (function () {
     function Set(data) {
         this._isSet_ = true;
@@ -232,11 +234,11 @@ var Set = (function () {
         return set;
     };
     return Set;
-})();
+}());
 module.exports = Set;
 
 },{}],5:[function(require,module,exports){
-/// <reference path="../typings/underscore/underscore.d.ts" />
+"use strict";
 var _ = require('underscore');
 var types = require('./types');
 var vec;
@@ -319,6 +321,7 @@ var vec;
 module.exports = vec;
 
 },{"./types":7,"underscore":20}],6:[function(require,module,exports){
+"use strict";
 exports.vec = require("./VectorOperations");
 exports.types = require("./types");
 exports.util = require("./util");
@@ -327,6 +330,7 @@ exports.OrderedSet = require("./OrderedSet");
 exports.HashMap = require("./HashMap");
 
 },{"./HashMap":2,"./OrderedSet":3,"./Set":4,"./VectorOperations":5,"./types":7,"./util":8}],7:[function(require,module,exports){
+"use strict";
 var types;
 (function (types_1) {
     var types = ["any", "string", "number", "date", "object", "boolean", "null", "function"];
@@ -489,6 +493,7 @@ types.registerTypeDetector("boolean", {
 module.exports = types;
 
 },{}],8:[function(require,module,exports){
+"use strict";
 var util;
 (function (util) {
     function toHex(num) {
@@ -550,7 +555,7 @@ var util;
 module.exports = util;
 
 },{}],9:[function(require,module,exports){
-/// <reference path="../typings/papaparse/papaparse.d.ts" />
+"use strict";
 var CoreColumnTable = require('../table/CoreColumnTable');
 var Papa = require('papaparse');
 var CSVParser = (function () {
@@ -615,13 +620,15 @@ var CSVParser = (function () {
         return csv;
     };
     return CSVParser;
-})();
+}());
 module.exports = CSVParser;
 
 },{"../table/CoreColumnTable":15,"papaparse":19}],10:[function(require,module,exports){
+"use strict";
 exports.CSVParser = require("./CSVParser");
 
 },{"./CSVParser":9}],11:[function(require,module,exports){
+"use strict";
 var es;
 (function (es) {
     function SingleExponentialSmoothing(vector, alpha) {
@@ -660,6 +667,7 @@ var es;
 module.exports = es;
 
 },{}],12:[function(require,module,exports){
+"use strict";
 var ma;
 (function (ma) {
     function SimpleMovingAverage(vector, k) {
@@ -685,12 +693,12 @@ var ma;
 module.exports = ma;
 
 },{}],13:[function(require,module,exports){
+"use strict";
 exports.ma = require("./MovingAverage");
 exports.es = require("./ExponentialSmoothing");
 
 },{"./ExponentialSmoothing":11,"./MovingAverage":12}],14:[function(require,module,exports){
-// @file AnalyticsTable.ts
-/// <reference path="../typings/underscore/underscore.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -897,7 +905,7 @@ var AnalyticsTable = (function (_super) {
         return result.concat(left.slice(il)).concat(right.slice(ir));
     };
     return AnalyticsTable;
-})(CoreColumnTable);
+}(CoreColumnTable));
 function convertListOfFieldDescriptors(vals) {
     var desc = [];
     for (var i = 0; i < vals.length; ++i)
@@ -913,7 +921,7 @@ function convertToFieldDescriptors(val) {
 module.exports = AnalyticsTable;
 
 },{"../data/HashMap":2,"../data/OrderedSet":3,"../data/VectorOperations":5,"./CoreColumnTable":15,"./FieldDescriptor":16,"./operators/agg":18}],15:[function(require,module,exports){
-/// <reference path="../typedefs/ITable.ts" />
+"use strict";
 var _ = require("underscore");
 var HashMap = require('../data/HashMap');
 var Set = require('../data/Set');
@@ -1121,10 +1129,11 @@ var CoreColumnTable = (function () {
         return vector;
     };
     return CoreColumnTable;
-})();
+}());
 module.exports = CoreColumnTable;
 
 },{"../data/HashMap":2,"../data/Set":4,"../data/VectorOperations":5,"../data/types":7,"underscore":20}],16:[function(require,module,exports){
+"use strict";
 var FieldDescriptor = (function () {
     function FieldDescriptor(what, as) {
         if (typeof what === 'string') {
@@ -1168,20 +1177,21 @@ var FieldDescriptor = (function () {
         }
     };
     return FieldDescriptor;
-})();
+}());
 module.exports = FieldDescriptor;
 
 },{}],17:[function(require,module,exports){
+"use strict";
 exports.AnalyticsTable = require("./AnalyticsTable");
 exports.CoreColumnTable = require("./CoreColumnTable");
 exports.FieldDescriptor = require("./FieldDescriptor");
 
 },{"./AnalyticsTable":14,"./CoreColumnTable":15,"./FieldDescriptor":16}],18:[function(require,module,exports){
+"use strict";
 var agg;
 (function (agg) {
     function sum(targetField, outputName) {
         var aggf = function (rows, table) {
-            // TODO: type-switch
             var sum = 0;
             var c = table.getFieldNameIndex(targetField);
             for (var r = 0; r < rows.length; ++r) {
