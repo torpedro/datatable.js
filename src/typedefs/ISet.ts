@@ -3,7 +3,7 @@
  * @interface ISet
  */
 interface ISet {
-	_isSet_: boolean;
+	IS_SET: boolean;
 
 	add(val: any): void;
 

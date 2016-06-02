@@ -7,20 +7,24 @@ import util = require("./util");
  *
  *
  */
+
+type BucketEntry<K, V> = [K, V];
+type Bucket<K, V> = BucketEntry<K, V>[];
+
 class HashMap<K, V> {
-	private _data = {};
+	private map: { [key: string]: Bucket<K, V> } = {};
 
 	// flag to indicate whether to use equality or identity
-	private _useIdentity: boolean;
+	private useIdentity: boolean;
 
 	constructor(useIdentity?: boolean) {
-		if (useIdentity) this._useIdentity = true;
-		else this._useIdentity = false;
+		if (useIdentity) this.useIdentity = true;
+		else this.useIdentity = false;
 	}
 
 	set(key: K, val: V): void {
-		var bucket = this._getBucket(key);
-		var i = this._findKeyInBucket(key, bucket);
+		let bucket: Bucket<K, V> = this.getBucket(key);
+		let i: number = this.findKeyInBucket(key, bucket);
 
 		if (i >= 0) bucket[i][1] = val;
 		else bucket.push([key, val]);
@@ -28,53 +32,55 @@ class HashMap<K, V> {
 
 
 	get(key: K): V {
-		var bucket = this._getBucket(key);
-		var i = this._findKeyInBucket(key, bucket);
+		let bucket: Bucket<K, V> = this.getBucket(key);
+		let i: number = this.findKeyInBucket(key, bucket);
 
 		if (i >= 0) return bucket[i][1];
 		else return null;
 	}
 
 	contains(key: K): boolean {
-		var bucket = this._getBucket(key);
-		return this._findKeyInBucket(key, bucket) >= 0;
+		let bucket: Bucket<K, V> = this.getBucket(key);
+		return this.findKeyInBucket(key, bucket) >= 0;
 	}
 
-	keys(): Array<K> {
-		var keys = [];
-		for (var hash in this._data) {
-			var bucket = this._data[hash];
-			for (var i = 0; i < bucket.length; ++i) {
+	keys(): K[] {
+		let keys: K[] = [];
+		for (let hash in this.map) {
+			let bucket: Bucket<K, V> = this.map[hash];
+			for (let i: number = 0; i < bucket.length; ++i) {
 				keys.push(bucket[i][0]);
 			}
 		}
 		return keys;
 	}
 
-	private _getBucket(key: K): Array<Array<any>> {
+	private getBucket(key: K): Bucket<K, V> {
 		// hash the key
-		var hash = util.hashCode(key);
+		let hash: string = util.hashCode(key);
+
 		// create bucket if it doesn't exist
-		if (!(hash in this._data)) this._data[hash] = [];
+		if (!(hash in this.map)) this.map[hash] = [];
+
 		// return the bucket
-		return this._data[hash];
+		return this.map[hash];
 	}
 
 	/**
 	 * returns index of key within bucket
 	 * returns -1 if key not found
 	 */
-	private _findKeyInBucket(key: K, bucket: Array<Array<any>>): number {
-		for (var i = 0; i < bucket.length; ++i) {
-			if (this._areEqual(key, bucket[i][0])) {
+	private findKeyInBucket(key: K, bucket: Bucket<K, V>): number {
+		for (let i: number = 0; i < bucket.length; ++i) {
+			if (this.isEqual(key, bucket[i][0])) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	private _areEqual(a: any, b: any) {
-		if (this._useIdentity) return a === b;
+	private isEqual(a: any, b: any): boolean {
+		if (this.useIdentity) return a === b;
 		else return _.isEqual(a, b);
 	}
 

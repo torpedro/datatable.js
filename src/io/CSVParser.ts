@@ -4,17 +4,17 @@ import vec = require('../data/VectorOperations');
 import Papa = require('papaparse');
 
 class CSVParser {
-	private _options: PapaParse.ParseConfig;
+	private options: PapaParse.ParseConfig;
 
 	constructor(options?: PapaParse.ParseConfig) {
 		if (!options) options = {};
 		if (typeof options.header === 'undefined') options.header = true;
 		if (typeof options.skipEmptyLines === 'undefined') options.skipEmptyLines = true;
-		this._options = options;
+		this.options = options;
 	}
 
 	parseString(csvString: string): CoreColumnTable {
-		var result = Papa.parse(csvString, this._options);
+		var result = Papa.parse(csvString, this.options);
 
 		var numRows = result.data.length;
 		var fields: Array<string> = [];
@@ -68,14 +68,14 @@ class CSVParser {
 	dumpString(table: CoreColumnTable): string {
 		var csv = "";
 
-		csv += table.fields().join(this._options.delimiter)
+		csv += table.fields().join(this.options.delimiter)
 		csv += "\n";
 		for (var i = 0; i < table.size()-1; ++i) {
 			var row = table.row(i);
-			csv += row.join(this._options.delimiter);
+			csv += row.join(this.options.delimiter);
 			csv += "\n";
 		}
-		csv += table.row(table.size() - 1).join(this._options.delimiter);
+		csv += table.row(table.size() - 1).join(this.options.delimiter);
 
 		return csv;
 	}
