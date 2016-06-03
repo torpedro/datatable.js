@@ -7,13 +7,13 @@ import types = require('./types');
  * @module vec
  */
 module vec {
-	export function range(vector: Array<any>, dataType?: string): Array<any> {
-		var size: number = vector.length;
+	export function range(vector: any[], dataType?: string): [any, any] {
+		let size: number = vector.length;
 		if (size === 0) return null;
 
-		var range = [vector[0], vector[0]];
-		for (var n = 1; n < size; ++n) {
-			var value = vector[n];
+		let range: [any, any] = [vector[0], vector[0]];
+		for (let n: number = 1; n < size; ++n) {
+			let value: any = vector[n];
 
 			// todo: Handle different datatypes
 			if (value < range[0]) range[0] = value;
@@ -23,18 +23,15 @@ module vec {
 		return range;
 	}
 
-	export function min(vector: Array<any>): any { return range(vector)[0]; }
-	export function max(vector: Array<any>): any { return range(vector)[1]; }
+	export function min(vector: any[]): any { return range(vector)[0]; }
+	export function max(vector: any[]): any { return range(vector)[1]; }
 
-	export function detectDataType(vector: Array<any>, parseStrings?: boolean, convertTypes?: boolean): string  {
-		if (typeof parseStrings === 'undefined') parseStrings = true;
-		if (typeof convertTypes === 'undefined') convertTypes = false;
+	export function detectDataType(vector: any[], parseStrings: boolean = true, convertTypes: boolean = false): string  {
+		let typeset: string[] = [];
+		for (let i: number = 0; i < vector.length; ++i) {
+			let value: any = vector[i];
 
-		var typeset = [];
-		for (var i = 0; i < vector.length; ++i) {
-			var value = vector[i];
-
-			var res = types.detectDataType(value, parseStrings);
+			let res: types.ITypeDetection = types.detectDataType(value, parseStrings);
 
 			// ignore nulls, they have no type
 			if (res.type === types.kNull) continue;
@@ -52,7 +49,7 @@ module vec {
 	}
 
 	export function convertToType(vector: any[], targetType: string): any[] {
-		var newVec = _.map(vector, function(value, i) {
+		let newVec: any[] = _.map(vector, function(value: any, i: number): any {
 			return types.convert(value, targetType);
 		});
 		return newVec;
@@ -63,10 +60,10 @@ module vec {
 	 *
 	 * not type safe
 	 */
-	export function groupByPositions(vector: Array<any>): Object {
-		var map = {};
-		for (var i = 0; i < vector.length; ++i) {
-			var value = vector[i];
+	export function groupByPositions(vector: any[]): {} {
+		let map: {} = {};
+		for (let i: number = 0; i < vector.length; ++i) {
+			let value: any = vector[i];
 			if (value in map) {
 				map[value].push(i);
 			} else {
@@ -79,9 +76,9 @@ module vec {
 	/**
 	 * list all distinct values within the array
 	 */
-	export function distinctValues(vector: Array<any>): Array<any> {
-		var values = [];
-		for (var i = 0; i < vector.length; ++i) {
+	export function distinctValues(vector: any[]): any[] {
+		let values: any[] = [];
+		for (let i: number = 0; i < vector.length; ++i) {
 			if (values.indexOf(vector[i]) === -1) {
 				values.push(vector[i]);
 			}
@@ -89,7 +86,6 @@ module vec {
 		return values;
 	}
 }
-
 
 // export.modules
 export = vec;

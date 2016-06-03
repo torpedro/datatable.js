@@ -23,7 +23,7 @@ interface ISet {
 
 	isSuperset(other: ISet): boolean;
 
-	get(): Array<any>;
+	get(): any[];
 
 	get(index: number): any;
 

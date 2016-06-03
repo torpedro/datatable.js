@@ -27,33 +27,33 @@ class AnalyticsTable extends CoreColumnTable {
 	 * @method groupBy
 	 */
 	groupBy(column: string|FieldDescriptor, aggregations?: aggs.Aggregation[]): AnalyticsTable;
-	groupBy(columns: Array<string|FieldDescriptor>, aggregations?: aggs.Aggregation[]): AnalyticsTable;
+	groupBy(columns: (string|FieldDescriptor)[], aggregations?: aggs.Aggregation[]): AnalyticsTable;
 	groupBy(_groupFields: any, aggregations?: aggs.Aggregation[]): AnalyticsTable {
 		// if the function was called with a single group by column
 		// call it again with an array
 		// format the data input
 		if (!aggregations) aggregations = [];
 		if (!(_groupFields instanceof Array)) return this.groupBy([_groupFields], aggregations);
-		let fields: Array<FieldDescriptor> = convertListOfFieldDescriptors(_groupFields);
+		let fields: FieldDescriptor[] = convertListOfFieldDescriptors(_groupFields);
 
 		// create Result Field List
-		let outputFields = [];
-		for (let i = 0; i < fields.length; ++i) {
+		let outputFields: string[] = [];
+		for (let i: number = 0; i < fields.length; ++i) {
 			outputFields.push(fields[i].outputName);
 		}
 
-		for (let k = 0; k < aggregations.length; ++k) {
+		for (let k: number = 0; k < aggregations.length; ++k) {
 			if (aggregations[k].aggName) outputFields.push(aggregations[k].aggName);
 			else if (aggregations[k].name) outputFields.push(aggregations[k].name);
 			else outputFields.push('Aggregation ' + k);
 		}
 
 		// create hash map
-		let map = new HashMap<any, Array<any>>(false); // map by equality
+		let map: HashMap<string[], any[]> = new HashMap<any, any[]>(false); // map by equality
 
-		for (let r = 0; r < this.size(); ++r) {
-			let key = [];
-			for (let c = 0; c < fields.length; ++c) {
+		for (let r: number = 0; r < this.size(); ++r) {
+			let key: string[] = [];
+			for (let c: number = 0; c < fields.length; ++c) {
 				key.push(fields[c].getValue(this, r));
 			}
 
@@ -65,20 +65,21 @@ class AnalyticsTable extends CoreColumnTable {
 		}
 
 		// create the result table
-		let result = new AnalyticsTable({
+		let result: AnalyticsTable = new AnalyticsTable({
 			fields: outputFields
 		});
-		let keys = map.keys();
-		for (let k = 0; k < keys.length; ++k) {
-			let row = [];
+
+		let keys: string[][] = map.keys();
+		for (let k: number = 0; k < keys.length; ++k) {
+			let row: any[] = [];
 
 			// add the grouped columns
-			for (let c = 0; c < keys[k].length; ++c) {
+			for (let c: number = 0; c < keys[k].length; ++c) {
 				row.push(keys[k][c]);
 			}
 
 			// add the aggregated columns
-			for (let a = 0; a < aggregations.length; ++a) {
+			for (let a: number = 0; a < aggregations.length; ++a) {
 				row.push(aggregations[a](map.get(keys[k]), this));
 			}
 
@@ -97,12 +98,12 @@ class AnalyticsTable extends CoreColumnTable {
 	 */
 	filter(predicate: Function): AnalyticsTable {
 		// todo: figure out how to be able to address columns in predicate by name
-		let result = new AnalyticsTable({
+		let result: AnalyticsTable = new AnalyticsTable({
 			fields: this._fields.get(),
 			types: this._types.slice()
 		});
-		for (let r = 0; r < this.size(); ++r) {
-			let row = this.row(r);
+		for (let r: number = 0; r < this.size(); ++r) {
+			let row: any[] = this.row(r);
 			if (predicate(row)) {
 				result.addRow(row);
 			}
@@ -134,18 +135,18 @@ class AnalyticsTable extends CoreColumnTable {
 	 */
 	select(field: string): AnalyticsTable;
 	select(field: FieldDescriptor): AnalyticsTable;
-	select(fields: Array<string|FieldDescriptor>): AnalyticsTable;
+	select(fields: (string|FieldDescriptor)[]): AnalyticsTable;
 	select(_fields: any): AnalyticsTable {
 		// format the data input
 		if (!(_fields instanceof Array)) return this.select([_fields]);
-		let inFields: Array<FieldDescriptor> = convertListOfFieldDescriptors(_fields);
+		let inFields: FieldDescriptor[] = convertListOfFieldDescriptors(_fields);
 
-		let columns = [];
-		let resFields = [];
-		let types = [];
+		let columns: any[][] = [];
+		let resFields: string[] = [];
+		let types: string[] = [];
 
-		for (let i = 0; i < inFields.length; ++i) {
-			let field = inFields[i];
+		for (let i: number = 0; i < inFields.length; ++i) {
+			let field: FieldDescriptor = inFields[i];
 
 			if (field.isStatic) {
 				// a simple field was selected
@@ -158,9 +159,9 @@ class AnalyticsTable extends CoreColumnTable {
 
 				// function selector
 				// build a new column vector
-				let vector = [];
-				for (let i = 0; i < this.size(); ++i) {
-					let value = field.getValue(this, i);
+				let vector: any[] = [];
+				for (let i: number = 0; i < this.size(); ++i) {
+					let value: any = field.getValue(this, i);
 					vector.push(value);
 				}
 
@@ -186,20 +187,20 @@ class AnalyticsTable extends CoreColumnTable {
 	 */
 	splitColumn(field: string, groupField: string): AnalyticsTable {
 		// find all result field names
-		let categories = this.distinctValues(field).get();
-		let fields = [groupField];
-		let types = [this.type(groupField)];
-		let valueFields = [];
+		let categories: any[] = this.distinctValues(field).get();
+		let fields: string[] = [groupField];
+		let types: string[] = [this.type(groupField)];
+		let valueFields: any = [];
 
-		for (let c = 0; c < this.numFields(); ++c) {
+		for (let c: number = 0; c < this.numFields(); ++c) {
 			if (this._fields.get(c) !== field && this._fields.get(c) !== groupField) {
 				valueFields.push(this._fields.get(c));
 			}
 		}
 
-		for (let cat = 0; cat < categories.length; ++cat) {
-			for (let f = 0; f < valueFields.length; ++f) {
-				let newField = valueFields[f] + ' (' + categories[cat] + ')';
+		for (let cat: number = 0; cat < categories.length; ++cat) {
+			for (let f: number = 0; f < valueFields.length; ++f) {
+				let newField: string = valueFields[f] + ' (' + categories[cat] + ')';
 				fields.push(newField);
 				types.push(this.type(valueFields[f]));
 			}
@@ -207,43 +208,43 @@ class AnalyticsTable extends CoreColumnTable {
 
 		// build Hash-Map
 		// map( group -> map( category -> Array(valueFields) ) )
-		let map = new HashMap(false);
+		let map: HashMap<any, {}> = new HashMap<any, {}>(false);
 
-		for (let r = 0; r < this.size(); ++r) {
-			let key = this.value(r, groupField);
+		for (let r: number = 0; r < this.size(); ++r) {
+			let key: any = this.value(r, groupField);
 			if (!map.contains(key)) {
 				map.set(key, {});
 			}
 
-			let category = this.value(r, field);
-			let obj = map.get(key);
+			let category: any = this.value(r, field);
+			let obj: {} = map.get(key);
 			obj[category] = [];
-			for (let f = 0; f < valueFields.length; ++f) {
+			for (let f: number = 0; f < valueFields.length; ++f) {
 				obj[category].push(this.value(r, valueFields[f]));
 			}
 		}
 
 
-		let result = new AnalyticsTable({
+		let result: AnalyticsTable = new AnalyticsTable({
 			fields: fields,
 			types: types
 		});
 
 		// build rows
-		let keys = map.keys();
-		for (let k = 0; k < keys.length; ++k) {
-			let obj = map.get(keys[k]);
-			let row = [keys[k]];
+		let keys: any[] = map.keys();
+		for (let k: number = 0; k < keys.length; ++k) {
+			let obj: {} = map.get(keys[k]);
+			let row: any[] = [keys[k]];
 
 			// loop over categories and valueFields
-			for (let c = 0; c < categories.length; ++c) {
+			for (let c: number = 0; c < categories.length; ++c) {
 				if (!(categories[c] in obj)) {
-					for (let f = 0; f < valueFields.length; ++f) {
+					for (let f: number = 0; f < valueFields.length; ++f) {
 						row.push(null);
 					}
 				} else {
-					let values = obj[categories[c]];
-					for (let f = 0; f < valueFields.length; ++f) {
+					let values: any = obj[categories[c]];
+					for (let f: number = 0; f < valueFields.length; ++f) {
 						row.push(values[f]);
 					}
 				}
@@ -269,20 +270,19 @@ class AnalyticsTable extends CoreColumnTable {
 	 *
 	 * @method sort
 	 */
-	sort(_field: string|FieldDescriptor, asc?: boolean): AnalyticsTable {
-		if (!asc) asc = false;
+	sort(_field: string|FieldDescriptor, asc: boolean = false): AnalyticsTable {
 		let field: FieldDescriptor = convertToFieldDescriptors(_field);
 
-		let table = new AnalyticsTable({
+		let table: AnalyticsTable = new AnalyticsTable({
 			fields: this.fields(),
 			types: this.types()
 		});
 
 		// materialize the rows
-		let rows = this.rows();
+		let rows: Row[] = this.rows();
 
 		// sort the rows
-		let sortedRows = this._mergeSort(rows, field, asc);
+		let sortedRows: Row[] = this.mergeSort(rows, field, asc);
 
 		// add to output table
 		table.addRows(sortedRows);
@@ -291,29 +291,29 @@ class AnalyticsTable extends CoreColumnTable {
 	}
 
 
-	private _mergeSort(rows: Array<any>, field: FieldDescriptor, asc: boolean) {
+	private mergeSort(rows: any[], field: FieldDescriptor, asc: boolean): any[] {
 		// terminal case: 0 or 1 item arrays don't need sorting
 		if (rows.length < 2) {
 			return rows;
 		}
 
-		let middle = Math.floor(rows.length / 2),
-			left   = rows.slice(0, middle),
-			right  = rows.slice(middle);
+		let middle: number = Math.floor(rows.length / 2),
+			left: any[]    = rows.slice(0, middle),
+			right: any[]   = rows.slice(middle);
 
-		return this._merge(this._mergeSort(left, field, asc), this._mergeSort(right, field, asc), field, asc);
+		return this.merge(this.mergeSort(left, field, asc), this.mergeSort(right, field, asc), field, asc);
 	}
 
-	private _merge(left: Array<any>, right: Array<any>, field: FieldDescriptor, asc: boolean) {
-		let result  = [],
-			il      = 0,
-			ir      = 0;
+	private merge(left: any[], right: any[], field: FieldDescriptor, asc: boolean): any[] {
+		let result: any[] = [],
+			il: number    = 0,
+			ir: number    = 0;
 
 		while (il < left.length && ir < right.length) {
-			let leftValue = field.getValueFromRow(this, left[il]);
-			let rightValue = field.getValueFromRow(this, right[ir]);
+			let leftValue: any = field.getValueFromRow(this, left[il]);
+			let rightValue: any = field.getValueFromRow(this, right[ir]);
 
-			let comp = false;
+			let comp: boolean = false;
 			if (asc) comp = leftValue < rightValue;
 			else comp = leftValue > rightValue;
 
@@ -332,9 +332,9 @@ class AnalyticsTable extends CoreColumnTable {
 
 
 // utility functions
-function convertListOfFieldDescriptors(vals: Array<string|FieldDescriptor>): Array<FieldDescriptor> {
-	let desc = [];
-	for (let i = 0; i < vals.length; ++i) desc.push(convertToFieldDescriptors(vals[i]));
+function convertListOfFieldDescriptors(vals: (string|FieldDescriptor)[]): FieldDescriptor[] {
+	let desc: FieldDescriptor[] = [];
+	for (let i: number = 0; i < vals.length; ++i) desc.push(convertToFieldDescriptors(vals[i]));
 	return desc;
 }
 
@@ -346,7 +346,5 @@ function convertToFieldDescriptors(val: string|FieldDescriptor): FieldDescriptor
 	return <FieldDescriptor>val;
 }
 
-
-
-
+// modules.export
 export = AnalyticsTable;

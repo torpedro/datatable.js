@@ -10,7 +10,7 @@
 class Set implements ISet {
 	IS_SET: boolean = true;
 
-	protected array: Array<any>;
+	protected array: any[];
 
 	constructor();
 	constructor(set: ISet);

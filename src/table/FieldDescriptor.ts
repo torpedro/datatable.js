@@ -42,7 +42,7 @@ class FieldDescriptor {
 		}
 	}
 
-	getValueFromRow(table: CoreColumnTable, row: Array<any>): any {
+	getValueFromRow(table: CoreColumnTable, row: any[]): any {
 		if (this.isStatic) {
 			let id: number = table.getFieldNameIndex(this.name);
 			return row[id];

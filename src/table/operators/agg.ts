@@ -11,7 +11,7 @@ module agg {
 	);
 
 	export function sum(targetField: string, outputName?: string): Aggregation {
-		let aggf: Aggregation = function(rows: Array<any>, table: AnalyticsTable): number {
+		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): number {
 			// todo: type-switch
 			let sum: number = 0;
 			let c: number = table.getFieldNameIndex(targetField);
@@ -28,7 +28,7 @@ module agg {
 	}
 
 	export function avg(targetField: string, outputName: string): Aggregation {
-		let aggf: Aggregation = function(rows: Array<any>, table: AnalyticsTable): number {
+		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): number {
 			// todo: type-switch
 			let sum: number = 0;
 			let c: number = table.getFieldNameIndex(targetField);
@@ -45,7 +45,7 @@ module agg {
 	}
 
 	export function first(targetField: string, outputName: string): Aggregation {
-		let aggf: Aggregation = function(rows: Array<any>, table: AnalyticsTable): any {
+		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): any {
 			let c: number = table.getFieldNameIndex(targetField);
 			return rows[0][c];
 		};
