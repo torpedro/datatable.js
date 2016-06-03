@@ -75,7 +75,7 @@ class AnalyticsTable extends CoreColumnTable {
 
 			// Add the grouped columns
 			for (var c = 0; c < keys[k].length; ++c) {
-				row.push(keys[k][c])
+				row.push(keys[k][c]);
 			}
 
 			// Add the aggregated columns

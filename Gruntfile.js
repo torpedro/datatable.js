@@ -24,13 +24,13 @@ function registerTasks(grunt) {
         'ts:src',
         'browserify'
     ]);
-    
+
     grunt.registerTask('only-test', [
         'copy:test',
         'ts:test',
         'mochaTest'
     ]);
-    
+
     // Build and Test
     grunt.registerTask('test', [
         'build',
@@ -44,7 +44,7 @@ function registerTasks(grunt) {
         'continue:off', // unset --force
         'lint-test'
     ]);
-    
+
     // Build, Test and Minify
     grunt.registerTask('release', [
         'build',
@@ -59,7 +59,7 @@ function registerTasks(grunt) {
     grunt.registerTask('lint-test', 'Checks whether the amount of errors exceeds our limit.', function() {
         var errors = grunt.file.read('reports/tslint.txt').split('\n');
         var numErrors = errors.length - 1;
-        var errorLimit = 521;
+        var errorLimit = 358;
 
         if (numErrors > errorLimit) {
             grunt.warn('Number of tslint errors (' + numErrors + ') exceeds limit (' + errorLimit + ')!');
@@ -74,7 +74,7 @@ function configureGrunt(grunt) {
         cfg: {
             'libName': 'datatable.js',
             'libNamespace': 'dt',
-             
+
             'src': './src',
             'test': './test',
             'build': './build',
@@ -116,8 +116,8 @@ function configureGrunt(grunt) {
                 }]
             }
         },
-        
-        
+
+
         copy: {
             bower: {
                 // Copy all bower files
@@ -127,10 +127,10 @@ function configureGrunt(grunt) {
                     cwd: '<%= cfg.bower %>/',
                     src: ['**/*'],
                     dest: '<%= cfg.build %>/bower_components/'
-                }]    
+                }]
             },
-            
-            
+
+
             src: {
                 // Copy all src files to the build-directory
                 files: [{
@@ -141,7 +141,7 @@ function configureGrunt(grunt) {
                     dest: '<%= cfg.build %>/src/'
                 }]
             },
-            
+
             test: {
                 // Copy all test files to the build-directory
                 files: [{
@@ -163,8 +163,8 @@ function configureGrunt(grunt) {
                 }]
             }
         },
-        
-        
+
+
         // Compile the Typescript files to JavaScript
         ts: {
             options: {
@@ -183,7 +183,7 @@ function configureGrunt(grunt) {
                 src: ['<%= cfg.build %>/test/**/*.ts']
             }
         },
-        
+
         // Configure a mochaTest task
         mochaTest: {
             test: {
@@ -195,12 +195,12 @@ function configureGrunt(grunt) {
                 src: ['<%= cfg.build %>/test/**/*.js']
             }
         },
-        
+
         // Browserify for web release
         browserify: {
             options: {
                 browserifyOptions: {
-                    standalone: '<%= cfg.libNamespace %>'      
+                    standalone: '<%= cfg.libNamespace %>'
                 }
             },
             src: {
@@ -208,7 +208,7 @@ function configureGrunt(grunt) {
                 dest: '<%= cfg.build %>/<%= cfg.libName %>.js'
             }
         },
-        
+
         // Uglify for release
         uglify: {
             browser: {

@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/torpedro/datatable.js.svg?branch=master)](http://travis-ci.org/torpedro/datatable.js)
+[![Build Status](https://api.travis-ci.org/torpedro/datasci.js.svg?branch=master)](http://travis-ci.org/torpedro/datasci.js)
 [![npm version](https://badge.fury.io/js/datatable.js.svg)](https://badge.fury.io/js/datatable.js)
 
 # datatable.js - The JavaScript Data Library
@@ -14,7 +14,7 @@
 **node.js**: Install the package and import the library.
 
     npm install datatable.js
-    
+
     var dt = require("datatable.js")
 
 **Browser**: Include the JavaScript library in your HTML page.

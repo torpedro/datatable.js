@@ -35,7 +35,7 @@ class FieldDescriptor {
 
 			(<any>row).get = function(name: string) {
 				return table.value(rowNr, name);
-			}
+			};
 
 			var value = this.fn(row);
 			return value;
@@ -51,7 +51,7 @@ class FieldDescriptor {
 			(<any>row).get = function(name: string) {
 				var id = table.getFieldNameIndex(name);
 				return row[id];
-			}
+			};
 
 			var value = this.fn(row);
 			return value;

@@ -1,16 +1,16 @@
-type Row = Array<any>;
-type Column = Array<any>;
+type Row = any[];
+type Column = any[];
 
 interface TableData {
-	fields: Array<string>,
-	types: Array<string>,
-	rows: Array<Row>
+	fields: string[];
+	types: string[];
+	rows: Array<Row>;
 }
 
 interface TableDefinition {
-	fields: Array<string>,
-	types?: Array<string>,
-	columns?: Array<Array<any>>
+	fields: string[];
+	types?: string[];
+	columns?: any[][];
 }
 
 /**
@@ -19,19 +19,15 @@ interface TableDefinition {
  */
 interface ITable {
 
-//	constructor(def: TableDefinition);
-
 	addField(fieldName: string): void;
 
 	addRow(row: Row): void;
 
-	column(fieldName: string): Array<any>;
+	column(fieldName: string): any[];
 
-	columns(): Array<Array<any>>;
+	columns(): any[][];
 
-//	data(): TableData;
-
-	fields(): Array<string>;
+	fields(): string[];
 
 	row(rowNumber: number): Row;
 
@@ -41,7 +37,7 @@ interface ITable {
 
 	type(fieldName: string): string;
 
-	types(): Array<string>;
+	types(): string[];
 
 	value(rowNumber: number, fieldName: string): any;
 

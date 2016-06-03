@@ -41,7 +41,7 @@ class CSVParser {
 
 			// Initialize fields
 			for (var c = 0; c < numColumns; ++c) {
-				fields.push('Column ' + (c+1));
+				fields.push('Column ' + (c + 1));
 			}
 
 			// Fill Attribute Vectors
@@ -70,7 +70,7 @@ class CSVParser {
 
 		csv += table.fields().join(this.options.delimiter)
 		csv += "\n";
-		for (var i = 0; i < table.size()-1; ++i) {
+		for (var i = 0; i < table.size() - 1; ++i) {
 			var row = table.row(i);
 			csv += row.join(this.options.delimiter);
 			csv += "\n";

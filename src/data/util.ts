@@ -2,6 +2,7 @@
  * @module util
  */
 module util {
+    /* tslint:disable */
 	// http://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
 	export function toHex(num: number): string {
 		var ret = ((num<0?0x8:0)+((num >> 28) & 0x7)).toString(16) + (num & 0xfffffff).toString(16);
@@ -50,6 +51,7 @@ module util {
 		}
 		return r.join("");
 	}
+    /* tslint:enable */
 }
 
 

@@ -1,7 +1,6 @@
 /// <reference path="../typedefs/ITable.ts" />
 
-import _ = require("underscore")
-
+import _ = require("underscore");
 import HashMap = require('../data/HashMap');
 import Set = require('../data/Set');
 import types = require('../data/types');
@@ -34,16 +33,16 @@ class CoreColumnTable implements ITable {
 
 
 	protected _initializeByTableDefinition(def: TableDefinition): void {
-		if (def.fields.length == 0) throw "Number of fields can't be zero!";
+		if (def.fields.length === 0) throw "Number of fields can't be zero!";
 
 		// Initialize the fields
 		this._fields = new Set(def.fields);
-		if (def.fields.length != this._fields.size()) throw "No duplicate field names allowed!";
+		if (def.fields.length !== this._fields.size()) throw "No duplicate field names allowed!";
 
 		// Initialize the types
 		// If types are undefined, we set them to 'any' by default
 		if (def.types) {
-			if (def.fields.length != def.types.length) {
+			if (def.fields.length !== def.types.length) {
 				throw "Number of fields and number of types do not match!";
 			}
 			this._types = def.types;
@@ -58,12 +57,12 @@ class CoreColumnTable implements ITable {
 		// TODO: Allow initialization with rows
 		this._attributeVectors = new HashMap<string, Array<any>>();
 		if (def.columns) {
-			if (def.fields.length != def.columns.length)
+			if (def.fields.length !== def.columns.length)
 				throw "Number of fields and number of supplied columns do not match!";
 
 			var numRows = def.columns[0].length;
 			for (var c = 0; c < def.fields.length; ++c) {
-				if (def.columns[c].length != numRows) {
+				if (def.columns[c].length !== numRows) {
 					throw "Number of rows in TableDefiniton is not uniform!";
 				}
 
@@ -161,12 +160,12 @@ class CoreColumnTable implements ITable {
 			// Check for special reserved system names
 			if (name === '$rownr') return types.kNumber;
 
-			throw "Couldn't find column: '" + name + " '!"
+			throw "Couldn't find column: '" + name + " '!";
 		}
 	}
 
 	empty(): boolean {
-		return this.size() == 0;
+		return this.size() === 0;
 	}
 
 	size(): number {
@@ -193,7 +192,7 @@ class CoreColumnTable implements ITable {
 
 	getFieldNameIndex(field: string): number {
 		var index = this._fields.indexOf(field);
-		if (index == -1) throw "Field '" + field + "' doesn't exist!";
+		if (index === -1) throw "Field '" + field + "' doesn't exist!";
 		return index;
 	}
 
@@ -202,7 +201,7 @@ class CoreColumnTable implements ITable {
 	}
 
 	setValue(row: number, column: string, value: any): void {
-		this.column(column)[row] = value
+		this.column(column)[row] = value;
 	}
 
 	/**
@@ -210,7 +209,7 @@ class CoreColumnTable implements ITable {
 	 * as many rows as specified
 	 */
 	reserve(numRows: number): void {
-		if (this.numFields() == 0) throw("Can't reserve rows on a table without fields!");
+		if (this.numFields() === 0) throw("Can't reserve rows on a table without fields!");
 		while (this.size() < numRows) {
 			this.addRow([]);
 		}
@@ -225,7 +224,7 @@ class CoreColumnTable implements ITable {
 				return this._createRowNrColumn();
 			}
 
-			throw "Couldn't find column: '" + name + " '!"
+			throw "Couldn't find column: '" + name + " '!";
 		}
 	}
 

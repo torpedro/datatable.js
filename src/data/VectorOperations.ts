@@ -9,13 +9,13 @@ import types = require('./types');
 module vec {
 	export function range(vector: Array<any>, dataType?: string): Array<any> {
 		var size: number = vector.length;
-		if (size == 0) return null;
+		if (size === 0) return null;
 
 		var range = [vector[0], vector[0]];
 		for (var n = 1; n < size; ++n) {
 			var value = vector[n];
 
-			// TODO: Handle different datatypes
+			// todo: Handle different datatypes
 			if (value < range[0]) range[0] = value;
 			if (value > range[1]) range[1] = value;
 		}
@@ -36,19 +36,19 @@ module vec {
 
 			var res = types.detectDataType(value, parseStrings);
 
-			// Ignore nulls, they have no type
-			if (res.type == types.kNull) continue;
+			// ignore nulls, they have no type
+			if (res.type === types.kNull) continue;
 
-			// Add to the typeset
-			if (typeset.indexOf(res.type) == -1) typeset.push(res.type);
+			// add to the typeset
+			if (typeset.indexOf(res.type) === -1) typeset.push(res.type);
 			if (convertTypes) vector[i] = res.value
 		}
 
 
-		if (typeset.length == 0) return types.kNull;
-		if (typeset.length == 1) return typeset[0];
-		else return 'any'; // Return an any type
-		// TODO: roll-up the types
+		if (typeset.length === 0) return types.kNull;
+		if (typeset.length === 1) return typeset[0];
+		else return 'any'; // return an any type
+		// todo: roll-up the types
 	}
 
 	export function convertToType(vector: any[], targetType: string): any[] {
@@ -82,7 +82,7 @@ module vec {
 	export function distinctValues(vector: Array<any>): Array<any> {
 		var values = [];
 		for (var i = 0; i < vector.length; ++i) {
-			if (values.indexOf(vector[i]) == -1) {
+			if (values.indexOf(vector[i]) === -1) {
 				values.push(vector[i]);
 			}
 		}

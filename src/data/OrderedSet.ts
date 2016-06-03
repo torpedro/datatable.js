@@ -6,28 +6,28 @@ import Set = require("./Set");
  */
 class OrderedSet extends Set {
 
-	add(val: any) {
-		var search = this._binarySearch(val, 0, this.array.length);
+	add(val: any): void {
+		let search: number[] = this.binarySearch(val, 0, this.array.length);
 		if (search[0] === -1) {
 			this.array.splice(search[1], 0, val);
 		}
 	}
 
 	difference(other: ISet): OrderedSet {
-		var set = new OrderedSet(this);
-		for (var i = 0; i < other.size(); ++i) {
+		let set: OrderedSet = new OrderedSet(this);
+		for (let i: number = 0; i < other.size(); ++i) {
 			set.remove(other.get(i));
 		}
 		return set;
 	}
 
 	indexOf(val: any): number {
-		return this._binarySearch(val, 0, this.array.length)[0];
+		return this.binarySearch(val, 0, this.array.length)[0];
 	}
 
 	intersection(other: ISet): OrderedSet {
-		var set = new OrderedSet();
-		for (var i = 0; i < this.size(); ++i) {
+		let set: OrderedSet = new OrderedSet();
+		for (let i: number = 0; i < this.size(); ++i) {
 			if (other.contains(this.array[i])) {
 				set.add(this.array[i]);
 			}
@@ -36,8 +36,8 @@ class OrderedSet extends Set {
 	}
 
 	union(other: ISet): OrderedSet {
-		var set = new OrderedSet(this);
-		for (var i = 0; i < other.size(); ++i) {
+		let set: OrderedSet = new OrderedSet(this);
+		for (let i: number = 0; i < other.size(); ++i) {
 			set.add(other.get(i));
 		}
 		return set;
@@ -47,13 +47,13 @@ class OrderedSet extends Set {
 	 * returns the index, if the element was found
 	 * and the index where it should be inserted, if not found
 	 */
-	private _binarySearch(val: any, low: number, high: number): number[] {
+	private binarySearch(val: any, low: number, high: number): number[] {
 		if (low > high) return [-1, low];
-		var mid: number = Math.floor((low + high) / 2);
+		let mid: number = Math.floor((low + high) / 2);
 
 		if (this.array[mid] === val) return [mid, mid];
-		else if (this.array[mid] < val) return this._binarySearch(val, mid + 1, high);
-		else return this._binarySearch(val, low, mid - 1);
+		else if (this.array[mid] < val) return this.binarySearch(val, mid + 1, high);
+		else return this.binarySearch(val, low, mid - 1);
 	}
 }
 

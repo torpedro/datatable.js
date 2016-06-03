@@ -3,7 +3,7 @@
  */
 module es {
 	export function SingleExponentialSmoothing(vector: Array<number>, alpha: number): Array<number> {
-		if (!vector || typeof alpha == 'undefined') throw "Not enough parameters given!";
+		if (!vector || typeof alpha === 'undefined') throw "Not enough parameters given!";
 		if (0 > alpha || alpha > 1) throw "Alpha has to be in [0,1]!";
 
 		var result = []; // smoothed data
