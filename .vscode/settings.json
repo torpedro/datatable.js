@@ -6,5 +6,12 @@
 		".tscache/**": true,
 		"**/.baseDir.[tj]s": true
 	},
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    // Controls the rendering size of tabs in characters.
+    // If set to auto, the value will be guessed based on the opened file.
+    "editor.tabSize": 4,
+
+    // Controls if the editor will insert spaces for tabs.
+    // If set to auto, the value will be guessed based on the opened file.
+    "editor.insertSpaces": false
 }

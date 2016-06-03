@@ -8,7 +8,7 @@ module types {
 	}
 
 	// these are the data types that can be detected
-	var types: string[] = ["any", "string", "number", "date", "object", "boolean", "null", "function"];
+	var types: string[] = ['any', 'string', 'number', 'date', 'object', 'boolean', 'null', 'function'];
 	export var kAny      = types[0];
 	export var kString   = types[1];
 	export var kNumber   = types[2];
@@ -32,20 +32,20 @@ module types {
 		var fromType: string = typeof value;
 
 		if (fromType === toType) return value;
-		if (toType === "any") return value;
+		if (toType === 'any') return value;
 
-		if (fromType === "string") {
+		if (fromType === 'string') {
 			// convert strings
 			return convertString(value, toType);
 		}
 
-		if (fromType === "number") {
+		if (fromType === 'number') {
 			// convert numbers
-			if (toType === "string") return "" + value;
+			if (toType === 'string') return '' + value;
 		}
 
-		if (fromType === "object") {
-			if (toType === "date") {
+		if (fromType === 'object') {
+			if (toType === 'date') {
 				if (value instanceof Date) return value;
 			}
 		}
@@ -68,25 +68,25 @@ module types {
 	 *  - symbol (ES6) (-> error)
 	 */
 	export function detectDataType(value: any, parseStrings?: boolean): ITypeDetection {
-		if (typeof parseStrings === "undefined") parseStrings = true;
+		if (typeof parseStrings === 'undefined') parseStrings = true;
 
 		// get the javascript built-in type
 		var jsType: string = typeof value;
 
-		// for values of "undefined" or "null"
-		// we assign the type "null"
+		// for values of 'undefined' or 'null'
+		// we assign the type 'null'
 		if (value === null ||
 			value === undefined) {
 			return { type: kNull, value: null };
 		}
 
-		if (jsType === "number") return { type: kNumber, value: value };
-		if (jsType === "boolean") return { type: kBoolean, value: value };
-		if (jsType === "function") return { type: kFunction, value: value };
-		if (jsType === "string" && !parseStrings) return { type: kString, value: value };
+		if (jsType === 'number') return { type: kNumber, value: value };
+		if (jsType === 'boolean') return { type: kBoolean, value: value };
+		if (jsType === 'function') return { type: kFunction, value: value };
+		if (jsType === 'string' && !parseStrings) return { type: kString, value: value };
 
 		// check for Date objects
-		if (jsType === "object") {
+		if (jsType === 'object') {
 			if (value instanceof Date) {
 				return { type: kDate, value: value };
 			} else {
@@ -95,11 +95,11 @@ module types {
 		}
 
 		// parse the string
-		if (jsType === "string" && parseStrings) {
+		if (jsType === 'string' && parseStrings) {
 			return detectDataTypeOfString(value);
 		}
 
-		throw "Unable to detect data type!";
+		throw 'Unable to detect data type!';
 	}
 
 	/**
@@ -144,7 +144,7 @@ module types {
 		}
 
 		return {
-			type: "string",
+			type: 'string',
 			value: value
 		};
 	}
@@ -153,7 +153,7 @@ module types {
 /**
  * date detectors
  */
-types.registerTypeDetector("date", { // dd.mm.yyyy
+types.registerTypeDetector('date', { // dd.mm.yyyy
 	regex: /^([0-9]?[0-9])\.([0-9]?[0-9])\.([0-9][0-9][0-9][0-9])$/,
 	format: function(match) {
 		var month = parseInt(match[2], 10) - 1;
@@ -161,7 +161,7 @@ types.registerTypeDetector("date", { // dd.mm.yyyy
 	}
 });
 
-types.registerTypeDetector("date", { // yyyy-mm-dd
+types.registerTypeDetector('date', { // yyyy-mm-dd
 	regex: /^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])$/,
 	format: function(match) {
 		var month = parseInt(match[2], 10) - 1;
@@ -169,7 +169,7 @@ types.registerTypeDetector("date", { // yyyy-mm-dd
 	}
 });
 
-types.registerTypeDetector("date", { // mm/dd/yyyy
+types.registerTypeDetector('date', { // mm/dd/yyyy
 	regex: /^([0-9]?[0-9])\/([0-9]?[0-9])\/([0-9][0-9][0-9][0-9])$/,
 	format: function(match) {
 		var month = parseInt(match[1], 10) - 1;
@@ -177,7 +177,7 @@ types.registerTypeDetector("date", { // mm/dd/yyyy
 	}
 });
 
-types.registerTypeDetector("date", {
+types.registerTypeDetector('date', {
 	matchAndFormat: function(str: string): any {
 		// check if it starts with a date
 		if (/^([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/.exec(str)) {
@@ -192,27 +192,27 @@ types.registerTypeDetector("date", {
 /**
  * number detectors
  */
-types.registerTypeDetector("number", {
+types.registerTypeDetector('number', {
 	regex: /^\s*-?[0-9]+(?:\,[0-9][0-9][0-9])*(?:\.[0-9]+)?\s*$/,
 	format: function(match) {
-		return parseFloat(match[0].replace(",", ""));
+		return parseFloat(match[0].replace(',', ''));
 	}
 });
-types.registerTypeDetector("number", {
+types.registerTypeDetector('number', {
 	regex: /^\s*-?[0-9]+(?:\.[0-9][0-9][0-9])*(?:\,[0-9]+)?\s*$/,
 	format: function(match) {
-		return parseFloat(match[0].replace(".", "").replace(",", "."));
+		return parseFloat(match[0].replace('.', '').replace(',', '.'));
 	}
 });
 
 /**
  * boolean
  */
-types.registerTypeDetector("boolean", {
+types.registerTypeDetector('boolean', {
 	regex: /^[Ff][Aa][Ll][Ss][Ee]$/,
 	format: function(match) { return false; }
 });
-types.registerTypeDetector("boolean", {
+types.registerTypeDetector('boolean', {
 	regex: /^[Tt][Rr][Uu][Ee]$/,
 	format: function(match) { return true; }
 });

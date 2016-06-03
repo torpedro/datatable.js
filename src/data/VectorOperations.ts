@@ -1,4 +1,4 @@
-/// <reference path="../typings/underscore/underscore.d.ts" />
+/// <reference path='../typings/underscore/underscore.d.ts' />
 import _ = require('underscore');
 
 import types = require('./types');
@@ -41,7 +41,7 @@ module vec {
 
 			// add to the typeset
 			if (typeset.indexOf(res.type) === -1) typeset.push(res.type);
-			if (convertTypes) vector[i] = res.value
+			if (convertTypes) vector[i] = res.value;
 		}
 
 

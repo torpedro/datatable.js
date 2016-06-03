@@ -6,52 +6,53 @@ import AnalyticsTable = require('../AnalyticsTable');
  * Used in group-by operations
  */
 module agg {
-	export function sum(targetField: string, outputName?: string) {
-		var aggf = function(rows: Array<any>, table: AnalyticsTable) {
-			// TODO: type-switch
+	export type Aggregation = (
+		((rows: any[], table: AnalyticsTable) => any) & { aggName?: string, name?: string }
+	);
 
-			// number
-			var sum = 0;
-			var c = table.getFieldNameIndex(targetField);
-			for (var r = 0; r < rows.length; ++r) {
+	export function sum(targetField: string, outputName?: string): Aggregation {
+		let aggf: Aggregation = function(rows: Array<any>, table: AnalyticsTable): number {
+			// todo: type-switch
+			let sum: number = 0;
+			let c: number = table.getFieldNameIndex(targetField);
+			for (let r: number = 0; r < rows.length; ++r) {
 				sum += rows[r][c];
 			}
 			return sum;
 		};
 
-		// Set output name
-		if (outputName) aggf['aggName'] = outputName;
-		else aggf['aggName'] = 'SUM(' + targetField + ')';
+		// set output name
+		if (outputName) aggf.aggName = outputName;
+		else aggf.aggName = 'SUM(' + targetField + ')';
 		return aggf;
 	}
 
-	export function avg(targetField: string, outputName: string) {
-		var aggf = function(rows: Array<any>, table: AnalyticsTable) {
-			// TODO: type-switch
-			// number
-			var sum = 0;
-			var c = table.getFieldNameIndex(targetField);
-			for (var r = 0; r < rows.length; ++r) {
+	export function avg(targetField: string, outputName: string): Aggregation {
+		let aggf: Aggregation = function(rows: Array<any>, table: AnalyticsTable): number {
+			// todo: type-switch
+			let sum: number = 0;
+			let c: number = table.getFieldNameIndex(targetField);
+			for (let r: number = 0; r < rows.length; ++r) {
 				sum += rows[r][c];
 			}
 			return (sum / rows.length);
 		};
 
-		// Set output name
-		if (outputName) aggf['aggName'] = outputName;
-		else aggf['aggName'] = 'AVG(' + targetField + ')';
+		// set output name
+		if (outputName) aggf.aggName = outputName;
+		else aggf.aggName = 'AVG(' + targetField + ')';
 		return aggf;
 	}
 
-	export function first(targetField: string, outputName: string) {
-		var aggf = function(rows: Array<any>, table: AnalyticsTable) {
-			var c = table.getFieldNameIndex(targetField);
+	export function first(targetField: string, outputName: string): Aggregation {
+		let aggf: Aggregation = function(rows: Array<any>, table: AnalyticsTable): any {
+			let c: number = table.getFieldNameIndex(targetField);
 			return rows[0][c];
 		};
 
-		// Set output name
-		if (outputName) aggf['aggName'] = outputName;
-		else aggf['aggName'] = 'AVG(' + targetField + ')';
+		// set output name
+		if (outputName) aggf.aggName = outputName;
+		else aggf.aggName = 'AVG(' + targetField + ')';
 		return aggf;
 
 	}

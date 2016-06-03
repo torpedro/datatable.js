@@ -1,4 +1,4 @@
-/// <reference path="../typedefs/ISet.ts" />
+/// <reference path='../typedefs/ISet.ts' />
 /**
  * @class Set
  *
@@ -58,7 +58,7 @@ class Set implements ISet {
 	get(): any[];
 	get(index: number): any;
 	get(index?: number): any {
-		if (typeof index === "undefined") {
+		if (typeof index === 'undefined') {
 			return this.array;
 		} else {
 			return this.array[index];

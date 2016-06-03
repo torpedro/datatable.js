@@ -7,7 +7,7 @@ class FieldDescriptor {
 	isStatic: boolean;
 	name: string;
 	outputName: string;
-	fn: Function;
+	fn: ((row: any[]) => any);
 
 	constructor(field: string);
 	constructor(field: string, as: string);
@@ -31,32 +31,31 @@ class FieldDescriptor {
 	getValue(table: CoreColumnTable, rowNr: number): any {
 		if (this.isStatic) return table.value(rowNr, this.name);
 		else {
-			var row = table.row(rowNr);
+			let row: any[] = table.row(rowNr);
 
-			(<any>row).get = function(name: string) {
+			(<any>row).get = function(name: string): any {
 				return table.value(rowNr, name);
 			};
 
-			var value = this.fn(row);
+			let value: any = this.fn(row);
 			return value;
 		}
 	}
 
-	getValueFromRow(table: CoreColumnTable, row: Array<any>) {
+	getValueFromRow(table: CoreColumnTable, row: Array<any>): any {
 		if (this.isStatic) {
-			var id = table.getFieldNameIndex(this.name);
+			let id: number = table.getFieldNameIndex(this.name);
 			return row[id];
 
 		} else {
-			(<any>row).get = function(name: string) {
-				var id = table.getFieldNameIndex(name);
+			(<any>row).get = function(name: string): any {
+				let id: number = table.getFieldNameIndex(name);
 				return row[id];
 			};
 
-			var value = this.fn(row);
+			let value: any = this.fn(row);
 			return value;
 		}
-
 	}
 }
 

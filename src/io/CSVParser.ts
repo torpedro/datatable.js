@@ -1,6 +1,5 @@
-/// <reference path="../typings/papaparse/papaparse.d.ts" />
+/// <reference path='../typings/papaparse/papaparse.d.ts' />
 import CoreColumnTable = require('../table/CoreColumnTable');
-import vec = require('../data/VectorOperations');
 import Papa = require('papaparse');
 
 class CSVParser {
@@ -14,48 +13,47 @@ class CSVParser {
 	}
 
 	parseString(csvString: string): CoreColumnTable {
-		var result = Papa.parse(csvString, this.options);
+		let result: PapaParse.ParseResult = Papa.parse(csvString, this.options);
 
-		var numRows = result.data.length;
-		var fields: Array<string> = [];
-		var types: Array<string> = [];
-		var attrVectors: Array<Array<any>> = [];
+		let numRows: number = result.data.length;
+		let fields: string[] = [];
+		let attrVectors: any[][] = [];
 
 		if (result.meta.fields) {
 			fields = result.meta.fields;
 
-			// Create attribute vectors
-			for (var c = 0; c < fields.length; ++c) {
-				var vector = [];
-				for (var r = 0; r < numRows; ++r) {
+			// create attribute vectors
+			for (let c: number = 0; c < fields.length; ++c) {
+				let vector: any[] = [];
+				for (let r: number = 0; r < numRows; ++r) {
 					vector.push(result.data[r][fields[c]]);
 				}
 				attrVectors.push(vector);
 			}
 		} else {
-			// Find the number of columns needed for all rows
-			var numColumns = 0;
-			for (var r = 0; r < numRows; ++r) {
+			// find the number of columns needed for all rows
+			let numColumns: number = 0;
+			for (let r: number = 0; r < numRows; ++r) {
 				numColumns = Math.max(numColumns, result.data[r].length);
 			}
 
-			// Initialize fields
-			for (var c = 0; c < numColumns; ++c) {
+			// initialize fields
+			for (let c: number = 0; c < numColumns; ++c) {
 				fields.push('Column ' + (c + 1));
 			}
 
-			// Fill Attribute Vectors
-			for (var c = 0; c < numColumns; ++c) {
-				var vector = [];
-				for (var r = 0; r < numRows; ++r) {
+			// fill attribute vectors
+			for (let c: number = 0; c < numColumns; ++c) {
+				let vector: any[] = [];
+				for (let r: number = 0; r < numRows; ++r) {
 					vector.push(result.data[r][c]);
 				}
 				attrVectors.push(vector);
 			}
 		}
 
-		// Create the table
-		var table = new CoreColumnTable({
+		// create the table
+		let table: CoreColumnTable = new CoreColumnTable({
 			fields: fields,
 			columns: attrVectors
 		});
@@ -66,14 +64,14 @@ class CSVParser {
 
 
 	dumpString(table: CoreColumnTable): string {
-		var csv = "";
+		let csv: string = '';
 
-		csv += table.fields().join(this.options.delimiter)
-		csv += "\n";
-		for (var i = 0; i < table.size() - 1; ++i) {
-			var row = table.row(i);
+		csv += table.fields().join(this.options.delimiter);
+		csv += '\n';
+		for (let i: number = 0; i < table.size() - 1; ++i) {
+			let row: any[] = table.row(i);
 			csv += row.join(this.options.delimiter);
-			csv += "\n";
+			csv += '\n';
 		}
 		csv += table.row(table.size() - 1).join(this.options.delimiter);
 

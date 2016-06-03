@@ -1,4 +1,4 @@
-import Set = require("./Set");
+import Set = require('./Set');
 /**
  * @class OrderedSet
  *

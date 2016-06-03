@@ -1,13 +1,13 @@
 type Row = any[];
 type Column = any[];
 
-interface TableData {
+interface ITableData {
 	fields: string[];
 	types: string[];
-	rows: Array<Row>;
+	rows: Row[];
 }
 
-interface TableDefinition {
+interface ITableDefinition {
 	fields: string[];
 	types?: string[];
 	columns?: any[][];
@@ -31,7 +31,7 @@ interface ITable {
 
 	row(rowNumber: number): Row;
 
-	rows(): Array<Row>;
+	rows(): Row[];
 
 	size(): number;
 

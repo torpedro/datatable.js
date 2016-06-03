@@ -1,6 +1,6 @@
-/// <reference path="../typings/underscore/underscore.d.ts" />
-import _ = require("underscore");
-import util = require("./util");
+/// <reference path='../typings/underscore/underscore.d.ts' />
+import _ = require('underscore');
+import util = require('./util');
 
 /**
  * @class HashMap
