@@ -1,7 +1,7 @@
-[![Build Status](https://api.travis-ci.org/torpedro/datasci.js.svg?branch=master)](http://travis-ci.org/torpedro/datasci.js)
+[![Build Status](https://api.travis-ci.org/torpedro/datatable.js.svg?branch=master)](http://travis-ci.org/torpedro/datatable.js)
 [![npm version](https://badge.fury.io/js/datatable.js.svg)](https://badge.fury.io/js/datatable.js)
 
-# datatable.js - The JavaScript Data Library
+# datatable.js - Easy Data Handling
 
 **datatable.js** is an analytics library for JavaScript. The library contains sophisticated implementations of a Table and useful statistical functionality to interact with data. The Table implementation allows **SQL-like** interaction. **datatable.js** also holds functionality to turn Tables directly into **charts**.
 
@@ -33,13 +33,11 @@ It also contains some features that are planned in the near future (marked with 
   * Set
   * OrderedSet
   * HashMap
+  * Vector
   * vec (module, contains various functions to work on arrays/vectors)
 * dt.io
   * CSVParser
   * *AjaxLoader (todo)*
-* dt.plot
-  * *LinePlot (todo)*
-  * *BarChart (todo)*
 * dt.smooth
   * ma (module, contains moving average smoothing functionality)
   * es (module, contains exponential smoothing functionality)
