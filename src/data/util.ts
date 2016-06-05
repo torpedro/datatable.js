@@ -1,7 +1,7 @@
 /**
  * @module util
  */
-module util {
+export module util {
     /* tslint:disable */
 	// http://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
 	export function toHex(num: number): string {
@@ -53,7 +53,3 @@ module util {
 	}
     /* tslint:enable */
 }
-
-
-// modules.export
-export = util;

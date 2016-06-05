@@ -1,4 +1,4 @@
-import CoreColumnTable = require('./CoreColumnTable');
+import { CoreColumnTable } from './CoreColumnTable';
 
 export type FieldFunction = (
 	(row: (any[] & { get?: ((name: string) => any) }))

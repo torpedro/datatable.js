@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 import assert = require("assert");
-import agg = require('../../../src/table/operators/agg');
-import AnalyticsTable = require('../../../src/table/AnalyticsTable');
+import { agg } from '../../../src/table/operators/agg';
+import { AnalyticsTable } from '../../../src/table/AnalyticsTable';
 
 describe('table.operators.agg', function() {
 	var fields = ['Category', 'Person', 'Score'];
@@ -15,8 +15,8 @@ describe('table.operators.agg', function() {
 		fields: fields
 	});
 	table.addRows(data);
-	
-	
+
+
 	describe('number', function() {
 		it('sum', function() {
 			var aggs = [table.agg.sum('Score', 'SUM(Score)')];
@@ -24,7 +24,7 @@ describe('table.operators.agg', function() {
 			assert.deepEqual(res.rows(), [[1, 300], [2, 500]]);
 			assert.deepEqual(res.fields(), ['Category', 'SUM(Score)']);
 		});
-		
+
 		it('avg', function() {
 			var aggs = [table.agg.avg('Score', 'AVG(Score)')];
 			var res = table.groupBy('Category', aggs);

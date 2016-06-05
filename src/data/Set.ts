@@ -7,7 +7,7 @@
  *
  * TODO: Allow option to set deep-equal
  */
-class Set implements ISet {
+export class Set implements ISet {
 	IS_SET: boolean = true;
 
 	protected array: any[];
@@ -132,8 +132,3 @@ class Set implements ISet {
 		return set;
 	}
 }
-
-
-
-// modules.export
-export = Set;

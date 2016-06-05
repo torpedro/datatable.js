@@ -1,7 +1,7 @@
 /**
  * @module types
  */
-module types {
+export module types {
 	export interface ITypeDetector {
 		regex?: RegExp;
 		matchAndFormat?: ((value: string) => any);
@@ -221,6 +221,3 @@ types.registerTypeDetector('boolean', {
 	regex: /^[Tt][Rr][Uu][Ee]$/,
 	format: function(match: RegExpExecArray): boolean { return true; }
 });
-
-// modules.export
-export = types;

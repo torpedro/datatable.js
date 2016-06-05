@@ -1,7 +1,7 @@
 /**
  * @module es
  */
-module es {
+export module es {
 	export function SingleExponentialSmoothing(vector: number[], alpha: number): number[] {
 		if (!vector || typeof alpha === 'undefined') throw 'Not enough parameters given!';
 		if (0 > alpha || alpha > 1) throw 'Alpha has to be in [0,1]!';
@@ -45,7 +45,3 @@ module es {
 
 	// todo: Triple Exponential Smoothing
 }
-
-
-// modules.export
-export = es;

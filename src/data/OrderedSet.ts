@@ -1,10 +1,11 @@
-import Set = require('./Set');
+import { Set } from './Set';
+
 /**
  * @class OrderedSet
  *
  * Keeps values in order
  */
-class OrderedSet extends Set {
+export class OrderedSet extends Set {
 
 	add(val: any): void {
 		let search: number[] = this.binarySearch(val, 0, this.array.length);
@@ -56,6 +57,3 @@ class OrderedSet extends Set {
 		else return this.binarySearch(val, low, mid - 1);
 	}
 }
-
-// modules.export
-export = OrderedSet;

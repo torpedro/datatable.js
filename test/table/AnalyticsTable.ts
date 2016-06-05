@@ -2,10 +2,10 @@
 /// <reference path="../../src/table/AnalyticsTable.ts" />
 
 import assert = require("assert");
-import agg = require('../../src/table/operators/agg');
-import AnalyticsTable = require('../../src/table/AnalyticsTable');
+import { agg } from '../../src/table/operators/agg';
+import { AnalyticsTable } from '../../src/table/AnalyticsTable';
 import { FieldDescriptor } from '../../src/table/FieldDescriptor';
-import CoreColumnTable = require('../../src/table/CoreColumnTable');
+import { CoreColumnTable } from '../../src/table/CoreColumnTable';
 
 
 describe('table.AnalyticsTable', function() {

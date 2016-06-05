@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 import assert = require("assert")
-import Vector = require('../../src/data/Vector');
+import { Vector } from '../../src/data/Vector';
 
 
 describe('data.Vector', function() {

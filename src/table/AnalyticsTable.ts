@@ -3,12 +3,12 @@
 
 ///////////////////////////
 // <imports>
-import CoreColumnTable = require('./CoreColumnTable');
+import { CoreColumnTable } from './CoreColumnTable';
 import { FieldDescriptor } from './FieldDescriptor';
-import OrderedSet = require('../data/OrderedSet');
-import HashMap = require('../data/HashMap');
-import vec = require('../data/VectorOperations');
-import aggs = require('./operators/agg');
+import { OrderedSet } from '../data/OrderedSet';
+import { HashMap } from '../data/HashMap';
+import { vec } from '../data/VectorOperations';
+import { agg as aggs } from './operators/agg';
 // </imports>
 ///////////////////////////
 
@@ -16,7 +16,7 @@ import aggs = require('./operators/agg');
 /**
  * @class AnalyticsTable
  */
-class AnalyticsTable extends CoreColumnTable {
+export class AnalyticsTable extends CoreColumnTable {
 	public agg = aggs; // alias to the aggregation module
 
 
@@ -328,9 +328,6 @@ class AnalyticsTable extends CoreColumnTable {
 	}
 }
 
-
-
-
 // utility functions
 function convertListOfFieldDescriptors(vals: (string|FieldDescriptor)[]): FieldDescriptor[] {
 	let desc: FieldDescriptor[] = [];
@@ -345,6 +342,3 @@ function convertToFieldDescriptors(val: string|FieldDescriptor): FieldDescriptor
 	// else return the field descriptor that was put in
 	return <FieldDescriptor>val;
 }
-
-// modules.export
-export = AnalyticsTable;

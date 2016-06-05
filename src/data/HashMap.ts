@@ -1,6 +1,6 @@
 /// <reference path='../typings/underscore/underscore.d.ts' />
 import _ = require('underscore');
-import util = require('./util');
+import { util } from './util';
 
 /**
  * @class HashMap
@@ -11,7 +11,7 @@ import util = require('./util');
 type BucketEntry<K, V> = [K, V];
 type Bucket<K, V> = BucketEntry<K, V>[];
 
-class HashMap<K, V> {
+export class HashMap<K, V> {
 	private map: { [key: string]: Bucket<K, V> } = {};
 
 	// flag to indicate whether to use equality or identity
@@ -85,6 +85,3 @@ class HashMap<K, V> {
 	}
 
 }
-
-// modules.export
-export = HashMap;

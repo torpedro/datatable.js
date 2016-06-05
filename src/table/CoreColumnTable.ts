@@ -2,11 +2,11 @@
 
 import _ = require('underscore');
 import { FieldDescriptor, FieldArgument } from '../../src/table/FieldDescriptor';
-import HashMap = require('../data/HashMap');
-import Vector = require('../data/Vector');
-import Set = require('../data/Set');
-import types = require('../data/types');
-import vec = require('../data/VectorOperations');
+import { HashMap } from '../data/HashMap';
+import { Vector } from '../../src/data/Vector';
+import { Set } from '../data/Set';
+import { types } from '../data/types';
+import { vec } from '../data/VectorOperations';
 
 
 
@@ -18,7 +18,7 @@ import vec = require('../data/VectorOperations');
  * TODO: remove row
  * TODO: allow to define constraints/validators
  */
-class CoreColumnTable implements ITable {
+export class CoreColumnTable implements ITable {
 	protected _attributeVectors: HashMap<string, Vector>;
 	protected _fields: Set;
 	protected _types: string[];
@@ -295,10 +295,3 @@ class CoreColumnTable implements ITable {
 		return vector;
 	}
 }
-
-
-
-
-
-// modules.export
-export = CoreColumnTable;

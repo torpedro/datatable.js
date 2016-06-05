@@ -1,6 +1,7 @@
-export import vec = require('./VectorOperations');
-export import types = require('./types');
-export import util = require('./util');
-export import Set = require('./Set');
-export import OrderedSet = require('./OrderedSet');
-export import HashMap = require('./HashMap');
+export { vec } from './VectorOperations';
+export { types } from './types';
+export { util } from './util';
+export { Set } from './Set';
+export { OrderedSet } from './OrderedSet';
+export { HashMap } from './HashMap';
+export { Vector } from './Vector';

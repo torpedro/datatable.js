@@ -1,7 +1,7 @@
 /**
  * @module ma
  */
-module ma {
+export module ma {
 	export function SimpleMovingAverage(vector: number[], k: number): number[] {
 		let result: number[] = [];
 
@@ -31,7 +31,3 @@ module ma {
 	// todo: Central Moving Average
 	// todo: Cumulative Moving Average
 }
-
-
-// modules.export
-export = ma;

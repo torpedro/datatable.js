@@ -1,5 +1,5 @@
 
-class Vector {
+export class Vector {
 	private data: any[];
 	private type: string;
 
@@ -30,6 +30,3 @@ class Vector {
 		return this.data;
 	}
 }
-
-// modules.export
-export = Vector;

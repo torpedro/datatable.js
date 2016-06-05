@@ -1,8 +1,8 @@
 /// <reference path='../typings/papaparse/papaparse.d.ts' />
-import CoreColumnTable = require('../table/CoreColumnTable');
+import { CoreColumnTable } from '../table/CoreColumnTable';
 import Papa = require('papaparse');
 
-class CSVParser {
+export class CSVParser {
 	private options: PapaParse.ParseConfig;
 
 	constructor(options?: PapaParse.ParseConfig) {
@@ -78,8 +78,3 @@ class CSVParser {
 		return csv;
 	}
 }
-
-
-
-// module.export
-export = CSVParser;

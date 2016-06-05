@@ -1,11 +1,11 @@
-import AnalyticsTable = require('../AnalyticsTable');
+import { AnalyticsTable } from '../AnalyticsTable';
 
 /**
  * @module agg
  *
  * Used in group-by operations
  */
-module agg {
+export module agg {
 	export type Aggregation = (
 		((rows: any[], table: AnalyticsTable) => any) & { aggName?: string, name?: string }
 	);
@@ -58,6 +58,3 @@ module agg {
 	}
 
 }
-
-// modules.export
-export = agg;

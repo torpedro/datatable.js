@@ -1,12 +1,12 @@
 /// <reference path='../typings/underscore/underscore.d.ts' />
 import _ = require('underscore');
 
-import types = require('./types');
+import { types } from './types';
 
 /**
  * @module vec
  */
-module vec {
+export module vec {
 	export function range(vector: any[], dataType?: string): [any, any] {
 		let size: number = vector.length;
 		if (size === 0) return null;
@@ -86,7 +86,3 @@ module vec {
 		return values;
 	}
 }
-
-
-// export.modules
-export = vec;
