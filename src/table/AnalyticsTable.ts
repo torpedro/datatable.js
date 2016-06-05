@@ -4,7 +4,7 @@
 ///////////////////////////
 // <imports>
 import CoreColumnTable = require('./CoreColumnTable');
-import FieldDescriptor = require('./FieldDescriptor');
+import { FieldDescriptor } from './FieldDescriptor';
 import OrderedSet = require('../data/OrderedSet');
 import HashMap = require('../data/HashMap');
 import vec = require('../data/VectorOperations');

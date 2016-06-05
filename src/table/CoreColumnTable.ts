@@ -1,10 +1,14 @@
 /// <reference path='../typedefs/ITable.ts' />
 
 import _ = require('underscore');
+import { FieldDescriptor, FieldArgument } from '../../src/table/FieldDescriptor';
 import HashMap = require('../data/HashMap');
+import Vector = require('../data/Vector');
 import Set = require('../data/Set');
 import types = require('../data/types');
 import vec = require('../data/VectorOperations');
+
+
 
 /**
  * @class CoreColumnTable
@@ -15,7 +19,7 @@ import vec = require('../data/VectorOperations');
  * TODO: allow to define constraints/validators
  */
 class CoreColumnTable implements ITable {
-	protected _attributeVectors: HashMap<string, any[]>;
+	protected _attributeVectors: HashMap<string, Vector>;
 	protected _fields: Set;
 	protected _types: string[];
 
@@ -55,7 +59,7 @@ class CoreColumnTable implements ITable {
 
 		// initialize the attribute vectors
 		// todo: Allow initialization with rows
-		this._attributeVectors = new HashMap<string, any[]>();
+		this._attributeVectors = new HashMap<string, Vector>();
 		if (def.columns) {
 			if (def.fields.length !== def.columns.length)
 				throw 'Number of fields and number of supplied columns do not match!';
@@ -66,12 +70,14 @@ class CoreColumnTable implements ITable {
 					throw 'Number of rows in TableDefiniton is not uniform!';
 				}
 
-				this._attributeVectors.set(def.fields[c], def.columns[c].slice());
+				let vector: Vector = new Vector(this._types[c], def.columns[c].slice());
+				this._attributeVectors.set(def.fields[c], vector);
 			}
 
 		} else {
 			for (let c: number = 0; c < def.fields.length; ++c) {
-				this._attributeVectors.set(def.fields[c], []);
+				let vector: Vector = new Vector(this._types[c]);
+				this._attributeVectors.set(def.fields[c], vector);
 			}
 		}
 	}
@@ -86,17 +92,19 @@ class CoreColumnTable implements ITable {
 
 
 	addField(name: string, type?: string, values?: any[]): void {
+		type = (typeof type === 'undefined') ? types.kAny : type;
+
 		this._fields.add(name);
+		this._types.push(type);
 
 		// push null-values for existing rows
-		let vector: any[] = [];
+		let data: any[] = [];
 		for (let r: number = 0; r < this.size(); ++r) {
-			vector.push(null);
+			data.push(null);
 		}
-		this._attributeVectors.set(name, vector);
 
-		if (typeof type === 'undefined') this._types.push(types.kAny);
-		else this._types.push(type);
+		let vector: Vector = new Vector(type, data);
+		this._attributeVectors.set(name, vector);
 	}
 
 	addRow(row: Row): void {
@@ -190,6 +198,24 @@ class CoreColumnTable implements ITable {
 		return record;
 	}
 
+	vector(field: FieldArgument): Vector {
+		let desc: FieldDescriptor = this.getFieldDescriptor(field);
+		return this._attributeVectors[desc.name];
+	}
+
+	getFieldDescriptor(arg: FieldArgument): FieldDescriptor {
+		if (typeof arg === 'number') {
+			let name: string = this._fields[arg];
+			return new FieldDescriptor(name);
+
+		} else if (typeof arg === 'string') {
+			return new FieldDescriptor(arg);
+
+		} else if (arg instanceof FieldDescriptor) {
+			return arg;
+		}
+	}
+
 	getFieldNameIndex(field: string): number {
 		let index: number = this._fields.indexOf(field);
 		if (index === -1) throw 'Field "' + field + '" doesn\'t exist!';
@@ -217,7 +243,7 @@ class CoreColumnTable implements ITable {
 
 	column(name: string): any[] {
 		if (this._fields.contains(name)) {
-			return this._attributeVectors.get(name);
+			return this._attributeVectors.get(name).getData();
 		} else {
 			// check for special reserved system names
 			if (name === '$rownr') {
@@ -238,7 +264,7 @@ class CoreColumnTable implements ITable {
 
 	detectTypes(setTypes: boolean): string[] {
 		let types: string[] = _.map(this._fields.get(), (name: string, c: number): string => {
-			return vec.detectDataType(this._attributeVectors.get(name));
+			return vec.detectDataType(this._attributeVectors.get(name).getData());
 		});
 		if (setTypes) {
 			for (let i: number = 0; i < types.length; ++i) {
@@ -254,8 +280,10 @@ class CoreColumnTable implements ITable {
 			this._types[i] = type;
 
 			// convert types
-			let oldVector: any[] = this._attributeVectors.get(field);
-			this._attributeVectors.set(field, vec.convertToType(oldVector, type));
+			let old: Vector = this._attributeVectors.get(field);
+			let newData: any[] = vec.convertToType(old.getData(), type);
+			let vector: Vector = new Vector(type, newData);
+			this._attributeVectors.set(field, vector);
 		}
 	}
 

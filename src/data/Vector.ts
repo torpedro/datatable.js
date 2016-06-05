@@ -3,7 +3,7 @@ class Vector {
 	private data: any[];
 	private type: string;
 
-	constructor(type: string, data?: any[]) {
+	constructor(type: string = 'any', data?: any[]) {
 		this.type = type;
 		if (data) {
 			this.data = data;
@@ -12,23 +12,23 @@ class Vector {
 		}
 	}
 
-	add(value: any): void {
+	add(value: any): boolean {
 		// todo: check type
 		this.data.push(value);
+		return true;
 	}
 
 	size(): number {
 		return this.data.length;
 	}
 
-	get(index?: number): any[] {
-		if (typeof index === 'undefined') {
-			return this.data;
-		} else {
-			return this.data[index];
-		}
+	get(index: number): any {
+		return this.data[index];
 	}
 
+	getData(): any[] {
+		return this.data;
+	}
 }
 
 // modules.export
