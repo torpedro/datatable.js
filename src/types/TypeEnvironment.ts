@@ -20,7 +20,7 @@ export interface IStringTypeConverter {
 }
 
 export interface ITypeDetectionResult {
-	type: string;
+	type: TypeID;
 	value: any;
 }
 

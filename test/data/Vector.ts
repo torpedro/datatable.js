@@ -9,10 +9,11 @@ describe('data.Vector', function() {
 		var vector: Vector;
 
 		vector = new Vector('number');
-		vector.add(3);
-		vector.add(4);
-		vector.add(5);
-		vector.add(3);
+		assert.equal(vector.add(3), true);
+		assert.equal(vector.add(4), true);
+		assert.equal(vector.add('5'), true);
+		assert.equal(vector.add('abc'), false);
+		assert.equal(vector.add(3), true);
 
 		assert.deepEqual(vector.getData(), [3, 4, 5, 3]);
 		assert.equal(vector.get(2), 5);

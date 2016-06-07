@@ -1,20 +1,33 @@
 
+import { TypeEnvironment, TypeID, ITypeDetectionResult } from '../types/TypeEnvironment';
+import { StandardTypeEnv } from '../types/StandardTypeEnv';
+
 export class Vector {
 	private data: any[];
-	private type: string;
+	private type: TypeID;
+	private typeEnv: TypeEnvironment;
 
-	constructor(type: string = 'any', data?: any[]) {
+	constructor(type: TypeID = 'any', data?: any[], typeEnv?: TypeEnvironment) {
 		this.type = type;
-		if (data) {
-			this.data = data;
-		} else {
-			this.data = [];
-		}
+		this.data = data || [];
+		this.typeEnv = typeEnv || StandardTypeEnv.getInstance();
 	}
 
 	add(value: any): boolean {
-		// todo: check type
-		this.data.push(value);
+		if (this.type === 'any') {
+			this.data.push(value);
+		} else {
+			// check types
+			let parseStrings: boolean = this.type !== 'string';
+			let res: ITypeDetectionResult = this.typeEnv.detectDataType(value, parseStrings);
+			if (res.type === this.type) {
+				this.data.push(res.value);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		return true;
 	}
 
