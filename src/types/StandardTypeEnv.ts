@@ -1,7 +1,6 @@
 
 import {
 	TypeEnvironment,
-	ITypeConversionResult,
 	ITypeDetectionResult,
 	TypeID
 } from './TypeEnvironment';
@@ -10,14 +9,24 @@ import {
  *
  */
 export class StandardTypeEnv extends TypeEnvironment {
-	static kAny: TypeID      = 'any';
-	static kString: TypeID   = 'string';
-	static kNumber: TypeID   = 'number';
-	static kDate: TypeID     = 'date';
-	static kObject: TypeID   = 'object';
-	static kBoolean: TypeID  = 'boolean';
-	static kNull: TypeID     = 'null';
-	static kFunction: TypeID = 'function';
+	public static kAny: TypeID      = 'any';
+	public static kString: TypeID   = 'string';
+	public static kNumber: TypeID   = 'number';
+	public static kDate: TypeID     = 'date';
+	public static kObject: TypeID   = 'object';
+	public static kBoolean: TypeID  = 'boolean';
+	public static kNull: TypeID     = 'null';
+	public static kFunction: TypeID = 'function';
+
+	// static instance
+	private static _instance: StandardTypeEnv;
+
+	public static getInstance(): StandardTypeEnv {
+		if (!this._instance) {
+			this._instance = new StandardTypeEnv();
+		}
+		return this._instance;
+	}
 
 	constructor() {
 		super();
@@ -109,12 +118,4 @@ export class StandardTypeEnv extends TypeEnvironment {
 		});
 	}
 
-	// static instance
-	private static _instance: StandardTypeEnv;
-	public static getInstance(): StandardTypeEnv {
-		if (!this._instance) {
-			this._instance = new StandardTypeEnv();
-		}
-		return this._instance;
-	}
 }

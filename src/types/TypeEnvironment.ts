@@ -1,7 +1,7 @@
 
 export interface ITypeConversionResult {
 	success: boolean;
-	resultType?: string,
+	resultType?: string;
 	result?: any;
 }
 
@@ -78,7 +78,7 @@ export class TypeEnvironment {
 
 		return {
 			success: false
-		}
+		};
 	}
 
 	addTypeConverter(fromType: string, conv: ITypeConverter): void {
@@ -123,7 +123,7 @@ export class TypeEnvironment {
 				}
 				return {
 					success: false
-				}
+				};
 			}
 		});
 	}
