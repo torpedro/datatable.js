@@ -5,8 +5,10 @@ import { FieldDescriptor, FieldArgument } from '../../src/table/FieldDescriptor'
 import { HashMap } from '../data/HashMap';
 import { Vector } from '../../src/data/Vector';
 import { Set } from '../data/Set';
-import { types } from '../data/types';
 import { vec } from '../data/VectorOperations';
+
+import { ITypeConversionResult } from '../types/TypeEnvironment';
+import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
 
 
 
@@ -53,7 +55,7 @@ export class CoreColumnTable implements ITable {
 		} else {
 			this._types = [];
 			for (let c: number = 0; c < def.fields.length; ++c) {
-				this._types.push(types.kAny);
+				this._types.push(TypeEnv.kAny);
 			}
 		}
 
@@ -92,7 +94,7 @@ export class CoreColumnTable implements ITable {
 
 
 	addField(name: string, type?: string, values?: any[]): void {
-		type = (typeof type === 'undefined') ? types.kAny : type;
+		type = (typeof type === 'undefined') ? TypeEnv.kAny : type;
 
 		this._fields.add(name);
 		this._types.push(type);
@@ -113,20 +115,31 @@ export class CoreColumnTable implements ITable {
 		// typechecks
 		for (let c: number = 0; c < row.length; ++c) {
 			if (row[c] === undefined) throw 'Error when inserting! Can not insert undefined!';
+			let colType: string = this.types()[c];
+
 
 			// check for null
 			// if the inserted value is empty string and the datatype is not string
 			// insert null
 			if (row[c] === null ||
-				(row[c] === '' && this.types()[c] !== 'string')) {
+				(row[c] === '' && colType !== 'string')) {
 				row[c] = null;
 				// todo: allow definition of 'not null'-constraint
 
 			} else {
-				// try to convert
-				let v: any = types.convert(row[c], this.types()[c]);
-				if (typeof v === 'undefined') throw 'Error when inserting! Types don\'t match!';
-				row[c] = v;
+
+				if (colType === 'any') {
+					// no typecheck necessary, all values welcome
+
+				} else {
+					// try to convert
+					let res: ITypeConversionResult = TypeEnv.getInstance().convert(row[c], colType);
+					if (res.success) {
+						row[c] = res.result;
+					} else {
+						throw `Error when inserting! Types don't match!`;
+					}
+				}
 			}
 		}
 
@@ -166,7 +179,7 @@ export class CoreColumnTable implements ITable {
 			return this._types[this.getFieldNameIndex(name)];
 		} else {
 			// check for special reserved system names
-			if (name === '$rownr') return types.kNumber;
+			if (name === '$rownr') return TypeEnv.kNumber;
 
 			throw 'Couldn\'t find column: "' + name + '"!';
 		}

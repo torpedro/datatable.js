@@ -13,12 +13,15 @@ describe('table.CoreColumnTable', function() {
 
 
     it('should catch errors', function() {
+        console.log("A");
         assert.throws(function() {
             new (<any> CoreColumnTable)("a"); // Should throw an exception
         });
+        console.log("A");
         assert.throws(function() {
             new CoreColumnTable({fields: []}); // Should throw an exception
         });
+        console.log("A");
 
         // Type errors
         assert.throws(function() {
@@ -27,7 +30,8 @@ describe('table.CoreColumnTable', function() {
                 types: ['number', 'boolean']
             });
             t.addRow(['abc', false]);
-        })
+        });
+        console.log("A");
     });
 
 

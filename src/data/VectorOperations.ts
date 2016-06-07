@@ -1,7 +1,8 @@
 /// <reference path='../typings/underscore/underscore.d.ts' />
 import _ = require('underscore');
 
-import { types } from './types';
+import { ITypeDetectionResult } from '../types/TypeEnvironment';
+import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
 
 /**
  * @module vec
@@ -27,14 +28,17 @@ export module vec {
 	export function max(vector: any[]): any { return range(vector)[1]; }
 
 	export function detectDataType(vector: any[], parseStrings: boolean = true, convertTypes: boolean = false): string  {
+		let env: TypeEnv = TypeEnv.getInstance();
+
 		let typeset: string[] = [];
 		for (let i: number = 0; i < vector.length; ++i) {
 			let value: any = vector[i];
 
-			let res: types.ITypeDetection = types.detectDataType(value, parseStrings);
+
+			let res: ITypeDetectionResult = env.detectDataType(value, parseStrings);
 
 			// ignore nulls, they have no type
-			if (res.type === types.kNull) continue;
+			if (res.type === 'null') continue;
 
 			// add to the typeset
 			if (typeset.indexOf(res.type) === -1) typeset.push(res.type);
@@ -42,7 +46,7 @@ export module vec {
 		}
 
 
-		if (typeset.length === 0) return types.kNull;
+		if (typeset.length === 0) return TypeEnv.kNull;
 		if (typeset.length === 1) return typeset[0];
 		else return 'any'; // return an any type
 		// todo: roll-up the types
@@ -50,7 +54,7 @@ export module vec {
 
 	export function convertToType(vector: any[], targetType: string): any[] {
 		let newVec: any[] = _.map(vector, function(value: any, i: number): any {
-			return types.convert(value, targetType);
+			return TypeEnv.getInstance().convert(value, targetType).result;
 		});
 		return newVec;
 	}

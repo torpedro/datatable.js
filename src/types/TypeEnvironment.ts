@@ -19,11 +19,21 @@ export interface IStringTypeConverter {
 	priority?: number;
 }
 
-export class BaseTypeConverter {
+export interface ITypeDetectionResult {
+	type: string;
+	value: any;
+}
+
+export type TypeDetector = ((value: any) => ITypeDetectionResult);
+export type TypeID = string;
+
+export class TypeEnvironment {
 	protected typeConverters: { [fromType: string]: ITypeConverter[] };
+	protected typeDetectors: { [jsType: string]: TypeDetector[] };
 
 	constructor() {
 		this.typeConverters = {};
+		this.typeDetectors = {};
 	}
 
 	convert(value: any, toType: string, forceFromType: string = null): ITypeConversionResult {
@@ -40,7 +50,7 @@ export class BaseTypeConverter {
 
 		// get all converters that convert from fromType
 		// order by priority and filter by toType
-		let converters: ITypeConverter[] = this.typeConverters[fromType];
+		let converters: ITypeConverter[] = this.typeConverters[fromType] || [];
 		converters = converters.sort((a: ITypeConverter, b: ITypeConverter): number => a.priority - b.priority);
 		converters = converters.filter((conv: ITypeConverter): boolean => conv.toType === toType);
 
@@ -78,6 +88,13 @@ export class BaseTypeConverter {
 		this.typeConverters[fromType].push(conv);
 	}
 
+	addTypeDetector(jsType: string, detector: TypeDetector): void {
+		if (!(jsType in this.typeDetectors)) {
+			this.typeDetectors[jsType] = [];
+		}
+		this.typeDetectors[jsType].push(detector);
+	}
+
 	addStringConverter(toType: string, conv: IStringTypeConverter): void {
 		this.addTypeConverter('string', {
 			fromType: 'string',
@@ -110,76 +127,30 @@ export class BaseTypeConverter {
 			}
 		});
 	}
-}
 
-export class StandardTypeConverter extends BaseTypeConverter {
+	detectDataType(value: any, tryParseStrings: boolean = true): ITypeDetectionResult {
+		let jsType: string = typeof value;
 
-	constructor() {
-		super();
-
-		// booleans
-		this.addStringConverter('boolean', {
-			regex: /^[Ff][Aa][Ll][Ss][Ee]$/,
-			format: function(match: RegExpExecArray): boolean { return false; }
-		});
-		this.addStringConverter('boolean', {
-			regex: /^[Tt][Rr][Uu][Ee]$/,
-			format: function(match: RegExpExecArray): boolean { return true; }
-		});
-
-		// numbers
-		this.addStringConverter('number', {
-			regex: /^\s*-?[0-9]+(?:\,[0-9][0-9][0-9])*(?:\.[0-9]+)?\s*$/,
-			format: function(match: RegExpExecArray): number {
-				return parseFloat(match[0].replace(',', ''));
+		let detectors: TypeDetector[] = this.typeDetectors[jsType] || [];
+		for (let fn of detectors) {
+			let res: ITypeDetectionResult = fn(value);
+			if (res) {
+				return res;
 			}
-		});
-		this.addStringConverter('number', {
-			regex: /^\s*-?[0-9]+(?:\.[0-9][0-9][0-9])*(?:\,[0-9]+)?\s*$/,
-			format: function(match: RegExpExecArray): number {
-				return parseFloat(match[0].replace('.', '').replace(',', '.'));
+		}
+		if (jsType === 'string' && tryParseStrings) {
+			let res: ITypeConversionResult = this.autoConvertString(value);
+			if (res.success) {
+				return {
+					type: res.resultType,
+					value: res.result
+				};
 			}
-		});
+		}
 
-		// dates
-		this.addStringConverter('date', { // dd.mm.yyyy
-			regex: /^([0-9]?[0-9])\.([0-9]?[0-9])\.([0-9][0-9][0-9][0-9])$/,
-			format: function(match: RegExpExecArray): Date {
-				let month: number = parseInt(match[2], 10) - 1;
-				return new Date(Date.UTC(parseInt(match[3], 10), month, parseInt(match[1], 10)));
-			}
-		});
-
-		this.addStringConverter('date', { // yyyy-mm-dd
-			regex: /^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])$/,
-			format: function(match: RegExpExecArray): Date {
-				let month: number = parseInt(match[2], 10) - 1;
-				return new Date(Date.UTC(parseInt(match[1], 10), month, parseInt(match[3], 10)));
-			}
-		});
-
-		this.addStringConverter('date', { // mm/dd/yyyy
-			regex: /^([0-9]?[0-9])\/([0-9]?[0-9])\/([0-9][0-9][0-9][0-9])$/,
-			format: function(match: RegExpExecArray): Date {
-				let month: number = parseInt(match[1], 10) - 1;
-				return new Date(Date.UTC(parseInt(match[3], 10), month, parseInt(match[2], 10)));
-			}
-		});
-
-		this.addStringConverter('date', {
-			matchAndFormat: function(str: string): Date|boolean {
-				// check if it starts with a date
-				if (/^([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/.exec(str)) {
-					let date: Date = new Date(str);
-					if (!isNaN(date.getTime())) return date;
-				}
-				return false;
-			}
-		});
-
+		return {
+			type: jsType,
+			value
+		};
 	}
-
-
-
-
 }

@@ -1,13 +1,13 @@
 /// <reference path="../typings/tsd.d.ts" />
 import assert = require("assert")
-import { BaseTypeConverter, StandardTypeConverter, ITypeConversionResult }
-	from '../../src/data/TypeConverter';
+import { ITypeConversionResult } from '../../src/types/TypeEnvironment';
+import { StandardTypeEnv } from '../../src/types/StandardTypeEnv';
 
 
-describe('data.TypeConverter', function() {
-	var conv: StandardTypeConverter = new StandardTypeConverter();
+describe('data.StandardTypeEnv', function() {
+	var conv: StandardTypeEnv = StandardTypeEnv.getInstance();
 
-    it('basic functionality', function() {
+    it('convert', function() {
 
 		assert.deepEqual(conv.convert('false', 'boolean'), {
 			success: true,
@@ -102,5 +102,38 @@ describe('data.TypeConverter', function() {
 			assert.strictEqual(res.resultType, 'number');
 			assert.strictEqual(res.result, 1100.2);
 		});
+	});
+
+	describe('detectDataType', function() {
+
+		it('date', function() {
+			let date: Date = new Date(3000);
+			assert.deepEqual(conv.detectDataType(date), {
+				type: StandardTypeEnv.kDate,
+				value: date
+			});
+
+			assert.deepEqual(conv.detectDataType(date, false), {
+				type: StandardTypeEnv.kDate,
+				value: date
+			});
+
+			assert.deepEqual(conv.detectDataType('03/03/1999').type, StandardTypeEnv.kDate);
+			assert.deepEqual(conv.detectDataType('03/03/1999', false).type, StandardTypeEnv.kString);
+		});
+
+		it('null', function() {
+			assert.deepEqual(conv.detectDataType(undefined), {
+				type: StandardTypeEnv.kNull,
+				value: null
+			});
+
+			assert.deepEqual(conv.detectDataType(null), {
+				type: StandardTypeEnv.kNull,
+				value: null
+			});
+
+		});
+
 	});
 });
