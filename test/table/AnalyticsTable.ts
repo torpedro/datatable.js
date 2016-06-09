@@ -13,7 +13,7 @@ describe('table.AnalyticsTable', function() {
 		fields: ['Category', 'Score1', 'Score2']
 	});
 
-	table1.addRows([
+	table1.insert([
 		[1, 10, 100],
 		[1, 50, 300],
 		[2, 30, 200],
@@ -26,8 +26,8 @@ describe('table.AnalyticsTable', function() {
 			fields: ['ID', 'First Name', 'Last Name']
 		});
 
-		table.addRow([1, 'Max', 'Mustermann']);
-		table.addRow([2, 'John', 'Doe']);
+		table.insert([[1, 'Max', 'Mustermann']]);
+		table.insert([[2, 'John', 'Doe']]);
 
 		var result = table.filter(function(row) { return row[0] < 2	});
 		assert.deepEqual(result.rows(), [[1, 'Max', 'Mustermann']]);
@@ -39,8 +39,8 @@ describe('table.AnalyticsTable', function() {
 			fields: ['ID', 'First Name', 'Last Name']
 		});
 
-		table.addRow([1, 'Max', 'Mustermann']);
-		table.addRow([2, 'John', 'Doe']);
+		table.insert([[1, 'Max', 'Mustermann']]);
+		table.insert([[2, 'John', 'Doe']]);
 
 		var anaTable = new AnalyticsTable(table);
 

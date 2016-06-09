@@ -68,12 +68,12 @@ export class CSVParser {
 
 		csv += table.fields().join(this.options.delimiter);
 		csv += '\n';
-		for (let i: number = 0; i < table.size() - 1; ++i) {
+		for (let i: number = 0; i < table.count() - 1; ++i) {
 			let row: any[] = table.row(i);
 			csv += row.join(this.options.delimiter);
 			csv += '\n';
 		}
-		csv += table.row(table.size() - 1).join(this.options.delimiter);
+		csv += table.row(table.count() - 1).join(this.options.delimiter);
 
 		return csv;
 	}

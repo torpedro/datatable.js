@@ -7,17 +7,14 @@ describe('table.CoreColumnTable', function() {
         var table = new CoreColumnTable({
             fields: ['ID']
         });
-        assert.equal(table.size(), 0);
-        assert(table.empty());
+        assert.equal(table.count(), 0);
+        assert(table.isEmpty());
     });
 
 
     it('should catch errors', function() {
         assert.throws(function() {
             new (<any> CoreColumnTable)("a"); // Should throw an exception
-        });
-        assert.throws(function() {
-            new CoreColumnTable({fields: []}); // Should throw an exception
         });
 
         // Type errors
@@ -26,7 +23,7 @@ describe('table.CoreColumnTable', function() {
                 fields: ['A', 'B'],
                 types: ['number', 'boolean']
             });
-            t.addRow(['abc', false]);
+            t.insert([['abc', false]]);
         });
     });
 
@@ -37,8 +34,8 @@ describe('table.CoreColumnTable', function() {
         var table = new CoreColumnTable({
             fields: header
         });
-        table.addRow([0, 'Max', null]);
-        table.addRow([1,  null, null]);
+        table.insert([[0, 'Max', null]]);
+        table.insert([[1,  null, null]]);
 
         assert.deepEqual(table.rows(), [[0, 'Max', null], [1, null, null]]);
         assert.deepEqual(table.column('Name'), ['Max', null])
@@ -54,8 +51,8 @@ describe('table.CoreColumnTable', function() {
         assert.deepEqual(table.fields(), ['ID', 'Name']);
         assert.deepEqual(table.rows(), []);
 
-        table.addRow([0, 'Max']);
-        table.addRow([1]);
+        table.insert([[0, 'Max']]);
+        table.insert([[1]]);
 
         assert.deepEqual(table.rows(), [[0, 'Max'], [1, null]]);
 
@@ -77,7 +74,7 @@ describe('table.CoreColumnTable', function() {
         assert.deepEqual(copy.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK']]);
 
         // Check that the vectors are not linked
-        table.addRow(['3', 'Peter', 'France']);
+        table.insert([['3', 'Peter', 'France']]);
 
         assert.deepEqual(table.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK'], ['3', 'Peter', 'France']]);
         assert.deepEqual(copy.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK']]);
@@ -89,16 +86,16 @@ describe('table.CoreColumnTable', function() {
             fields: ['A', 'B'],
             types: ['number', 'boolean']
         });
-        t.addRow(['1', 'false']);
+        t.insert([['1', 'false']]);
 
         assert.strictEqual(t.value(0, 'A'), 1);
         assert.strictEqual(t.value(0, 'B'), false);
 
-        t.addRow(['', 'true']);
+        t.insert([['', 'true']]);
         assert.strictEqual(t.value(1, 'A'), null);
         assert.strictEqual(t.value(1, 'B'), true);
 
-        t.addRow(['23.5', null]);
+        t.insert([['23.5', null]]);
         assert.strictEqual(t.value(2, 'A'), 23.5);
         assert.strictEqual(t.value(2, 'B'), null);
     });

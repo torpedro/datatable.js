@@ -29,8 +29,8 @@ describe('io.CSVParser', function () {
         var table = new CoreColumnTable({
             fields: ['ID', 'Name', 'Address']
         });
-        table.addRow([0, 'Max', 'Berlin']);
-        table.addRow([1, 'Meier', 'Potsdam']);
+        table.insert([[0, 'Max', 'Berlin']]);
+        table.insert([[1, 'Meier', 'Potsdam']]);
 
     	var parser = new CSVParser({
 			delimiter: ','

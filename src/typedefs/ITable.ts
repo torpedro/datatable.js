@@ -1,31 +1,29 @@
-type Row = any[];
-type Column = any[];
 
-interface ITableData {
-	fields: string[];
-	types: string[];
-	rows: Row[];
-}
+type Value = (string|number|boolean|Function|Object);
+type Row = Value[];
+type Column = Value[];
 
 interface ITableDefinition {
 	fields: string[];
 	types?: string[];
-	columns?: any[][];
+	columns?: Column[];
 }
 
 /**
- * General interface that every table has to offer
  * @interface ITable
+ * General interface that every table has to offer
  */
 interface ITable {
 
+	insert(rows: Row[]): void;
+
+	count(): number;
+
 	addField(fieldName: string): void;
 
-	addRow(row: Row): void;
+	column(fieldName: string): Column;
 
-	column(fieldName: string): any[];
-
-	columns(): any[][];
+	columns(): Column[];
 
 	fields(): string[];
 
@@ -33,12 +31,10 @@ interface ITable {
 
 	rows(): Row[];
 
-	size(): number;
-
 	type(fieldName: string): string;
 
 	types(): string[];
 
-	value(rowNumber: number, fieldName: string): any;
+	value(rowNumber: number, fieldName: string): Value;
 
 }

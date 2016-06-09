@@ -51,7 +51,7 @@ export class AnalyticsTable extends CoreColumnTable {
 		// create hash map
 		let map: HashMap<string[], any[]> = new HashMap<any, any[]>(false); // map by equality
 
-		for (let r: number = 0; r < this.size(); ++r) {
+		for (let r: number = 0; r < this.count(); ++r) {
 			let key: string[] = [];
 			for (let c: number = 0; c < fields.length; ++c) {
 				key.push(fields[c].getValue(this, r));
@@ -71,7 +71,7 @@ export class AnalyticsTable extends CoreColumnTable {
 
 		let keys: string[][] = map.keys();
 		for (let k: number = 0; k < keys.length; ++k) {
-			let row: any[] = [];
+			let row: Row = [];
 
 			// add the grouped columns
 			for (let c: number = 0; c < keys[k].length; ++c) {
@@ -83,7 +83,7 @@ export class AnalyticsTable extends CoreColumnTable {
 				row.push(aggregations[a](map.get(keys[k]), this));
 			}
 
-			result.addRow(row);
+			result.insert([row]);
 		}
 
 		return result;
@@ -102,7 +102,7 @@ export class AnalyticsTable extends CoreColumnTable {
 			fields: this._fields.get(),
 			types: this._types.slice()
 		});
-		for (let r: number = 0; r < this.size(); ++r) {
+		for (let r: number = 0; r < this.count(); ++r) {
 			let row: any[] = this.row(r);
 			if (predicate(row)) {
 				result.addRow(row);
@@ -160,7 +160,7 @@ export class AnalyticsTable extends CoreColumnTable {
 				// function selector
 				// build a new column vector
 				let vector: any[] = [];
-				for (let i: number = 0; i < this.size(); ++i) {
+				for (let i: number = 0; i < this.count(); ++i) {
 					let value: any = field.getValue(this, i);
 					vector.push(value);
 				}
@@ -210,7 +210,7 @@ export class AnalyticsTable extends CoreColumnTable {
 		// map( group -> map( category -> Array(valueFields) ) )
 		let map: HashMap<any, {}> = new HashMap<any, {}>(false);
 
-		for (let r: number = 0; r < this.size(); ++r) {
+		for (let r: number = 0; r < this.count(); ++r) {
 			let key: any = this.value(r, groupField);
 			if (!map.contains(key)) {
 				map.set(key, {});
@@ -285,7 +285,7 @@ export class AnalyticsTable extends CoreColumnTable {
 		let sortedRows: Row[] = this.mergeSort(rows, field, asc);
 
 		// add to output table
-		table.addRows(sortedRows);
+		table.insert(sortedRows);
 
 		return table;
 	}
