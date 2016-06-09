@@ -181,7 +181,7 @@ export class CoreColumnTable {
 	column(field: FieldID): any[] {
 		let data: IFieldData = this.getFieldData(field);
 		if (data) {
-			return data.vector.getData();
+			return data.vector.toArray();
 		} else {
 			// check for special reserved system names
 			if (field === '$rownr') {
@@ -202,7 +202,7 @@ export class CoreColumnTable {
 
 	detectTypes(setTypes: boolean): string[] {
 		let types: string[] = _.map(this.fieldset.toArray(), (name: string, c: number): string => {
-			return vec.detectDataType(this.fielddata.get(name).vector.getData());
+			return vec.detectDataType(this.fielddata.get(name).vector.toArray());
 		});
 		if (setTypes) {
 			for (let i: number = 0; i < types.length; ++i) {
@@ -219,7 +219,7 @@ export class CoreColumnTable {
 
 			// convert types
 			let old: Vector = data.vector;
-			let newData: any[] = vec.convertToType(old.getData(), type);
+			let newData: any[] = vec.convertToType(old.toArray(), type);
 			let vector: Vector = new Vector(type, newData, this.typeEnv);
 			data.vector = vector;
 		}

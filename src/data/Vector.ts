@@ -13,7 +13,7 @@ export class Vector {
 		this.typeEnv = typeEnv || StandardTypeEnv.getInstance();
 	}
 
-	add(value: any): boolean {
+	push(value: any): boolean {
 		if (this.type === 'any') {
 			this.data.push(value);
 		} else {
@@ -39,7 +39,7 @@ export class Vector {
 		return this.data[index];
 	}
 
-	getData(): any[] {
+	toArray(): any[] {
 		return this.data;
 	}
 
