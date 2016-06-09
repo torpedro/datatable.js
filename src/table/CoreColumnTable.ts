@@ -19,6 +19,8 @@ export interface IFieldData {
 	vector: Vector;
 }
 
+export type FieldID = (string|number);
+
 /**
  * @class CoreColumnTable
  *
@@ -47,7 +49,7 @@ export class CoreColumnTable implements ITable {
 	/**
 	 * inserts an array of rows into the table
 	 */
-	insert(rows: any[][]): void {
+	insert(rows: Row[]): void {
 		for (let r: number = 0; r < rows.length; ++r) {
 			this.addRow(rows[r]);
 		}
@@ -96,8 +98,9 @@ export class CoreColumnTable implements ITable {
 		return this.fieldset.size();
 	}
 
-	hasField(name: string): boolean {
-		return this.fieldset.contains(name);
+	hasField(field: FieldID): boolean {
+		let data: IFieldData = this.getFieldData(field);
+		return !!data;
 	}
 
 	types(): string[] {
@@ -106,15 +109,16 @@ export class CoreColumnTable implements ITable {
 		});
 	}
 
-	type(name: string): string {
-		if (this.fieldset.contains(name)) {
-			return this.fielddata.get(name).type;
+	type(field: FieldID): string {
+		let data: IFieldData = this.getFieldData(field);
+		if (data) {
+			return data.type;
 
 		} else {
 			// check for special reserved system names
-			if (name === '$rownr') return TypeEnv.kNumber;
+			if (field === '$rownr') return TypeEnv.kNumber;
 
-			throw `Could not find column with name "${name}"!`;
+			throw `Could not find column with id "${field}"!`;
 		}
 	}
 
@@ -158,12 +162,12 @@ export class CoreColumnTable implements ITable {
 		return index;
 	}
 
-	value(row: number, column: string): any {
-		return this.column(column)[row];
+	value(row: number, field: FieldID): any {
+		return this.column(field)[row];
 	}
 
-	setValue(row: number, column: string, value: any): void {
-		this.column(column)[row] = value;
+	setValue(row: number, field: FieldID, value: any): void {
+		this.column(field)[row] = value;
 	}
 
 	/**
@@ -177,16 +181,17 @@ export class CoreColumnTable implements ITable {
 		}
 	}
 
-	column(name: string): any[] {
-		if (this.fieldset.contains(name)) {
-			return this.fielddata.get(name).vector.getData();
+	column(field: FieldID): any[] {
+		let data: IFieldData = this.getFieldData(field);
+		if (data) {
+			return data.vector.getData();
 		} else {
 			// check for special reserved system names
-			if (name === '$rownr') {
+			if (field === '$rownr') {
 				return this.createRowNrColumn();
 			}
 
-			throw `Could not find column with name "${name}"!`;
+			throw `Could not find column with id "${field}"!`;
 		}
 	}
 
@@ -210,9 +215,8 @@ export class CoreColumnTable implements ITable {
 		return types;
 	}
 
-	setType(field: string, type: string): void {
-		let data: IFieldData = this.fielddata.get(field);
-		let i: number = this.getFieldNameIndex(field);
+	setType(field: FieldID, type: string): void {
+		let data: IFieldData = this.getFieldData(field);
 		if (type !== data.type) {
 			data.type = type;
 
@@ -224,12 +228,24 @@ export class CoreColumnTable implements ITable {
 		}
 	}
 
-	protected vector(field: FieldArgument): Vector {
-		let desc: FieldDescriptor = this.getFieldDescriptor(field);
-		return this.fielddata.get(desc.name).vector;
+	/**
+	 * get the field data object for the specified field
+	 */
+	protected getFieldData(field: FieldID): IFieldData {
+		let name: string;
+		if (typeof field === 'number') {
+			name = this.fieldset.get(<number>field);
+		} else if (typeof field === 'string') {
+			name = <string>field;
+		}
+		return this.fielddata.get(name);
 	}
 
-	private createRowNrColumn(): number[] {
+	protected getVector(field: FieldID): Vector {
+		return this.getFieldData(field).vector;
+	}
+
+	protected createRowNrColumn(): number[] {
 		let vector: number[] = [];
 		for (let r: number = 0; r < this.count(); ++r) {
 			vector.push(r);
