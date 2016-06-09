@@ -14,7 +14,7 @@ export module agg {
 		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): number {
 			// todo: type-switch
 			let sum: number = 0;
-			let c: number = table.getFieldNameIndex(targetField);
+			let c: number = table.getFieldIndex(targetField);
 			for (let r: number = 0; r < rows.length; ++r) {
 				sum += rows[r][c];
 			}
@@ -31,7 +31,7 @@ export module agg {
 		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): number {
 			// todo: type-switch
 			let sum: number = 0;
-			let c: number = table.getFieldNameIndex(targetField);
+			let c: number = table.getFieldIndex(targetField);
 			for (let r: number = 0; r < rows.length; ++r) {
 				sum += rows[r][c];
 			}
@@ -46,7 +46,7 @@ export module agg {
 
 	export function first(targetField: string, outputName: string): Aggregation {
 		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): any {
-			let c: number = table.getFieldNameIndex(targetField);
+			let c: number = table.getFieldIndex(targetField);
 			return rows[0][c];
 		};
 

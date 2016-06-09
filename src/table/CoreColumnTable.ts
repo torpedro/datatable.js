@@ -1,7 +1,6 @@
 /// <reference path='../typedefs/ITable.ts' />
 
 import _ = require('underscore');
-import { FieldDescriptor, FieldArgument } from '../../src/table/FieldDescriptor';
 import { HashMap } from '../data/HashMap';
 import { Vector } from '../../src/data/Vector';
 import { Set } from '../data/Set';
@@ -14,6 +13,7 @@ import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
  * Information stored in the table for each field
  */
 export interface IFieldData {
+	index: number;
 	name: string;
 	type: string;
 	vector: Vector;
@@ -83,6 +83,7 @@ export class CoreColumnTable implements ITable {
 
 			this.fieldset.add(name);
 			this.fielddata.set(name, {
+				index: this.fieldset.size() - 1,
 				name: name,
 				type: type,
 				vector: vector
@@ -143,23 +144,8 @@ export class CoreColumnTable implements ITable {
 		return record;
 	}
 
-	getFieldDescriptor(arg: FieldArgument): FieldDescriptor {
-		if (typeof arg === 'number') {
-			let name: string = this.fieldset.get(<number>arg);
-			return new FieldDescriptor(name);
-
-		} else if (typeof arg === 'string') {
-			return new FieldDescriptor(<string>arg);
-
-		} else if (arg instanceof FieldDescriptor) {
-			return arg;
-		}
-	}
-
-	getFieldNameIndex(field: string): number {
-		let index: number = this.fieldset.indexOf(field);
-		if (index === -1) throw `Field "${field}" does not exist!`;
-		return index;
+	getFieldIndex(field: FieldID): number {
+		return this.getFieldData(field).index;
 	}
 
 	value(row: number, field: FieldID): any {
@@ -282,6 +268,7 @@ export class CoreColumnTable implements ITable {
 			let vector: Vector = new Vector(type, data);
 
 			this.fielddata.set(name, {
+				index: i,
 				name: name,
 				type: type,
 				vector: vector

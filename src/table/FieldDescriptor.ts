@@ -47,12 +47,12 @@ export class FieldDescriptor {
 
 	getValueFromRow(table: CoreColumnTable, row: (any[] & { get?: ((name: string) => any) })): any {
 		if (this.isStatic) {
-			let id: number = table.getFieldNameIndex(this.name);
+			let id: number = table.getFieldIndex(this.name);
 			return row[id];
 
 		} else {
 			(<any>row).get = function(name: string): any {
-				let id: number = table.getFieldNameIndex(name);
+				let id: number = table.getFieldIndex(name);
 				return row[id];
 			};
 
