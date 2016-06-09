@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"module": "commonjs"		
+		"module": "commonjs"
 	},
-	"filesGlob": [
+	"files": [
 		"src/**/*.ts",
 		"test/**/*.ts"
 	]
