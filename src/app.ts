@@ -1,5 +1,12 @@
 // top-level namespace
-export import data = require('./data/__module__');
-export import smooth = require('./smooth/__module__');
-export import io = require('./io/__module__');
-export import table = require('./table/__module__');
+import * as data from './data/__module__';
+import * as smooth from './smooth/__module__';
+import * as io from './io/__module__';
+import * as table from './table/__module__';
+
+export {
+	data,
+	smooth,
+	io,
+	table
+};
