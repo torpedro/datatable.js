@@ -117,7 +117,6 @@ export class CoreColumnTable implements ITable {
 			if (row[c] === undefined) throw 'Error when inserting! Can not insert undefined!';
 			let colType: string = this.types()[c];
 
-
 			// check for null
 			// if the inserted value is empty string and the datatype is not string
 			// insert null
