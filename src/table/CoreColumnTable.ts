@@ -1,4 +1,3 @@
-/// <reference path='../typedefs/ITable.ts' />
 
 import _ = require('underscore');
 import { HashMap } from '../data/HashMap';
@@ -6,7 +5,7 @@ import { Vector } from '../../src/data/Vector';
 import { Set } from '../data/Set';
 import { vec } from '../data/VectorOperations';
 
-import { ITypeConversionResult } from '../types/TypeEnvironment';
+import { ITypeConversionResult, TypeEnvironment } from '../types/TypeEnvironment';
 import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
 
 /**
@@ -19,6 +18,15 @@ export interface IFieldData {
 	vector: Vector;
 }
 
+export interface ITableDefinition {
+	fields: string[];
+	types?: string[];
+	columns?: Column[];
+}
+
+export type Value = (string|number|boolean|Function|Object);
+export type Row = Value[];
+export type Column = Value[];
 export type FieldID = (string|number);
 
 /**
@@ -29,14 +37,17 @@ export type FieldID = (string|number);
  * TODO: remove row
  * TODO: allow to define constraints/validators
  */
-export class CoreColumnTable implements ITable {
+export class CoreColumnTable {
 	protected fieldset: Set;
 	protected fielddata: HashMap<string, IFieldData>;
+	protected typeEnv: TypeEnvironment;
 
 	/**
 	 * Creates a new CoreColumnTable
 	 */
 	constructor(def: (ITableDefinition | CoreColumnTable)) {
+		this.typeEnv = TypeEnv.getInstance();
+
 		if (def instanceof CoreColumnTable) {
 			this.initWithTable(<CoreColumnTable> def);
 		} else if (typeof def === 'object') {
@@ -79,7 +90,7 @@ export class CoreColumnTable implements ITable {
 			for (let r: number = 0; r < this.count(); ++r) {
 				data.push(null);
 			}
-			let vector: Vector = new Vector(type, data);
+			let vector: Vector = new Vector(type, data, this.typeEnv);
 
 			this.fieldset.add(name);
 			this.fielddata.set(name, {
@@ -209,7 +220,7 @@ export class CoreColumnTable implements ITable {
 			// convert types
 			let old: Vector = data.vector;
 			let newData: any[] = vec.convertToType(old.getData(), type);
-			let vector: Vector = new Vector(type, newData);
+			let vector: Vector = new Vector(type, newData, this.typeEnv);
 			data.vector = vector;
 		}
 	}
@@ -265,7 +276,7 @@ export class CoreColumnTable implements ITable {
 			let name: string = def.fields[i];
 			let type: string = (def.types) ? def.types[i] : TypeEnv.kAny;
 			let data: Column = (def.columns) ? def.columns[i] : [];
-			let vector: Vector = new Vector(type, data);
+			let vector: Vector = new Vector(type, data, this.typeEnv);
 
 			this.fielddata.set(name, {
 				index: i,
@@ -310,7 +321,7 @@ export class CoreColumnTable implements ITable {
 
 				} else {
 					// try to convert
-					let res: ITypeConversionResult = TypeEnv.getInstance().convert(row[c], colType);
+					let res: ITypeConversionResult = this.typeEnv.convert(row[c], colType);
 					if (res.success) {
 						row[c] = res.result;
 					} else {

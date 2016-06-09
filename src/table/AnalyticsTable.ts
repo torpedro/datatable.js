@@ -3,7 +3,10 @@
 
 ///////////////////////////
 // <imports>
-import { CoreColumnTable } from './CoreColumnTable';
+import {
+	CoreColumnTable,
+	Row
+} from './CoreColumnTable';
 import { FieldDescriptor } from './FieldDescriptor';
 import { OrderedSet } from '../data/OrderedSet';
 import { HashMap } from '../data/HashMap';
