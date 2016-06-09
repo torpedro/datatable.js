@@ -99,8 +99,8 @@ export class AnalyticsTable extends CoreColumnTable {
 	filter(predicate: Function): AnalyticsTable {
 		// todo: figure out how to be able to address columns in predicate by name
 		let result: AnalyticsTable = new AnalyticsTable({
-			fields: this._fields.get(),
-			types: this._types.slice()
+			fields: this.fieldset.get(),
+			types: this.types()
 		});
 		for (let r: number = 0; r < this.count(); ++r) {
 			let row: any[] = this.row(r);
@@ -193,8 +193,8 @@ export class AnalyticsTable extends CoreColumnTable {
 		let valueFields: any = [];
 
 		for (let c: number = 0; c < this.numFields(); ++c) {
-			if (this._fields.get(c) !== field && this._fields.get(c) !== groupField) {
-				valueFields.push(this._fields.get(c));
+			if (this.fieldset.get(c) !== field && this.fieldset.get(c) !== groupField) {
+				valueFields.push(this.fieldset.get(c));
 			}
 		}
 

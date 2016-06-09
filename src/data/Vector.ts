@@ -42,4 +42,8 @@ export class Vector {
 	getData(): any[] {
 		return this.data;
 	}
+
+	getType(): string {
+		return this.type;
+	}
 }

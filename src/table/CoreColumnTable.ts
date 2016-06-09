@@ -10,7 +10,14 @@ import { vec } from '../data/VectorOperations';
 import { ITypeConversionResult } from '../types/TypeEnvironment';
 import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
 
-
+/**
+ * Information stored in the table for each field
+ */
+export interface IFieldData {
+	name: string;
+	type: string;
+	vector: Vector;
+}
 
 /**
  * @class CoreColumnTable
@@ -21,9 +28,8 @@ import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
  * TODO: allow to define constraints/validators
  */
 export class CoreColumnTable implements ITable {
-	protected _attributeVectors: HashMap<string, Vector>;
-	protected _fields: Set;
-	protected _types: string[];
+	protected fieldset: Set;
+	protected fielddata: HashMap<string, IFieldData>;
 
 	/**
 	 * Creates a new CoreColumnTable
@@ -51,7 +57,11 @@ export class CoreColumnTable implements ITable {
 	 * returns the number of rows in the table
 	 */
 	count(): number {
-		return this.column(this._fields.get(0)).length;
+		if (this.fieldset.size() > 0) {
+			return this.column(this.fieldset.get(0)).length;
+		} else {
+			return 0;
+		}
 	}
 
 	/**
@@ -61,38 +71,45 @@ export class CoreColumnTable implements ITable {
 	addField(name: string, type?: string): void {
 		type = (typeof type === 'undefined') ? TypeEnv.kAny : type;
 
-		this._fields.add(name);
-		this._types.push(type);
+		if (!this.fieldset.contains(name)) {
+			// fill column with null-values
+			let data: Column = [];
+			for (let r: number = 0; r < this.count(); ++r) {
+				data.push(null);
+			}
+			let vector: Vector = new Vector(type, data);
 
-		// push null-values for existing rows
-		let data: any[] = [];
-		for (let r: number = 0; r < this.count(); ++r) {
-			data.push(null);
+			this.fieldset.add(name);
+			this.fielddata.set(name, {
+				name: name,
+				type: type,
+				vector: vector
+			});
 		}
-
-		let vector: Vector = new Vector(type, data);
-		this._attributeVectors.set(name, vector);
 	}
 
 	fields(): string[] {
-		return this._fields.get();
+		return this.fieldset.get();
 	}
 
 	numFields(): number {
-		return this._fields.size();
+		return this.fieldset.size();
 	}
 
 	hasField(name: string): boolean {
-		return this._fields.contains(name);
+		return this.fieldset.contains(name);
 	}
 
 	types(): string[] {
-		return this._types;
+		return _.map(this.fields(), (name: string): string => {
+			return this.fielddata.get(name).type;
+		});
 	}
 
 	type(name: string): string {
-		if (this._fields.contains(name)) {
-			return this._types[this.getFieldNameIndex(name)];
+		if (this.fieldset.contains(name)) {
+			return this.fielddata.get(name).type;
+
 		} else {
 			// check for special reserved system names
 			if (name === '$rownr') return TypeEnv.kNumber;
@@ -116,25 +133,19 @@ export class CoreColumnTable implements ITable {
 	row(r: number): Row {
 		// build the row from the attribute vectors
 		let record: Row = [];
-		for (let c: number = 0; c < this.numFields(); ++c) {
-			record.push(this.value(r, this._fields.get(c)));
+		for (let fieldName of this.fieldset.get()) {
+			record.push(this.value(r, fieldName));
 		}
-
 		return record;
-	}
-
-	vector(field: FieldArgument): Vector {
-		let desc: FieldDescriptor = this.getFieldDescriptor(field);
-		return this._attributeVectors[desc.name];
 	}
 
 	getFieldDescriptor(arg: FieldArgument): FieldDescriptor {
 		if (typeof arg === 'number') {
-			let name: string = this._fields[arg];
+			let name: string = this.fieldset.get(<number>arg);
 			return new FieldDescriptor(name);
 
 		} else if (typeof arg === 'string') {
-			return new FieldDescriptor(arg);
+			return new FieldDescriptor(<string>arg);
 
 		} else if (arg instanceof FieldDescriptor) {
 			return arg;
@@ -142,7 +153,7 @@ export class CoreColumnTable implements ITable {
 	}
 
 	getFieldNameIndex(field: string): number {
-		let index: number = this._fields.indexOf(field);
+		let index: number = this.fieldset.indexOf(field);
 		if (index === -1) throw `Field "${field}" does not exist!`;
 		return index;
 	}
@@ -167,8 +178,8 @@ export class CoreColumnTable implements ITable {
 	}
 
 	column(name: string): any[] {
-		if (this._fields.contains(name)) {
-			return this._attributeVectors.get(name).getData();
+		if (this.fieldset.contains(name)) {
+			return this.fielddata.get(name).vector.getData();
 		} else {
 			// check for special reserved system names
 			if (name === '$rownr') {
@@ -181,35 +192,41 @@ export class CoreColumnTable implements ITable {
 
 	columns(): any[][] {
 		let columns: any[][] = [];
-		for (let i: number = 0; i < this._fields.size(); ++i) {
-			columns.push(this.column(this._fields.get(i)).slice());
+		for (let i: number = 0; i < this.fieldset.size(); ++i) {
+			columns.push(this.column(this.fieldset.get(i)).slice());
 		}
 		return columns;
 	}
 
 	detectTypes(setTypes: boolean): string[] {
-		let types: string[] = _.map(this._fields.get(), (name: string, c: number): string => {
-			return vec.detectDataType(this._attributeVectors.get(name).getData());
+		let types: string[] = _.map(this.fieldset.get(), (name: string, c: number): string => {
+			return vec.detectDataType(this.fielddata.get(name).vector.getData());
 		});
 		if (setTypes) {
 			for (let i: number = 0; i < types.length; ++i) {
-				this.setType(this._fields.get(i), types[i]);
+				this.setType(this.fieldset.get(i), types[i]);
 			}
 		}
 		return types;
 	}
 
 	setType(field: string, type: string): void {
+		let data: IFieldData = this.fielddata.get(field);
 		let i: number = this.getFieldNameIndex(field);
-		if (type !== this._types[i]) {
-			this._types[i] = type;
+		if (type !== data.type) {
+			data.type = type;
 
 			// convert types
-			let old: Vector = this._attributeVectors.get(field);
+			let old: Vector = data.vector;
 			let newData: any[] = vec.convertToType(old.getData(), type);
 			let vector: Vector = new Vector(type, newData);
-			this._attributeVectors.set(field, vector);
+			data.vector = vector;
 		}
+	}
+
+	protected vector(field: FieldArgument): Vector {
+		let desc: FieldDescriptor = this.getFieldDescriptor(field);
+		return this.fielddata.get(desc.name).vector;
 	}
 
 	private createRowNrColumn(): number[] {
@@ -223,48 +240,36 @@ export class CoreColumnTable implements ITable {
 	protected initWithTableDef(def: ITableDefinition): void {
 		// initialize the fields
 		// throw error if field names are not unique
-		this._fields = new Set(def.fields);
-		if (def.fields.length !== this._fields.size()) {
+		this.fieldset = new Set(def.fields);
+		if (def.fields.length !== this.fieldset.size()) {
 			throw `No duplicate field names allowed!`;
 		}
 
-		// initialize the types
-		// if types are undefined, we set them to 'any' by default
+		// do some sanity checks on the input parameters
 		if (def.types) {
 			if (def.fields.length !== def.types.length) {
 				throw `Number of fields and number of types do not match!`;
 			}
-			this._types = def.types;
-		} else {
-			this._types = [];
-			for (let c: number = 0; c < def.fields.length; ++c) {
-				this._types.push(TypeEnv.kAny);
-			}
 		}
 
-		// initialize the attribute vectors
-		this._attributeVectors = new HashMap<string, Vector>();
 		if (def.columns) {
 			if (def.fields.length !== def.columns.length) {
 				throw `Number of fields and number of supplied columns do not match!`;
 			}
+		}
 
-			let numRows: number = def.columns[0].length;
-			for (let c: number = 0; c < def.fields.length; ++c) {
-				if (def.columns[c].length !== numRows) {
-					throw `Number of rows in TableDefiniton is not uniform!`;
-				}
+		this.fielddata = new HashMap<string, IFieldData>();
+		for (let i: number = 0; i < def.fields.length; ++i) {
+			let name: string = def.fields[i];
+			let type: string = (def.types) ? def.types[i] : TypeEnv.kAny;
+			let data: Column = (def.columns) ? def.columns[i] : [];
+			let vector: Vector = new Vector(type, data);
 
-				let vector: Vector = new Vector(this._types[c], def.columns[c].slice());
-				this._attributeVectors.set(def.fields[c], vector);
-			}
-
-		} else {
-			// create empty attribute vectors
-			for (let c: number = 0; c < def.fields.length; ++c) {
-				let vector: Vector = new Vector(this._types[c]);
-				this._attributeVectors.set(def.fields[c], vector);
-			}
+			this.fielddata.set(name, {
+				name: name,
+				type: type,
+				vector: vector
+			});
 		}
 	}
 
@@ -314,12 +319,12 @@ export class CoreColumnTable implements ITable {
 
 		// insert the values
 		for (let c: number = 0; c < row.length; ++c) {
-			this.column(this._fields.get(c)).push(row[c]);
+			this.column(this.fieldset.get(c)).push(row[c]);
 		}
 
 		// push null-values for non-existant fields
 		for (let c: number = row.length; c < this.numFields(); ++c) {
-			this.column(this._fields.get(c)).push(null);
+			this.column(this.fieldset.get(c)).push(null);
 		}
 	}
 }
