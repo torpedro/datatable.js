@@ -11,10 +11,10 @@ describe('data.Set', function () {
         set.add(2);
         set.add(3);
         set.add(5);
-        assert.deepEqual(set.get(), [1, 5, 2, 3]);
+        assert.deepEqual(set.toArray(), [1, 5, 2, 3]);
 
         set.remove(5);
-        assert.deepEqual(set.get(), [1, 2, 3]);
+        assert.deepEqual(set.toArray(), [1, 2, 3]);
 
         assert.equal(set.get(0), 1);
         assert.equal(set.get(1), 2);
@@ -27,14 +27,14 @@ describe('data.OrderedSet', function() {
    it('basic functionality works', function() {
 		var set = new OrderedSet([1, 1, 5, 2, 3, 6]);
 
-        assert.deepEqual(set.get(), [1, 2, 3, 5, 6]);
+        assert.deepEqual(set.toArray(), [1, 2, 3, 5, 6]);
 
         set.add(2);
         set.add(4);
-        assert.deepEqual(set.get(), [1, 2, 3, 4, 5, 6]);
+        assert.deepEqual(set.toArray(), [1, 2, 3, 4, 5, 6]);
 
         set.clear();
-        assert.deepEqual(set.get(), []);
+        assert.deepEqual(set.toArray(), []);
    });
 
    it('comparison methods work', function() {
@@ -64,11 +64,11 @@ describe('data.OrderedSet', function() {
        var set1 = new OrderedSet([1, 5, 2, 3, 6]);
        var set2 = new OrderedSet([3, 5, 0]);
 
-       assert.deepEqual(set1.difference(set2).get(), [1, 2, 6]);
-       assert.deepEqual(set2.difference(set1).get(), [0]);
+       assert.deepEqual(set1.difference(set2).toArray(), [1, 2, 6]);
+       assert.deepEqual(set2.difference(set1).toArray(), [0]);
 
-       assert.deepEqual(set1.union(set2).get(), [0, 1, 2, 3, 5, 6]);
-       assert.deepEqual(set1.intersection(set2).get(), [3, 5]);
+       assert.deepEqual(set1.union(set2).toArray(), [0, 1, 2, 3, 5, 6]);
+       assert.deepEqual(set1.intersection(set2).toArray(), [3, 5]);
 
 
    });

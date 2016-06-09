@@ -78,8 +78,8 @@ describe('table.AnalyticsTable', function() {
 	});
 
 	it('distinctValues', function() {
-		assert.deepEqual(table1.distinctValues('Category').get(), [1, 2, 3]);
-		assert.deepEqual(table1.distinctValues('Score1').get(), [10, 20, 30, 40, 50]);
+		assert.deepEqual(table1.distinctValues('Category').toArray(), [1, 2, 3]);
+		assert.deepEqual(table1.distinctValues('Score1').toArray(), [10, 20, 30, 40, 50]);
 	});
 
 	it('explodeColumn', function() {

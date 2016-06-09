@@ -102,7 +102,7 @@ export class AnalyticsTable extends CoreColumnTable {
 	filter(predicate: Function): AnalyticsTable {
 		// todo: figure out how to be able to address columns in predicate by name
 		let result: AnalyticsTable = new AnalyticsTable({
-			fields: this.fieldset.get(),
+			fields: this.fieldset.toArray(),
 			types: this.types()
 		});
 		for (let r: number = 0; r < this.count(); ++r) {
@@ -190,7 +190,7 @@ export class AnalyticsTable extends CoreColumnTable {
 	 */
 	splitColumn(field: string, groupField: string): AnalyticsTable {
 		// find all result field names
-		let categories: any[] = this.distinctValues(field).get();
+		let categories: any[] = this.distinctValues(field).toArray();
 		let fields: string[] = [groupField];
 		let types: string[] = [this.type(groupField)];
 		let valueFields: any = [];

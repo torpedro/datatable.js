@@ -1,4 +1,6 @@
+
 import { Set } from './Set';
+import { ISet } from '../interfaces/ISet';
 
 /**
  * @class OrderedSet

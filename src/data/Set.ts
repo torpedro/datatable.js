@@ -1,4 +1,6 @@
-/// <reference path='../typedefs/ISet.ts' />
+
+import { ISet, IArrayConvertable } from '../interfaces/ISet';
+
 /**
  * @class Set
  *
@@ -8,14 +10,12 @@
  * TODO: Allow option to set deep-equal
  */
 export class Set implements ISet {
-	IS_SET: boolean = true;
-
 	protected array: any[];
 
 	constructor();
-	constructor(set: ISet);
+	constructor(data: IArrayConvertable);
 	constructor(data: any[]);
-	constructor(data?: any) {
+	constructor(data?: (IArrayConvertable | any[])) {
 		// initialize empty
 		let i: number;
 		this.array = [];
@@ -24,11 +24,10 @@ export class Set implements ISet {
 			for (i = 0; i < data.length; ++i) {
 				this.add(data[i]);
 			}
-		} else if (data && data.IS_SET) {
-			// this is a set
-			let set: ISet = <ISet> data;
-			for (i = 0; i < set.size(); ++i) {
-				this.add(set.get(i));
+		} else if (data && data.toArray) {
+			// this is a IArrayConvertable
+			for (let value of data.toArray()) {
+				this.add(value);
 			}
 		}
 	}
@@ -47,29 +46,27 @@ export class Set implements ISet {
 		return this.array.indexOf(val) >= 0;
 	}
 
-	difference(other: ISet): Set {
-		let set: Set = new Set(this);
+	difference(other: ISet): ISet {
+		let set: Set = new Set(this.toArray());
 		for (let i: number = 0; i < other.size(); ++i) {
 			set.remove(other.get(i));
 		}
 		return set;
 	}
 
-	get(): any[];
-	get(index: number): any;
-	get(index?: number): any {
-		if (typeof index === 'undefined') {
-			return this.array;
-		} else {
-			return this.array[index];
-		}
+	toArray(): any[] {
+		return this.array;
+	}
+
+	get(index: number): any {
+		return this.array[index];
 	}
 
 	indexOf(val: any): number {
 		return this.array.indexOf(val);
 	}
 
-	intersection(other: ISet): Set {
+	intersection(other: ISet): ISet {
 		let set: Set = new Set();
 		for (let i: number = 0; i < this.size(); ++i) {
 			if (other.contains(this.array[i])) {
@@ -124,7 +121,7 @@ export class Set implements ISet {
 		return this.array.length;
 	}
 
-	union(other: ISet): Set {
+	union(other: ISet): ISet {
 		let set: Set = new Set(this);
 		for (let i: number = 0; i < other.size(); ++i) {
 			set.add(other.get(i));

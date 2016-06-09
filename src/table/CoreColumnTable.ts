@@ -103,7 +103,7 @@ export class CoreColumnTable {
 	}
 
 	fields(): string[] {
-		return this.fieldset.get();
+		return this.fieldset.toArray();
 	}
 
 	numFields(): number {
@@ -149,7 +149,7 @@ export class CoreColumnTable {
 	row(r: number): Row {
 		// build the row from the attribute vectors
 		let record: Row = [];
-		for (let fieldName of this.fieldset.get()) {
+		for (let fieldName of this.fieldset.toArray()) {
 			record.push(this.value(r, fieldName));
 		}
 		return record;
@@ -201,7 +201,7 @@ export class CoreColumnTable {
 	}
 
 	detectTypes(setTypes: boolean): string[] {
-		let types: string[] = _.map(this.fieldset.get(), (name: string, c: number): string => {
+		let types: string[] = _.map(this.fieldset.toArray(), (name: string, c: number): string => {
 			return vec.detectDataType(this.fielddata.get(name).vector.getData());
 		});
 		if (setTypes) {
