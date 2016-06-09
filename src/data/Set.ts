@@ -1,5 +1,6 @@
 
-import { ISet, IArrayConvertable } from '../interfaces/ISet';
+import { ISet } from '../interfaces/ISet';
+import { ArrayOrConvertible } from '../interfaces/IArrayConvertible';
 
 /**
  * @class Set
@@ -12,10 +13,7 @@ import { ISet, IArrayConvertable } from '../interfaces/ISet';
 export class Set implements ISet {
 	protected array: any[];
 
-	constructor();
-	constructor(data: IArrayConvertable);
-	constructor(data: any[]);
-	constructor(data?: (IArrayConvertable | any[])) {
+	constructor(data?: ArrayOrConvertible) {
 		// initialize empty
 		let i: number;
 		this.array = [];
@@ -25,7 +23,7 @@ export class Set implements ISet {
 				this.add(data[i]);
 			}
 		} else if (data && data.toArray) {
-			// this is a IArrayConvertable
+			// this is a IArrayConvertible
 			for (let value of data.toArray()) {
 				this.add(value);
 			}
@@ -46,7 +44,7 @@ export class Set implements ISet {
 		return this.array.indexOf(val) >= 0;
 	}
 
-	difference(other: ISet): ISet {
+	difference(other: ISet): Set {
 		let set: Set = new Set(this.toArray());
 		for (let i: number = 0; i < other.size(); ++i) {
 			set.remove(other.get(i));
@@ -66,7 +64,7 @@ export class Set implements ISet {
 		return this.array.indexOf(val);
 	}
 
-	intersection(other: ISet): ISet {
+	intersection(other: ISet): Set {
 		let set: Set = new Set();
 		for (let i: number = 0; i < this.size(); ++i) {
 			if (other.contains(this.array[i])) {
@@ -121,7 +119,7 @@ export class Set implements ISet {
 		return this.array.length;
 	}
 
-	union(other: ISet): ISet {
+	union(other: ISet): Set {
 		let set: Set = new Set(this);
 		for (let i: number = 0; i < other.size(); ++i) {
 			set.add(other.get(i));

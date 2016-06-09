@@ -1,19 +1,15 @@
-/**
- *
- */
-export interface IArrayConvertable {
-	toArray(): any[];
-}
+
+import { IArrayConvertible } from './IArrayConvertible';
 
 /**
  * General interface that every set implementation has to offer.
  *
- * Inspired by
+ * Resources:
  *  * https://docs.python.org/2/library/sets.html#sets.Set
  *  * https://docs.oracle.com/javase/7/docs/api/java/util/Set.html
  *
  */
-export interface ISet extends IArrayConvertable {
+export interface ISet extends IArrayConvertible {
 	/**
 	 * Adds the an element to this set if it is not already present.
 	 */

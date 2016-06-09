@@ -2,6 +2,7 @@
 import assert = require("assert");
 import { Set } from '../../src/data/Set';
 import { OrderedSet } from '../../src/data/OrderedSet';
+import { Vector } from '../../src/data/Vector'
 
 describe('data.Set', function () {
     it('works', function() {
@@ -69,7 +70,16 @@ describe('data.OrderedSet', function() {
 
        assert.deepEqual(set1.union(set2).toArray(), [0, 1, 2, 3, 5, 6]);
        assert.deepEqual(set1.intersection(set2).toArray(), [3, 5]);
+   });
 
+   it('can convert from vector', function() {
+       let vec = new Vector();
+       vec.push(2);
+       vec.push(3);
+       vec.push(1);
+       vec.push(2);
+       let set = new Set(vec);
 
+       assert.deepEqual(set.toArray(), [2, 3, 1]);
    });
 });
