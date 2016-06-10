@@ -3,9 +3,7 @@
 
 # datatable.js - Easy Data Handling
 
-**datatable.js** is an analytics library for JavaScript. The library contains sophisticated implementations of a Table and useful statistical functionality to interact with data. The Table implementation allows **SQL-like** interaction. **datatable.js** also holds functionality to turn Tables directly into **charts**.
-
-
+**datatable.js** is an analytics library for JavaScript. The library contains sophisticated implementations of a Table and useful statistical functionality to interact with data. The Table implementation allows **SQL-like** functionality.
 
 # Usage
 
@@ -21,55 +19,44 @@
 
     <script src="dist/datatable.js.min.js"></script>
 
-## Classes & Modules
+## Classes
 
-This is a list of all currently usable classes and modules in the library.
-It also contains some features that are planned in the near future (marked with "todo").
+This is a list of all currently publicly usable classes and modules in the library:
 
-* dt.table
-  * CoreColumnTable
-  * AnalyticsTable
-* dt.data
-  * Set
-  * OrderedSet
-  * HashMap
-  * Vector
-  * vec (module, contains various functions to work on arrays/vectors)
-* dt.io
-  * CSVParser
-  * *AjaxLoader (todo)*
-* dt.smooth
-  * ma (module, contains moving average smoothing functionality)
-  * es (module, contains exponential smoothing functionality)
+ * Table
+ * Set
+ * HashMap
+ * Vector
+ * CSVParser
 
 ## Examples
 
-Creating a table and adding rows to it.
+Example 1: Creating a table and adding rows to it.
 
 ```typescript
-var table = new dt.table.AnalyticsTable({
+var table = new dt.Table({
     fields: ["id", "name", "city", "age"],
     types: ["number", "string", "string", "number"]
 });
 
-table.addRow([1, "Max", "Mustermann", 23]); // works
-table.addRow([2, "John", "Doe", 26]); // works
-table.addRow([3, "John", "Doe", "blank"]); // throws type-mismatch error
+table.insert([[1, "Max", "Mustermann", 23]]); // works
+table.insert([[2, "John", "Doe", 26]]); // works
+
+// throws type-mismatch error
+table.insert([[3, "John", "Doe", "blank"]]); 
 
 console.log(table.rows()); // prints an array containing all rows
 ```
 
----
-
-Calculate a average age of persons from a city.
+Example 2: Calculate a average age of persons from a city.
 
 ```typescript
-var table = new dt.table.AnalyticsTable({
+var table = new dt.Table({
     fields: ["id", "name", "city", "age"],
     types: ["number", "string", "string", "number"]
 });
 
-// fill some data...
+// fill with some data...
 
 var result = table.groupBy("city", table.agg.avg("age", "average_age");
 console.log(result.rows());
