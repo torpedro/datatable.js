@@ -2,7 +2,6 @@
 {
 	"files.exclude": {
 		"**/node_modules": true,
-		"**/build": true,
 		"**/.tscache": true,
 		"**/.baseDir.[tj]s": true
 	},
@@ -13,5 +12,12 @@
 
     // Controls if the editor will insert spaces for tabs.
     // If set to auto, the value will be guessed based on the opened file.
-    "editor.insertSpaces": false
+    "editor.insertSpaces": false,
+
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/build": true,
+		"**/.tscache": true,
+		"**/.baseDir.[tj]s": true
+	}
 }

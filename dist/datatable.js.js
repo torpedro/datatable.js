@@ -1,15 +1,15 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.dt = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
-var data = require('./data/__module__');
-exports.data = data;
-var smooth = require('./smooth/__module__');
-exports.smooth = smooth;
-var io = require('./io/__module__');
-exports.io = io;
-var table = require('./table/__module__');
-exports.table = table;
+var __module__1 = require('./data/__module__');
+exports.Vector = __module__1.Vector;
+exports.Set = __module__1.Set;
+exports.HashMap = __module__1.HashMap;
+var __module__2 = require('./table/__module__');
+exports.Table = __module__2.AnalyticsTable;
+var __module__3 = require('./io/__module__');
+exports.CSVParser = __module__3.CSVParser;
 
-},{"./data/__module__":7,"./io/__module__":10,"./smooth/__module__":13,"./table/__module__":17}],2:[function(require,module,exports){
+},{"./data/__module__":7,"./io/__module__":10,"./table/__module__":14}],2:[function(require,module,exports){
 "use strict";
 var _ = require('underscore');
 var util_1 = require('./util');
@@ -75,7 +75,7 @@ var HashMap = (function () {
 }());
 exports.HashMap = HashMap;
 
-},{"./util":8,"underscore":22}],3:[function(require,module,exports){
+},{"./util":8,"underscore":19}],3:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -139,7 +139,6 @@ exports.OrderedSet = OrderedSet;
 "use strict";
 var Set = (function () {
     function Set(data) {
-        this.IS_SET = true;
         var i;
         this.array = [];
         if (data instanceof Array) {
@@ -147,10 +146,10 @@ var Set = (function () {
                 this.add(data[i]);
             }
         }
-        else if (data && data.IS_SET) {
-            var set = data;
-            for (i = 0; i < set.size(); ++i) {
-                this.add(set.get(i));
+        else if (data && data.toArray) {
+            for (var _i = 0, _a = data.toArray(); _i < _a.length; _i++) {
+                var value = _a[_i];
+                this.add(value);
             }
         }
     }
@@ -166,19 +165,17 @@ var Set = (function () {
         return this.array.indexOf(val) >= 0;
     };
     Set.prototype.difference = function (other) {
-        var set = new Set(this);
+        var set = new Set(this.toArray());
         for (var i = 0; i < other.size(); ++i) {
             set.remove(other.get(i));
         }
         return set;
     };
+    Set.prototype.toArray = function () {
+        return this.array;
+    };
     Set.prototype.get = function (index) {
-        if (typeof index === 'undefined') {
-            return this.array;
-        }
-        else {
-            return this.array[index];
-        }
+        return this.array[index];
     };
     Set.prototype.indexOf = function (val) {
         return this.array.indexOf(val);
@@ -248,10 +245,22 @@ var Vector = (function () {
     function Vector(type, data, typeEnv) {
         if (type === void 0) { type = 'any'; }
         this.type = type;
-        this.data = data || [];
+        this.data = [];
         this.typeEnv = typeEnv || StandardTypeEnv_1.StandardTypeEnv.getInstance();
+        if (data instanceof Array) {
+            this.data = data;
+        }
+        else if (data && data.toArray) {
+            this.data = data.toArray();
+        }
     }
-    Vector.prototype.add = function (value) {
+    Vector.prototype.get = function (index) {
+        return this.data[index];
+    };
+    Vector.prototype.getType = function () {
+        return this.type;
+    };
+    Vector.prototype.push = function (value) {
         if (this.type === 'any') {
             this.data.push(value);
         }
@@ -271,20 +280,14 @@ var Vector = (function () {
     Vector.prototype.size = function () {
         return this.data.length;
     };
-    Vector.prototype.get = function (index) {
-        return this.data[index];
-    };
-    Vector.prototype.getData = function () {
+    Vector.prototype.toArray = function () {
         return this.data;
-    };
-    Vector.prototype.getType = function () {
-        return this.type;
     };
     return Vector;
 }());
 exports.Vector = Vector;
 
-},{"../types/StandardTypeEnv":19}],6:[function(require,module,exports){
+},{"../types/StandardTypeEnv":16}],6:[function(require,module,exports){
 "use strict";
 var _ = require('underscore');
 var StandardTypeEnv_1 = require('../types/StandardTypeEnv');
@@ -365,7 +368,7 @@ var vec;
     vec.distinctValues = distinctValues;
 })(vec = exports.vec || (exports.vec = {}));
 
-},{"../types/StandardTypeEnv":19,"underscore":22}],7:[function(require,module,exports){
+},{"../types/StandardTypeEnv":16,"underscore":19}],7:[function(require,module,exports){
 "use strict";
 var VectorOperations_1 = require('./VectorOperations');
 exports.vec = VectorOperations_1.vec;
@@ -509,80 +512,12 @@ var CSVParser = (function () {
 }());
 exports.CSVParser = CSVParser;
 
-},{"../table/CoreColumnTable":15,"papaparse":21}],10:[function(require,module,exports){
+},{"../table/CoreColumnTable":12,"papaparse":18}],10:[function(require,module,exports){
 "use strict";
 var CSVParser_1 = require('./CSVParser');
 exports.CSVParser = CSVParser_1.CSVParser;
 
 },{"./CSVParser":9}],11:[function(require,module,exports){
-"use strict";
-var es;
-(function (es) {
-    function SingleExponentialSmoothing(vector, alpha) {
-        if (!vector || typeof alpha === 'undefined')
-            throw 'Not enough parameters given!';
-        if (0 > alpha || alpha > 1)
-            throw 'Alpha has to be in [0,1]!';
-        var result = [];
-        result.push(vector[0]);
-        for (var t = 1; t < vector.length; ++t) {
-            var val = alpha * vector[t] + (1 - alpha) * result[t - 1];
-            result.push(val);
-        }
-        return result;
-    }
-    es.SingleExponentialSmoothing = SingleExponentialSmoothing;
-    function DoubleExponentialSmoothing(data, alpha, beta) {
-        if (!data || !alpha)
-            return null;
-        var s = [];
-        var b = [];
-        s.push(data[0]);
-        b.push(data[1] - data[0]);
-        for (var t = 1; t < data.length; ++t) {
-            var val = alpha * data[t] + (1 - alpha) * (s[t - 1] + b[t - 1]);
-            s.push(val);
-            var trend = beta * (s[t] - s[t - 1]) + (1 - beta) * b[t - 1];
-            b.push(trend);
-        }
-        return s;
-    }
-    es.DoubleExponentialSmoothing = DoubleExponentialSmoothing;
-})(es = exports.es || (exports.es = {}));
-
-},{}],12:[function(require,module,exports){
-"use strict";
-var ma;
-(function (ma) {
-    function SimpleMovingAverage(vector, k) {
-        var result = [];
-        for (var i = 0; i < k && i < vector.length; ++i) {
-            var sum = 0;
-            for (var j = i; j >= 0; --j) {
-                sum += vector[j];
-            }
-            result.push(sum / (i + 1));
-        }
-        for (var i = k; i < vector.length; ++i) {
-            var sum = 0;
-            for (var j = i; j > i - k; --j) {
-                sum += vector[j];
-            }
-            result.push(sum / k);
-        }
-        return result;
-    }
-    ma.SimpleMovingAverage = SimpleMovingAverage;
-})(ma = exports.ma || (exports.ma = {}));
-
-},{}],13:[function(require,module,exports){
-"use strict";
-var MovingAverage_1 = require('./MovingAverage');
-exports.ma = MovingAverage_1.ma;
-var ExponentialSmoothing_1 = require('./ExponentialSmoothing');
-exports.es = ExponentialSmoothing_1.es;
-
-},{"./ExponentialSmoothing":11,"./MovingAverage":12}],14:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -650,7 +585,7 @@ var AnalyticsTable = (function (_super) {
     };
     AnalyticsTable.prototype.filter = function (predicate) {
         var result = new AnalyticsTable({
-            fields: this.fieldset.get(),
+            fields: this.fieldset.toArray(),
             types: this.types()
         });
         for (var r = 0; r < this.count(); ++r) {
@@ -696,7 +631,7 @@ var AnalyticsTable = (function (_super) {
         });
     };
     AnalyticsTable.prototype.splitColumn = function (field, groupField) {
-        var categories = this.distinctValues(field).get();
+        var categories = this.distinctValues(field).toArray();
         var fields = [groupField];
         var types = [this.type(groupField)];
         var valueFields = [];
@@ -804,7 +739,7 @@ function convertToFieldDescriptors(val) {
     return val;
 }
 
-},{"../data/HashMap":2,"../data/OrderedSet":3,"../data/VectorOperations":6,"./CoreColumnTable":15,"./FieldDescriptor":16,"./operators/agg":18}],15:[function(require,module,exports){
+},{"../data/HashMap":2,"../data/OrderedSet":3,"../data/VectorOperations":6,"./CoreColumnTable":12,"./FieldDescriptor":13,"./operators/agg":15}],12:[function(require,module,exports){
 "use strict";
 var _ = require('underscore');
 var HashMap_1 = require('../data/HashMap');
@@ -856,7 +791,7 @@ var CoreColumnTable = (function () {
         }
     };
     CoreColumnTable.prototype.fields = function () {
-        return this.fieldset.get();
+        return this.fieldset.toArray();
     };
     CoreColumnTable.prototype.numFields = function () {
         return this.fieldset.size();
@@ -894,7 +829,7 @@ var CoreColumnTable = (function () {
     };
     CoreColumnTable.prototype.row = function (r) {
         var record = [];
-        for (var _i = 0, _a = this.fieldset.get(); _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.fieldset.toArray(); _i < _a.length; _i++) {
             var fieldName = _a[_i];
             record.push(this.value(r, fieldName));
         }
@@ -919,7 +854,7 @@ var CoreColumnTable = (function () {
     CoreColumnTable.prototype.column = function (field) {
         var data = this.getFieldData(field);
         if (data) {
-            return data.vector.getData();
+            return data.vector.toArray();
         }
         else {
             if (field === '$rownr') {
@@ -937,8 +872,8 @@ var CoreColumnTable = (function () {
     };
     CoreColumnTable.prototype.detectTypes = function (setTypes) {
         var _this = this;
-        var types = _.map(this.fieldset.get(), function (name, c) {
-            return VectorOperations_1.vec.detectDataType(_this.fielddata.get(name).vector.getData());
+        var types = _.map(this.fieldset.toArray(), function (name, c) {
+            return VectorOperations_1.vec.detectDataType(_this.fielddata.get(name).vector.toArray());
         });
         if (setTypes) {
             for (var i = 0; i < types.length; ++i) {
@@ -952,7 +887,7 @@ var CoreColumnTable = (function () {
         if (type !== data.type) {
             data.type = type;
             var old = data.vector;
-            var newData = VectorOperations_1.vec.convertToType(old.getData(), type);
+            var newData = VectorOperations_1.vec.convertToType(old.toArray(), type);
             var vector = new Vector_1.Vector(type, newData, this.typeEnv);
             data.vector = vector;
         }
@@ -1049,7 +984,7 @@ var CoreColumnTable = (function () {
 }());
 exports.CoreColumnTable = CoreColumnTable;
 
-},{"../../src/data/Vector":5,"../data/HashMap":2,"../data/Set":4,"../data/VectorOperations":6,"../types/StandardTypeEnv":19,"underscore":22}],16:[function(require,module,exports){
+},{"../../src/data/Vector":5,"../data/HashMap":2,"../data/Set":4,"../data/VectorOperations":6,"../types/StandardTypeEnv":16,"underscore":19}],13:[function(require,module,exports){
 "use strict";
 var FieldDescriptor = (function () {
     function FieldDescriptor(what, as) {
@@ -1097,7 +1032,7 @@ var FieldDescriptor = (function () {
 }());
 exports.FieldDescriptor = FieldDescriptor;
 
-},{}],17:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 var AnalyticsTable_1 = require('./AnalyticsTable');
 exports.AnalyticsTable = AnalyticsTable_1.AnalyticsTable;
@@ -1106,7 +1041,7 @@ exports.CoreColumnTable = CoreColumnTable_1.CoreColumnTable;
 var FieldDescriptor_1 = require('./FieldDescriptor');
 exports.FieldDescriptor = FieldDescriptor_1.FieldDescriptor;
 
-},{"./AnalyticsTable":14,"./CoreColumnTable":15,"./FieldDescriptor":16}],18:[function(require,module,exports){
+},{"./AnalyticsTable":11,"./CoreColumnTable":12,"./FieldDescriptor":13}],15:[function(require,module,exports){
 "use strict";
 var agg;
 (function (agg) {
@@ -1156,7 +1091,7 @@ var agg;
     agg.first = first;
 })(agg = exports.agg || (exports.agg = {}));
 
-},{}],19:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1261,7 +1196,7 @@ var StandardTypeEnv = (function (_super) {
 }(TypeEnvironment_1.TypeEnvironment));
 exports.StandardTypeEnv = StandardTypeEnv;
 
-},{"./TypeEnvironment":20}],20:[function(require,module,exports){
+},{"./TypeEnvironment":17}],17:[function(require,module,exports){
 "use strict";
 var TypeEnvironment = (function () {
     function TypeEnvironment() {
@@ -1379,7 +1314,7 @@ var TypeEnvironment = (function () {
 }());
 exports.TypeEnvironment = TypeEnvironment;
 
-},{}],21:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /*!
 	Papa Parse
 	v4.1.2
@@ -2784,7 +2719,7 @@ exports.TypeEnvironment = TypeEnvironment;
 	}
 })(typeof window !== 'undefined' ? window : this);
 
-},{}],22:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
