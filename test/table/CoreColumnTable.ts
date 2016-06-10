@@ -99,4 +99,13 @@ describe('table.CoreColumnTable', function() {
         assert.strictEqual(t.value(2, 'A'), 23.5);
         assert.strictEqual(t.value(2, 'B'), null);
     });
+
+    it('should be able to insert null values', function() {
+        let table = new CoreColumnTable({
+            fields: ['A', 'B', 'C', 'D', 'E'],
+            types: ['boolean', 'number', 'date', 'string', 'any']
+        });
+        table.insert([[null, null, null, null, null]]);
+        assert.deepEqual(table.rows(), [[null, null, null, null, null]]);
+    });
 });

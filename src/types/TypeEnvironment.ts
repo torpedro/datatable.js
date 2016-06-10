@@ -37,7 +37,7 @@ export class TypeEnvironment {
 	}
 
 	convert(value: any, toType: string, forceFromType: string = null): ITypeConversionResult {
-		let fromType: string = forceFromType || (typeof value);
+		let fromType: string = forceFromType || this.detectDataType(value, false).type;
 
 		// check fromType === toType
 		if (fromType === toType) {

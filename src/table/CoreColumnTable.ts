@@ -61,8 +61,14 @@ export class CoreColumnTable {
 	 * inserts an array of rows into the table
 	 */
 	insert(rows: Row[]): void {
-		for (let r: number = 0; r < rows.length; ++r) {
-			this.addRow(rows[r]);
+		if (rows instanceof Array) {
+			for (let r: number = 0; r < rows.length; ++r) {
+				if (rows[r] instanceof Array) {
+					this.addRow(rows[r]);
+				} else {
+					throw `Row was not an array! Could not insert!`;
+				}
+			}
 		}
 	}
 
@@ -298,7 +304,7 @@ export class CoreColumnTable {
 	/**
 	 * adds a new row to the table
 	 */
-	protected addRow(row: any[]): void {
+	protected addRow(row: Row): void {
 		if (row.length > this.numFields()) throw `Error when inserting! Row has too many fields!`;
 
 		// typechecks
@@ -325,7 +331,7 @@ export class CoreColumnTable {
 					if (res.success) {
 						row[c] = res.result;
 					} else {
-						throw `Error when inserting! Types don't match!`;
+						throw `Error: Types don't match! ${row[c]} is not ${colType}`;
 					}
 				}
 			}

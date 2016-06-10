@@ -761,8 +761,15 @@ var CoreColumnTable = (function () {
         }
     }
     CoreColumnTable.prototype.insert = function (rows) {
-        for (var r = 0; r < rows.length; ++r) {
-            this.addRow(rows[r]);
+        if (rows instanceof Array) {
+            for (var r = 0; r < rows.length; ++r) {
+                if (rows[r] instanceof Array) {
+                    this.addRow(rows[r]);
+                }
+                else {
+                    throw "Row was not an array! Could not insert!";
+                }
+            }
         }
     };
     CoreColumnTable.prototype.count = function () {
@@ -968,7 +975,7 @@ var CoreColumnTable = (function () {
                         row[c] = res.result;
                     }
                     else {
-                        throw "Error when inserting! Types don't match!";
+                        throw "Error: Types don't match! " + row[c] + " is not " + colType;
                     }
                 }
             }
@@ -1205,7 +1212,7 @@ var TypeEnvironment = (function () {
     }
     TypeEnvironment.prototype.convert = function (value, toType, forceFromType) {
         if (forceFromType === void 0) { forceFromType = null; }
-        var fromType = forceFromType || (typeof value);
+        var fromType = forceFromType || this.detectDataType(value, false).type;
         if (fromType === toType) {
             return {
                 success: true,

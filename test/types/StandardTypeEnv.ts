@@ -30,6 +30,13 @@ describe('data.StandardTypeEnv', function() {
 			result: true
 		});
 
+		let date: Date = new Date();
+		assert.deepEqual(conv.convert(date, 'date'), {
+			success: true,
+			resultType: 'date',
+			result: date
+		});
+
     });
 
 	describe('autoConvertString', function() {
