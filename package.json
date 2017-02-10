@@ -21,7 +21,7 @@
     "mocha": "^2.5.3",
     "papaparse": "^4.1.2",
     "tslint": "^3.10.2",
-    "typescript": "^1.8.10",
+    "typescript": "^2.1.6",
     "underscore": "^1.8.3"
   },
   "scripts": {

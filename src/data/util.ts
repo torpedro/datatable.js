@@ -21,7 +21,7 @@ export module util {
 			if (o === null) return "n";
 			if (o === true) return "t";
 			if (o === false) return "f";
-			if (o instanceof Date) return "d:" + (0 + o);
+			if (o instanceof Date) return "d:0" + o.toString();
 			i=typeof o;
 			if (i === "string") return "s:" + o.replace(/([\\\\;])/g, "\\$1");
 			if (i === "number") return "n:" + o;
