@@ -20,7 +20,7 @@ import { agg as aggs } from './operators/agg';
  * @class AnalyticsTable
  */
 export class AnalyticsTable extends CoreColumnTable {
-	public agg = aggs; // alias to the aggregation module
+	public agg: any = aggs; // alias to the aggregation module
 
 
 	/**

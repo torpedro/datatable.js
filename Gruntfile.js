@@ -39,9 +39,7 @@ function registerTasks(grunt) {
 
     grunt.registerTask('test-and-lint', [
         'test',
-        'continue:on', // --force for linting
         'lint',
-        'continue:off', // unset --force
         'lint-test'
     ]);
 
@@ -57,9 +55,14 @@ function registerTasks(grunt) {
 
 
     grunt.registerTask('lint-test', 'Checks whether the amount of errors exceeds our limit.', function() {
-        var errors = grunt.file.read('reports/tslint.txt').split('\n');
+        var reportFile = 'reports/tslint.txt';
+        if (!grunt.file.exists(reportFile)) {
+            return;
+        }
+
+        var errors = grunt.file.read(reportFile).split('\n');
         var numErrors = errors.length - 1;
-        var errorLimit = 1;
+        var errorLimit = 0;
 
         if (numErrors > errorLimit) {
             grunt.warn('Number of tslint errors (' + numErrors + ') exceeds limit (' + errorLimit + ')!');

@@ -6,3 +6,5 @@ reports/
 typings/
 .settings/
 .tscache/
+src/**/*.js
+src/**/*.d.ts
