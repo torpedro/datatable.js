@@ -1,3 +1,13 @@
 language: node_js
+
 node_js:
-  - "0.10"
+  - "5.9"
+
+install:
+  - node --version
+  - npm --version
+  - nvm --version
+  - npm install
+  - npm install -g typings
+  - typings --version
+  - typings install
