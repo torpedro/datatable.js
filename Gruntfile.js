@@ -139,6 +139,12 @@ function configureGrunt(grunt) {
                     cwd: '<%= cfg.src %>/',
                     src: ['**/*'],
                     dest: '<%= cfg.build %>/src/'
+                }, {
+                    dot: true,
+                    expand: true,
+                    cwd: 'typings',
+                    src: ['**/*'],
+                    dest: '<%= cfg.build %>/typings/'
                 }]
             },
 

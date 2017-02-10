@@ -1,4 +1,4 @@
-/// <reference path='../typings/underscore/underscore.d.ts' />
+/// <reference path='../../typings/index.d.ts' />
 import _ = require('underscore');
 
 import { ITypeDetectionResult } from '../types/TypeEnvironment';

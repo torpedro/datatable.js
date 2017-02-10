@@ -1,4 +1,4 @@
-/// <reference path='../typings/papaparse/papaparse.d.ts' />
+/// <reference path='../../typings/index.d.ts' />
 import { CoreColumnTable } from '../table/CoreColumnTable';
 import Papa = require('papaparse');
 

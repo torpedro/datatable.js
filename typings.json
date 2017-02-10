@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "papaparse": "registry:dt/papaparse#4.1.0+20160510002910",
+    "underscore": "registry:dt/underscore#1.8.3+20161123125004"
+  }
+}

@@ -3,5 +3,6 @@ bower_components/
 npm-debug.log
 build/
 reports/
+typings/
 .settings/
 .tscache/
