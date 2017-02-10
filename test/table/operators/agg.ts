@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/index.d.ts" />
 import assert = require("assert");
 import { agg } from '../../../src/table/operators/agg';
 import { AnalyticsTable } from '../../../src/table/AnalyticsTable';

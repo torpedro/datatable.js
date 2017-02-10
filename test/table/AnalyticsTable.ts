@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 /// <reference path="../../src/table/AnalyticsTable.ts" />
 
 import assert = require("assert");
