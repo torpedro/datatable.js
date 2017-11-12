@@ -1,5 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.dt = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var __module__1 = require("./data/__module__");
 exports.Vector = __module__1.Vector;
 exports.Set = __module__1.Set;
@@ -11,6 +12,7 @@ exports.CSVParser = __module__3.CSVParser;
 
 },{"./data/__module__":7,"./io/__module__":10,"./table/__module__":14}],2:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("underscore");
 var util_1 = require("./util");
 var HashMap = (function () {
@@ -77,11 +79,17 @@ exports.HashMap = HashMap;
 
 },{"./util":8,"underscore":19}],3:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var Set_1 = require("./Set");
 var OrderedSet = (function (_super) {
     __extends(OrderedSet, _super);
@@ -137,6 +145,7 @@ exports.OrderedSet = OrderedSet;
 
 },{"./Set":4}],4:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Set = (function () {
     function Set(data) {
         var i;
@@ -240,6 +249,7 @@ exports.Set = Set;
 
 },{}],5:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var StandardTypeEnv_1 = require("../types/StandardTypeEnv");
 var Vector = (function () {
     function Vector(type, data, typeEnv) {
@@ -289,6 +299,7 @@ exports.Vector = Vector;
 
 },{"../types/StandardTypeEnv":16}],6:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("underscore");
 var StandardTypeEnv_1 = require("../types/StandardTypeEnv");
 var vec;
@@ -297,15 +308,15 @@ var vec;
         var size = vector.length;
         if (size === 0)
             return null;
-        var range = [vector[0], vector[0]];
+        var interval = [vector[0], vector[0]];
         for (var n = 1; n < size; ++n) {
             var value = vector[n];
-            if (value < range[0])
-                range[0] = value;
-            if (value > range[1])
-                range[1] = value;
+            if (value < interval[0])
+                interval[0] = value;
+            if (value > interval[1])
+                interval[1] = value;
         }
-        return range;
+        return interval;
     }
     vec.range = range;
     function min(vector) { return range(vector)[0]; }
@@ -370,6 +381,7 @@ var vec;
 
 },{"../types/StandardTypeEnv":16,"underscore":19}],7:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var VectorOperations_1 = require("./VectorOperations");
 exports.vec = VectorOperations_1.vec;
 var util_1 = require("./util");
@@ -385,6 +397,7 @@ exports.Vector = Vector_1.Vector;
 
 },{"./HashMap":2,"./OrderedSet":3,"./Set":4,"./Vector":5,"./VectorOperations":6,"./util":8}],8:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var util;
 (function (util) {
     function toHex(num) {
@@ -446,8 +459,9 @@ var util;
 
 },{}],9:[function(require,module,exports){
 "use strict";
-var CoreColumnTable_1 = require("../table/CoreColumnTable");
+Object.defineProperty(exports, "__esModule", { value: true });
 var Papa = require("papaparse");
+var CoreColumnTable_1 = require("../table/CoreColumnTable");
 var CSVParser = (function () {
     function CSVParser(options) {
         if (!options)
@@ -514,16 +528,23 @@ exports.CSVParser = CSVParser;
 
 },{"../table/CoreColumnTable":12,"papaparse":18}],10:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var CSVParser_1 = require("./CSVParser");
 exports.CSVParser = CSVParser_1.CSVParser;
 
 },{"./CSVParser":9}],11:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var CoreColumnTable_1 = require("./CoreColumnTable");
 var FieldDescriptor_1 = require("./FieldDescriptor");
 var OrderedSet_1 = require("../data/OrderedSet");
@@ -617,8 +638,8 @@ var AnalyticsTable = (function (_super) {
             else {
                 resFields.push(field.outputName);
                 var vector = [];
-                for (var i_1 = 0; i_1 < this.count(); ++i_1) {
-                    var value = field.getValue(this, i_1);
+                for (var j = 0; j < this.count(); ++j) {
+                    var value = field.getValue(this, j);
                     vector.push(value);
                 }
                 types.push(VectorOperations_1.vec.detectDataType(vector));
@@ -742,6 +763,7 @@ function convertToFieldDescriptors(val) {
 
 },{"../data/HashMap":2,"../data/OrderedSet":3,"../data/VectorOperations":6,"./CoreColumnTable":12,"./FieldDescriptor":13,"./operators/agg":15}],12:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("underscore");
 var HashMap_1 = require("../data/HashMap");
 var Vector_1 = require("../../src/data/Vector");
@@ -994,6 +1016,7 @@ exports.CoreColumnTable = CoreColumnTable;
 
 },{"../../src/data/Vector":5,"../data/HashMap":2,"../data/Set":4,"../data/VectorOperations":6,"../types/StandardTypeEnv":16,"underscore":19}],13:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var FieldDescriptor = (function () {
     function FieldDescriptor(what, as) {
         if (typeof what === 'string') {
@@ -1042,6 +1065,7 @@ exports.FieldDescriptor = FieldDescriptor;
 
 },{}],14:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var AnalyticsTable_1 = require("./AnalyticsTable");
 exports.AnalyticsTable = AnalyticsTable_1.AnalyticsTable;
 var CoreColumnTable_1 = require("./CoreColumnTable");
@@ -1051,16 +1075,17 @@ exports.FieldDescriptor = FieldDescriptor_1.FieldDescriptor;
 
 },{"./AnalyticsTable":11,"./CoreColumnTable":12,"./FieldDescriptor":13}],15:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var agg;
 (function (agg) {
     function sum(targetField, outputName) {
         var aggf = function (rows, table) {
-            var sum = 0;
+            var total = 0;
             var c = table.getFieldIndex(targetField);
             for (var r = 0; r < rows.length; ++r) {
-                sum += rows[r][c];
+                total += rows[r][c];
             }
-            return sum;
+            return total;
         };
         if (outputName)
             aggf.aggName = outputName;
@@ -1071,12 +1096,12 @@ var agg;
     agg.sum = sum;
     function avg(targetField, outputName) {
         var aggf = function (rows, table) {
-            var sum = 0;
+            var total = 0;
             var c = table.getFieldIndex(targetField);
             for (var r = 0; r < rows.length; ++r) {
-                sum += rows[r][c];
+                total += rows[r][c];
             }
-            return (sum / rows.length);
+            return (total / rows.length);
         };
         if (outputName)
             aggf.aggName = outputName;
@@ -1101,11 +1126,17 @@ var agg;
 
 },{}],16:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var TypeEnvironment_1 = require("./TypeEnvironment");
 var StandardTypeEnv = (function (_super) {
     __extends(StandardTypeEnv, _super);
@@ -1193,20 +1224,21 @@ var StandardTypeEnv = (function (_super) {
         }
         return this._instance;
     };
+    StandardTypeEnv.kAny = 'any';
+    StandardTypeEnv.kString = 'string';
+    StandardTypeEnv.kNumber = 'number';
+    StandardTypeEnv.kDate = 'date';
+    StandardTypeEnv.kObject = 'object';
+    StandardTypeEnv.kBoolean = 'boolean';
+    StandardTypeEnv.kNull = 'null';
+    StandardTypeEnv.kFunction = 'function';
     return StandardTypeEnv;
 }(TypeEnvironment_1.TypeEnvironment));
-StandardTypeEnv.kAny = 'any';
-StandardTypeEnv.kString = 'string';
-StandardTypeEnv.kNumber = 'number';
-StandardTypeEnv.kDate = 'date';
-StandardTypeEnv.kObject = 'object';
-StandardTypeEnv.kBoolean = 'boolean';
-StandardTypeEnv.kNull = 'null';
-StandardTypeEnv.kFunction = 'function';
 exports.StandardTypeEnv = StandardTypeEnv;
 
 },{"./TypeEnvironment":17}],17:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var TypeEnvironment = (function () {
     function TypeEnvironment() {
         this.typeConverters = {};
@@ -1326,8 +1358,9 @@ exports.TypeEnvironment = TypeEnvironment;
 },{}],18:[function(require,module,exports){
 /*!
 	Papa Parse
-	v4.1.4
+	v4.3.6
 	https://github.com/mholt/PapaParse
+	License: MIT
 */
 (function(root, factory)
 {
@@ -1336,7 +1369,7 @@ exports.TypeEnvironment = TypeEnvironment;
 		// AMD. Register as an anonymous module.
 		define([], factory);
 	}
-	else if (typeof module === 'object' && module.exports)
+	else if (typeof module === 'object' && typeof exports !== 'undefined')
 	{
 		// Node. Does not work with strict CommonJS, but
 		// only CommonJS-like environments that support module.exports,
@@ -1361,8 +1394,8 @@ exports.TypeEnvironment = TypeEnvironment;
 		if (typeof window !== 'undefined') { return window; }
 		if (typeof global !== 'undefined') { return global; }
 
-        // When running tests none of the above have been defined
-        return {};
+		// When running tests none of the above have been defined
+		return {};
 	})();
 
 
@@ -1394,6 +1427,7 @@ exports.TypeEnvironment = TypeEnvironment;
 	Papa.NetworkStreamer = NetworkStreamer;
 	Papa.FileStreamer = FileStreamer;
 	Papa.StringStreamer = StringStreamer;
+	Papa.ReadableStreamStreamer = ReadableStreamStreamer;
 
 	if (global.jQuery)
 	{
@@ -1518,7 +1552,13 @@ exports.TypeEnvironment = TypeEnvironment;
 	function CsvToJson(_input, _config)
 	{
 		_config = _config || {};
-		_config.dynamicTyping = _config.dynamicTyping || false;
+		var dynamicTyping = _config.dynamicTyping || false;
+		if (isFunction(dynamicTyping)) {
+			_config.dynamicTypingFunction = dynamicTyping;
+			// Will be filled on first row call
+			dynamicTyping = {};
+		}
+		_config.dynamicTyping = dynamicTyping;
 
 		if (_config.worker && Papa.WORKERS_SUPPORTED)
 		{
@@ -1551,6 +1591,10 @@ exports.TypeEnvironment = TypeEnvironment;
 				streamer = new NetworkStreamer(_config);
 			else
 				streamer = new StringStreamer(_config);
+		}
+		else if (_input.readable === true && isFunction(_input.read) && isFunction(_input.on))
+		{
+			streamer = new ReadableStreamStreamer(_config);
 		}
 		else if ((global.File && _input instanceof File) || _input instanceof Object)	// ...Safari. (see issue #106)
 			streamer = new FileStreamer(_config);
@@ -1902,6 +1946,16 @@ exports.TypeEnvironment = TypeEnvironment;
 			}
 
 			xhr.open('GET', this._input, !IS_WORKER);
+			// Headers can only be set when once the request state is OPENED
+			if (this._config.downloadRequestHeaders)
+			{
+				var headers = this._config.downloadRequestHeaders;
+
+				for (var headerName in headers)
+				{
+					xhr.setRequestHeader(headerName, headers[headerName]);
+				}
+			}
 
 			if (this._config.chunkSize)
 			{
@@ -1948,8 +2002,8 @@ exports.TypeEnvironment = TypeEnvironment;
 		{
 			var contentRange = xhr.getResponseHeader('Content-Range');
 			if (contentRange === null) { // no content range, then finish!
-        			return -1;
-            		}
+					return -1;
+					}
 			return parseInt(contentRange.substr(contentRange.lastIndexOf('/') + 1));
 		}
 	}
@@ -2051,6 +2105,77 @@ exports.TypeEnvironment = TypeEnvironment;
 	StringStreamer.prototype.constructor = StringStreamer;
 
 
+	function ReadableStreamStreamer(config)
+	{
+		config = config || {};
+
+		ChunkStreamer.call(this, config);
+
+		var queue = [];
+		var parseOnData = true;
+
+		this.stream = function(stream)
+		{
+			this._input = stream;
+
+			this._input.on('data', this._streamData);
+			this._input.on('end', this._streamEnd);
+			this._input.on('error', this._streamError);
+		}
+
+		this._nextChunk = function()
+		{
+			if (queue.length)
+			{
+				this.parseChunk(queue.shift());
+			}
+			else
+			{
+				parseOnData = true;
+			}
+		}
+
+		this._streamData = bindFunction(function(chunk)
+		{
+			try
+			{
+				queue.push(typeof chunk === 'string' ? chunk : chunk.toString(this._config.encoding));
+
+				if (parseOnData)
+				{
+					parseOnData = false;
+					this.parseChunk(queue.shift());
+				}
+			}
+			catch (error)
+			{
+				this._streamError(error);
+			}
+		}, this);
+
+		this._streamError = bindFunction(function(error)
+		{
+			this._streamCleanUp();
+			this._sendError(error.message);
+		}, this);
+
+		this._streamEnd = bindFunction(function()
+		{
+			this._streamCleanUp();
+			this._finished = true;
+			this._streamData('');
+		}, this);
+
+		this._streamCleanUp = bindFunction(function()
+		{
+			this._input.removeListener('data', this._streamData);
+			this._input.removeListener('end', this._streamEnd);
+			this._input.removeListener('error', this._streamError);
+		}, this);
+	}
+	ReadableStreamStreamer.prototype = Object.create(ChunkStreamer.prototype);
+	ReadableStreamStreamer.prototype.constructor = ReadableStreamStreamer;
+
 
 	// Use one ParserHandle per entire CSV file or string
 	function ParserHandle(_config)
@@ -2063,7 +2188,7 @@ exports.TypeEnvironment = TypeEnvironment;
 		var _input;				// The input being parsed
 		var _parser;			// The core parser being used
 		var _paused = false;	// Whether we are paused or not
-		var _aborted = false;   // Whether the parser has aborted or not
+		var _aborted = false;	// Whether the parser has aborted or not
 		var _delimiterError;	// Temporary state between delimiter detection and processing results
 		var _fields = [];		// Fields are from the header row of the input, if there is one
 		var _results = {		// The last results returned from the parser
@@ -2111,7 +2236,7 @@ exports.TypeEnvironment = TypeEnvironment;
 			_delimiterError = false;
 			if (!_config.delimiter)
 			{
-				var delimGuess = guessDelimiter(input, _config.newline);
+				var delimGuess = guessDelimiter(input, _config.newline, _config.skipEmptyLines);
 				if (delimGuess.successful)
 					_config.delimiter = delimGuess.bestDelimiter;
 				else
@@ -2121,7 +2246,7 @@ exports.TypeEnvironment = TypeEnvironment;
 				}
 				_results.meta.delimiter = _config.delimiter;
 			}
-			else if(typeof _config.delimiter === 'function')
+			else if(isFunction(_config.delimiter))
 			{
 				_config.delimiter = _config.delimiter(input);
 				_results.meta.delimiter = _config.delimiter;
@@ -2207,9 +2332,17 @@ exports.TypeEnvironment = TypeEnvironment;
 			_results.data.splice(0, 1);
 		}
 
+		function shouldApplyDynamicTyping(field) {
+			// Cache function values to avoid calling it for each row
+			if (_config.dynamicTypingFunction && _config.dynamicTyping[field] === undefined) {
+				_config.dynamicTyping[field] = _config.dynamicTypingFunction(field);
+			}
+			return (_config.dynamicTyping[field] || _config.dynamicTyping) === true
+		}
+
 		function parseDynamic(field, value)
 		{
-			if ((_config.dynamicTyping[field] || _config.dynamicTyping) === true)
+			if (shouldApplyDynamicTyping(field))
 			{
 				if (value === 'true' || value === 'TRUE')
 					return true;
@@ -2265,7 +2398,7 @@ exports.TypeEnvironment = TypeEnvironment;
 			return _results;
 		}
 
-		function guessDelimiter(input, newline)
+		function guessDelimiter(input, newline, skipEmptyLines)
 		{
 			var delimChoices = [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP];
 			var bestDelim, bestDelta, fieldCountPrevRow;
@@ -2273,7 +2406,7 @@ exports.TypeEnvironment = TypeEnvironment;
 			for (var i = 0; i < delimChoices.length; i++)
 			{
 				var delim = delimChoices[i];
-				var delta = 0, avgFieldCount = 0;
+				var delta = 0, avgFieldCount = 0, emptyLinesCount = 0;
 				fieldCountPrevRow = undefined;
 
 				var preview = new Parser({
@@ -2284,6 +2417,10 @@ exports.TypeEnvironment = TypeEnvironment;
 
 				for (var j = 0; j < preview.data.length; j++)
 				{
+					if (skipEmptyLines && preview.data[j].length === 1 && preview.data[j][0].length === 0) {
+						emptyLinesCount++
+						continue
+					}
 					var fieldCount = preview.data[j].length;
 					avgFieldCount += fieldCount;
 
@@ -2300,7 +2437,7 @@ exports.TypeEnvironment = TypeEnvironment;
 				}
 
 				if (preview.data.length > 0)
-					avgFieldCount /= preview.data.length;
+					avgFieldCount /= (preview.data.length - emptyLinesCount);
 
 				if ((typeof bestDelta === 'undefined' || delta < bestDelta)
 					&& avgFieldCount > 1.99)
@@ -2409,7 +2546,7 @@ exports.TypeEnvironment = TypeEnvironment;
 				delimLen = delim.length,
 				newlineLen = newline.length,
 				commentsLen = comments.length;
-			var stepIsFunction = typeof step === 'function';
+			var stepIsFunction = isFunction(step);
 
 			// Establish starting state
 			cursor = 0;
@@ -2471,6 +2608,7 @@ exports.TypeEnvironment = TypeEnvironment;
 						// Find closing quote
 						var quoteSearch = input.indexOf(quoteChar, quoteSearch+1);
 
+						//No other quotes are found - no other delimiters
 						if (quoteSearch === -1)
 						{
 							if (!ignoreLastRow) {
@@ -2486,9 +2624,9 @@ exports.TypeEnvironment = TypeEnvironment;
 							return finish();
 						}
 
+						// Closing quote at EOF
 						if (quoteSearch === inputLen-1)
 						{
-							// Closing quote at EOF
 							var value = input.substring(cursor, quoteSearch).replace(quoteCharRegex, quoteChar);
 							return finish(value);
 						}
@@ -2500,9 +2638,9 @@ exports.TypeEnvironment = TypeEnvironment;
 							continue;
 						}
 
+						// Closing quote followed by delimiter
 						if (input[quoteSearch+1] === delim)
 						{
-							// Closing quote followed by delimiter
 							row.push(input.substring(cursor, quoteSearch).replace(quoteCharRegex, quoteChar));
 							cursor = quoteSearch + 1 + delimLen;
 							nextDelim = input.indexOf(delim, cursor);
@@ -2510,9 +2648,9 @@ exports.TypeEnvironment = TypeEnvironment;
 							break;
 						}
 
+						// Closing quote followed by newline
 						if (input.substr(quoteSearch+1, newlineLen) === newline)
 						{
-							// Closing quote followed by newline
 							row.push(input.substring(cursor, quoteSearch).replace(quoteCharRegex, quoteChar));
 							saveRow(quoteSearch + 1 + newlineLen);
 							nextDelim = input.indexOf(delim, cursor);	// because we may have skipped the nextDelim in the quoted field
@@ -2529,6 +2667,20 @@ exports.TypeEnvironment = TypeEnvironment;
 
 							break;
 						}
+
+
+						// Checks for valid closing quotes are complete (escaped quotes or quote followed by EOF/delimiter/newline) -- assume these quotes are part of an invalid text string
+						errors.push({
+							type: 'Quotes',
+							code: 'InvalidQuotes',
+							message: 'Trailing quote on quoted field is malformed',
+							row: data.length,	// row has yet to be inserted
+							index: cursor
+						});
+
+						quoteSearch++;
+						continue;
+
 					}
 
 					continue;
