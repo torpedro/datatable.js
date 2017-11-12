@@ -1,11 +1,11 @@
 {
   "name": "datatable.js",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Pedro Flemming",
   "license": "MIT",
   "homepage": "https://github.com/torpedro/datatable.js",
   "main": "dist/datatable.js",
-  "types": "dist/datatable.d.ts",
+  "types": "dist/datatable.js.d.ts",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
