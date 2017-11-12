@@ -1,5 +1,4 @@
-
-import _ = require('underscore');
+import * as _ from 'underscore';
 import { HashMap } from '../data/HashMap';
 import { Vector } from '../../src/data/Vector';
 import { Set } from '../data/Set';

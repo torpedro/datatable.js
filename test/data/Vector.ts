@@ -1,5 +1,4 @@
-/// <reference path="../../typings/index.d.ts" />
-import assert = require("assert")
+import * as assert from 'assert';
 import { Vector } from '../../src/data/Vector';
 
 

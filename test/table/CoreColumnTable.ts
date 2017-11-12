@@ -1,5 +1,4 @@
-/// <reference path="../../typings/index.d.ts" />
-import assert = require("assert");
+import * as assert from 'assert';
 import { CoreColumnTable } from '../../src/table/CoreColumnTable';
 
 describe('table.CoreColumnTable', function() {

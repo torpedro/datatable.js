@@ -1,6 +1,5 @@
-/// <reference path='../../typings/index.d.ts' />
+import * as Papa from 'papaparse';
 import { CoreColumnTable } from '../table/CoreColumnTable';
-import Papa = require('papaparse');
 
 export class CSVParser {
 	private options: PapaParse.ParseConfig;

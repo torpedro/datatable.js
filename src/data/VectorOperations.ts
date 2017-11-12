@@ -1,5 +1,4 @@
-/// <reference path='../../typings/index.d.ts' />
-import _ = require('underscore');
+import * as _ from 'underscore';
 
 import { ITypeDetectionResult } from '../types/TypeEnvironment';
 import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';

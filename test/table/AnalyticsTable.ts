@@ -1,7 +1,4 @@
-/// <reference path="../../typings/index.d.ts" />
-/// <reference path="../../src/table/AnalyticsTable.ts" />
-
-import assert = require("assert");
+import * as assert from "assert";
 import { agg } from '../../src/table/operators/agg';
 import { AnalyticsTable } from '../../src/table/AnalyticsTable';
 import { FieldDescriptor } from '../../src/table/FieldDescriptor';

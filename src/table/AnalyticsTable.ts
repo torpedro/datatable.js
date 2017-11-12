@@ -1,5 +1,4 @@
 // @file AnalyticsTable.ts
-/// <reference path='../../typings/index.d.ts' />
 
 ///////////////////////////
 // <imports>

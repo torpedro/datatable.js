@@ -1,5 +1,4 @@
-/// <reference path="../../typings/index.d.ts" />
-import assert = require("assert")
+import * as assert from "assert";
 import { ITypeConversionResult } from '../../src/types/TypeEnvironment';
 import { StandardTypeEnv } from '../../src/types/StandardTypeEnv';
 

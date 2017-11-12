@@ -1,5 +1,4 @@
-/// <reference path='../../typings/index.d.ts' />
-import _ = require('underscore');
+import * as _ from 'underscore';
 import { util } from './util';
 
 /**
