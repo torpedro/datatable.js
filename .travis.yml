@@ -8,6 +8,3 @@ install:
   - npm --version
   - nvm --version
   - npm install
-  - npm install -g typings
-  - typings --version
-  - typings install

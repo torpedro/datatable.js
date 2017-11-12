@@ -7,7 +7,7 @@
   "main": "dist/datatable.js",
   "types": "dist/datatable.js.d.ts",
   "scripts": {
-    "test": "grunt test-and-lint"
+    "test": "make test"
   },
   "bugs": {
     "url": "https://github.com/torpedro/datatable.js/issues"
