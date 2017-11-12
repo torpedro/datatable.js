@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "5.9"
+  - "6.11.4"
 
 install:
   - node --version
