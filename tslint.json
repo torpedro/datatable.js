@@ -18,7 +18,7 @@
         "forin": false,
         "indent": [
             true,
-            "tabs"
+            "spaces"
         ],
         "interface-name": true,
         "jsdoc-format": true,

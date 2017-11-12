@@ -4,9 +4,9 @@ import { AnalyticsTable as Table } from './table/__module__';
 import { CSVParser } from './io/__module__';
 
 export {
-	Vector,
-	Set,
-	HashMap,
-	Table,
-	CSVParser
+  Vector,
+  Set,
+  HashMap,
+  Table,
+  CSVParser
 };

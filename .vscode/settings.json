@@ -1,24 +1,24 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-	"files.exclude": {
-		"**/node_modules": true,
-		"**/.tscache": true,
-		"**/.baseDir.[tj]s": true,
-		"**/build": true
-	},
-    "files.trimTrailingWhitespace": true,
-    // Controls the rendering size of tabs in characters.
-    // If set to auto, the value will be guessed based on the opened file.
-    "editor.tabSize": 4,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.tscache": true,
+    "**/.baseDir.[tj]s": true,
+    "**/build": true
+  },
+  "files.trimTrailingWhitespace": true,
+  // Controls the rendering size of tabs in characters.
+  // If set to auto, the value will be guessed based on the opened file.
+  "editor.tabSize": 2,
 
-    // Controls if the editor will insert spaces for tabs.
-    // If set to auto, the value will be guessed based on the opened file.
-    "editor.insertSpaces": false,
+  // Controls if the editor will insert spaces for tabs.
+  // If set to auto, the value will be guessed based on the opened file.
+  "editor.insertSpaces": true,
 
-	"search.exclude": {
-		"**/node_modules": true,
-		"**/build": true,
-		"**/.tscache": true,
-		"**/.baseDir.[tj]s": true
-	}
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/build": true,
+    "**/.tscache": true,
+    "**/.baseDir.[tj]s": true
+  }
 }
