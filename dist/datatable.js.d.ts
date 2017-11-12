@@ -1,5 +1,5 @@
 
-declare namespace dt {
+declare module 'datatable.js' {
     // IArrayConvertible.ts
     interface IArrayConvertible {
         toArray(): any[];
@@ -74,9 +74,9 @@ declare namespace dt {
     type Row = Value[];
     type Column = Value[];
     type FieldID = (string | number);
-    interface Table {
+    export class Table {
         // CoreColumnTable.ts
-        new(def: ITableDefinition);
+        constructor(def: ITableDefinition);
 
         insert(rows: Row[]): void;
         count(): number;
@@ -109,11 +109,6 @@ declare namespace dt {
         splitColumn(field: string, groupField: string): Table;
         sort(_field: string | FieldDescriptor, asc?: boolean): Table;
     }
-}
 
-declare module 'datatable.js' {
-    var datatable: {
-        Table: dt.Table
-    };
-    export = datatable;
+
 }
