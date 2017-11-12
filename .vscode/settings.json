@@ -3,7 +3,8 @@
 	"files.exclude": {
 		"**/node_modules": true,
 		"**/.tscache": true,
-		"**/.baseDir.[tj]s": true
+		"**/.baseDir.[tj]s": true,
+		"**/build": true
 	},
     "files.trimTrailingWhitespace": true,
     // Controls the rendering size of tabs in characters.
