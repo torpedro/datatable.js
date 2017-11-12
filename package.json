@@ -37,6 +37,7 @@
     "papaparse": "^4.3.6",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "unlog": "0.0.3"
   }
 }

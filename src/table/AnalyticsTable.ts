@@ -1,7 +1,3 @@
-// @file AnalyticsTable.ts
-
-///////////////////////////
-// <imports>
 import {
 	CoreColumnTable,
 	Row
@@ -11,34 +7,23 @@ import { OrderedSet } from '../data/OrderedSet';
 import { HashMap } from '../data/HashMap';
 import { vec } from '../data/VectorOperations';
 import { agg as aggs } from './operators/agg';
-// </imports>
-///////////////////////////
 
-
-/**
- * @class AnalyticsTable
- */
 export class AnalyticsTable extends CoreColumnTable {
-	public agg: any = aggs; // alias to the aggregation module
+	// Alias to the aggregation module
+	public agg: any = aggs;
 
-
-	/**
-	 * Returns a table grouped by the specified fields
-	 * Can handle function selectors
-	 *
-	 * @method groupBy
-	 */
+	// Returns a table grouped by the specified fields
+	// Can handle function selectors
 	groupBy(column: string|FieldDescriptor, aggregations?: aggs.Aggregation[]): AnalyticsTable;
 	groupBy(columns: (string|FieldDescriptor)[], aggregations?: aggs.Aggregation[]): AnalyticsTable;
 	groupBy(_groupFields: any, aggregations?: aggs.Aggregation[]): AnalyticsTable {
-		// if the function was called with a single group by column
-		// call it again with an array
-		// format the data input
+		// If the function was called with a single group by column
+		// call it again with an array.
 		if (!aggregations) aggregations = [];
 		if (!(_groupFields instanceof Array)) return this.groupBy([_groupFields], aggregations);
 		let fields: FieldDescriptor[] = convertListOfFieldDescriptors(_groupFields);
 
-		// create Result Field List
+		// Create result field list
 		let outputFields: string[] = [];
 		for (let i: number = 0; i < fields.length; ++i) {
 			outputFields.push(fields[i].outputName);
@@ -50,8 +35,8 @@ export class AnalyticsTable extends CoreColumnTable {
 			else outputFields.push('Aggregation ' + k);
 		}
 
-		// create hash map
-		let map: HashMap<string[], any[]> = new HashMap<any, any[]>(false); // map by equality
+		// Create hash map (mapping by equality).
+		let map: HashMap<string[], any[]> = new HashMap<any, any[]>(false);
 
 		for (let r: number = 0; r < this.count(); ++r) {
 			let key: string[] = [];
@@ -66,7 +51,7 @@ export class AnalyticsTable extends CoreColumnTable {
 			}
 		}
 
-		// create the result table
+		// Create the result table
 		let result: AnalyticsTable = new AnalyticsTable({
 			fields: outputFields
 		});
@@ -75,12 +60,12 @@ export class AnalyticsTable extends CoreColumnTable {
 		for (let k: number = 0; k < keys.length; ++k) {
 			let row: Row = [];
 
-			// add the grouped columns
+			// Add the grouped columns
 			for (let c: number = 0; c < keys[k].length; ++c) {
 				row.push(keys[k][c]);
 			}
 
-			// add the aggregated columns
+			// Add the aggregated columns
 			for (let a: number = 0; a < aggregations.length; ++a) {
 				row.push(aggregations[a](map.get(keys[k]), this));
 			}
@@ -93,13 +78,10 @@ export class AnalyticsTable extends CoreColumnTable {
 
 
 
-	/**
-	 * Returns a table with only rows where the predicate evaluated to true
-	 *
-	 * @method filter
-	 */
+
+	// Returns a table with only rows where the predicate evaluated to true.
 	filter(predicate: Function): AnalyticsTable {
-		// todo: figure out how to be able to address columns in predicate by name
+		// TODO: figure out how to be able to address columns in predicate by name
 		let result: AnalyticsTable = new AnalyticsTable({
 			fields: this.fieldset.toArray(),
 			types: this.types()
@@ -113,33 +95,20 @@ export class AnalyticsTable extends CoreColumnTable {
 		return result;
 	}
 
-
-
-	/**
-	 * Returns all distinct values of the specified field
-	 *
-	 * TODO: FieldDescriptor
-	 * TODO: mutltiple fields
-	 *
-	 * @method distinctValues
-	 */
+	// Returns all distinct values of the specified field
+	// TODO: FieldDescriptor
+	// TODO: mutltiple fields
 	distinctValues(field: string): OrderedSet {
 		return new OrderedSet(this.column(field));
 	}
 
-
-
-	/**
-	 * Returns a Table with only the specified fields (Similar to SQLs SELECT clause)
-	 * Can handle FieldDescriptors functions
-	 *
-	 * @method select
-	 */
+	// Returns a Table with only the specified fields (Similar to SQLs SELECT clause)
+	// Can handle FieldDescriptors functions
 	select(field: string): AnalyticsTable;
 	select(field: FieldDescriptor): AnalyticsTable;
 	select(fields: (string|FieldDescriptor)[]): AnalyticsTable;
 	select(_fields: any): AnalyticsTable {
-		// format the data input
+		// Format the data input
 		if (!(_fields instanceof Array)) return this.select([_fields]);
 		let inFields: FieldDescriptor[] = convertListOfFieldDescriptors(_fields);
 
@@ -151,7 +120,7 @@ export class AnalyticsTable extends CoreColumnTable {
 			let field: FieldDescriptor = inFields[i];
 
 			if (field.isStatic) {
-				// a simple field was selected
+				// A simple field was selected
 				columns.push(this.column(field.name).slice());
 				types.push(this.type(field.name));
 				resFields.push(field.outputName);
@@ -159,11 +128,11 @@ export class AnalyticsTable extends CoreColumnTable {
 			} else {
 				resFields.push(field.outputName);
 
-				// function selector
-				// build a new column vector
+				// Function selector
+				// Build a new column vector
 				let vector: any[] = [];
-				for (let i: number = 0; i < this.count(); ++i) {
-					let value: any = field.getValue(this, i);
+				for (let j: number = 0; j < this.count(); ++j) {
+					let value: any = field.getValue(this, j);
 					vector.push(value);
 				}
 
@@ -180,15 +149,10 @@ export class AnalyticsTable extends CoreColumnTable {
 	}
 
 
-	/**
-	 * Returns a Table where the column was split into multiple columns
-	 *
-	 * TODO: FieldDescriptor
-	 *
-	 * @method splitColumn
-	 */
+	// Returns a Table where the column was split into multiple columns
+	// TODO: FieldDescriptor
 	splitColumn(field: string, groupField: string): AnalyticsTable {
-		// find all result field names
+		// Find all result field names
 		let categories: any[] = this.distinctValues(field).toArray();
 		let fields: string[] = [groupField];
 		let types: string[] = [this.type(groupField)];
@@ -208,8 +172,8 @@ export class AnalyticsTable extends CoreColumnTable {
 			}
 		}
 
-		// build Hash-Map
-		// map( group -> map( category -> Array(valueFields) ) )
+		// Build HashMap
+		// Map( group -> map( category -> Array(valueFields) ) )
 		let map: HashMap<any, {}> = new HashMap<any, {}>(false);
 
 		for (let r: number = 0; r < this.count(); ++r) {
@@ -232,13 +196,13 @@ export class AnalyticsTable extends CoreColumnTable {
 			types: types
 		});
 
-		// build rows
+		// Build rows
 		let keys: any[] = map.keys();
 		for (let k: number = 0; k < keys.length; ++k) {
 			let obj: {} = map.get(keys[k]);
 			let row: any[] = [keys[k]];
 
-			// loop over categories and valueFields
+			// Loop over categories and valueFields
 			for (let c: number = 0; c < categories.length; ++c) {
 				if (!(categories[c] in obj)) {
 					for (let f: number = 0; f < valueFields.length; ++f) {
@@ -251,27 +215,18 @@ export class AnalyticsTable extends CoreColumnTable {
 					}
 				}
 			}
-
 			result.addRow(row);
 		}
-
 
 		return result;
 	}
 
-
-
-	/**
-	 * Return a table sorted by the given field
-	 * Default Order: Descending
-	 * TODO: Currently only supports simple < comparison
-	 * TODO: Allow for customt comparator
-	 *
-	 * Implemented as MergeSort
-	 * http://www.nczonline.net/blog/2012/10/02/computer-science-and-javascript-merge-sort/
-	 *
-	 * @method sort
-	 */
+	// Return a table sorted by the given field
+	// Default Order: Descending
+	// TODO: Currently only supports simple < comparison
+	// TODO: Allow for customt comparator
+	// Implemented as MergeSort
+	// Source: http://www.nczonline.net/blog/2012/10/02/computer-science-and-javascript-merge-sort/
 	sort(_field: string|FieldDescriptor, asc: boolean = false): AnalyticsTable {
 		let field: FieldDescriptor = convertToFieldDescriptors(_field);
 
@@ -280,21 +235,15 @@ export class AnalyticsTable extends CoreColumnTable {
 			types: this.types()
 		});
 
-		// materialize the rows
+		// Materialize the rows, sort and insert into output table.
 		let rows: Row[] = this.rows();
-
-		// sort the rows
 		let sortedRows: Row[] = this.mergeSort(rows, field, asc);
-
-		// add to output table
 		table.insert(sortedRows);
-
 		return table;
 	}
 
-
 	private mergeSort(rows: any[], field: FieldDescriptor, asc: boolean): any[] {
-		// terminal case: 0 or 1 item arrays don't need sorting
+		// Terminal case: 0 or 1 item arrays don't need sorting
 		if (rows.length < 2) {
 			return rows;
 		}
@@ -330,7 +279,7 @@ export class AnalyticsTable extends CoreColumnTable {
 	}
 }
 
-// utility functions
+// Utility functions
 function convertListOfFieldDescriptors(vals: (string|FieldDescriptor)[]): FieldDescriptor[] {
 	let desc: FieldDescriptor[] = [];
 	for (let i: number = 0; i < vals.length; ++i) desc.push(convertToFieldDescriptors(vals[i]));
@@ -341,6 +290,6 @@ function convertToFieldDescriptors(val: string|FieldDescriptor): FieldDescriptor
 	if (typeof val === 'string') {
 		return new FieldDescriptor(val);
 	}
-	// else return the field descriptor that was put in
+	// Else: return the field descriptor that was put in
 	return <FieldDescriptor>val;
 }

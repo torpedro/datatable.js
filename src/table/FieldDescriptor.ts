@@ -6,9 +6,6 @@ export type FieldFunction = (
 );
 export type FieldArgument = (string|number|FieldDescriptor);
 
-/**
- * @class FieldDescriptor
- */
 export class FieldDescriptor {
 	isStatic: boolean;
 	name: string;
@@ -17,14 +14,14 @@ export class FieldDescriptor {
 
 	constructor(what: (string|FieldFunction), as?: string) {
 		if (typeof what === 'string') {
-			// what is a static field selector
+			// Input is a static field selector
 			this.isStatic = true;
 			this.name = what;
 
 			if (as) this.outputName = as;
 			else this.outputName = what;
 		} else {
-			// what is a function selector
+			// Input is a function selector
 			this.isStatic = false;
 			this.fn = <FieldFunction>what;
 			this.outputName = as;

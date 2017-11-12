@@ -7,9 +7,7 @@ import { vec } from '../data/VectorOperations';
 import { ITypeConversionResult, TypeEnvironment } from '../types/TypeEnvironment';
 import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
 
-/**
- * Information stored in the table for each field
- */
+// Information stored in the table for each field
 export interface IFieldData {
 	index: number;
 	name: string;
@@ -28,22 +26,16 @@ export type Row = Value[];
 export type Column = Value[];
 export type FieldID = (string|number);
 
-/**
- * @class CoreColumnTable
- *
- * This table is implemented as a column store.
- * TODO: enforce types
- * TODO: remove row
- * TODO: allow to define constraints/validators
- */
+// This table is implemented as a column store.
+// TODO: enforce types
+// TODO: remove row
+// TODO: allow to define constraints/validators
 export class CoreColumnTable {
 	protected fieldset: Set;
 	protected fielddata: HashMap<string, IFieldData>;
 	protected typeEnv: TypeEnvironment;
 
-	/**
-	 * Creates a new CoreColumnTable
-	 */
+	// Creates a new CoreColumnTable
 	constructor(def: (ITableDefinition | CoreColumnTable)) {
 		this.typeEnv = TypeEnv.getInstance();
 
@@ -56,9 +48,7 @@ export class CoreColumnTable {
 		}
 	}
 
-	/**
-	 * inserts an array of rows into the table
-	 */
+	// Inserts an array of rows into the table
 	insert(rows: Row[]): void {
 		if (rows instanceof Array) {
 			for (let r: number = 0; r < rows.length; ++r) {
@@ -71,9 +61,7 @@ export class CoreColumnTable {
 		}
 	}
 
-	/**
-	 * returns the number of rows in the table
-	 */
+	// Returns the number of rows in the table
 	count(): number {
 		if (this.fieldset.size() > 0) {
 			return this.column(this.fieldset.get(0)).length;
@@ -82,15 +70,13 @@ export class CoreColumnTable {
 		}
 	}
 
-	/**
-	 * adds a new field to the table of the given type
-	 * fills the column with null-values
-	 */
+	// Adds a new field to the table of the given type.
+	// Fills the column with null-values
 	addField(name: string, type?: string): void {
 		type = (typeof type === 'undefined') ? TypeEnv.kAny : type;
 
 		if (!this.fieldset.contains(name)) {
-			// fill column with null-values
+			// Fill column with null-values
 			let data: Column = [];
 			for (let r: number = 0; r < this.count(); ++r) {
 				data.push(null);
@@ -132,7 +118,7 @@ export class CoreColumnTable {
 			return data.type;
 
 		} else {
-			// check for special reserved system names
+			// Check for special reserved system names
 			if (field === '$rownr') return TypeEnv.kNumber;
 
 			throw `Could not find column with id "${field}"!`;
@@ -152,7 +138,7 @@ export class CoreColumnTable {
 	}
 
 	row(r: number): Row {
-		// build the row from the attribute vectors
+		// Build the row from the attribute vectors
 		let record: Row = [];
 		for (let fieldName of this.fieldset.toArray()) {
 			record.push(this.value(r, fieldName));
@@ -172,10 +158,8 @@ export class CoreColumnTable {
 		this.column(field)[row] = value;
 	}
 
-	/**
-	 * adds empty rows to the table, until the table has at least
-	 * as many rows as specified
-	 */
+	// Adds empty rows to the table, until the table has at least
+	// As many rows as specified
 	reserve(numRows: number): void {
 		if (this.numFields() === 0) throw `Can't reserve rows on a table without fields!`;
 		while (this.count() < numRows) {
@@ -188,7 +172,7 @@ export class CoreColumnTable {
 		if (data) {
 			return data.vector.toArray();
 		} else {
-			// check for special reserved system names
+			// Check for special reserved system names
 			if (field === '$rownr') {
 				return this.createRowNrColumn();
 			}
@@ -222,7 +206,7 @@ export class CoreColumnTable {
 		if (type !== data.type) {
 			data.type = type;
 
-			// convert types
+			// Convert types
 			let old: Vector = data.vector;
 			let newData: any[] = vec.convertToType(old.toArray(), type);
 			let vector: Vector = new Vector(type, newData, this.typeEnv);
@@ -230,9 +214,7 @@ export class CoreColumnTable {
 		}
 	}
 
-	/**
-	 * get the field data object for the specified field
-	 */
+	// Get the field data object for the specified field
 	protected getFieldData(field: FieldID): IFieldData {
 		let name: string;
 		if (typeof field === 'number') {
@@ -256,14 +238,14 @@ export class CoreColumnTable {
 	}
 
 	protected initWithTableDef(def: ITableDefinition): void {
-		// initialize the fields
-		// throw error if field names are not unique
+		// Initialize the fields
+		// Throw error if field names are not unique
 		this.fieldset = new Set(def.fields);
 		if (def.fields.length !== this.fieldset.size()) {
 			throw `No duplicate field names allowed!`;
 		}
 
-		// do some sanity checks on the input parameters
+		// Do some sanity checks on the input parameters
 		if (def.types) {
 			if (def.fields.length !== def.types.length) {
 				throw `Number of fields and number of types do not match!`;
@@ -300,32 +282,28 @@ export class CoreColumnTable {
 		});
 	}
 
-	/**
-	 * adds a new row to the table
-	 */
+	// Adds a new row to the table
 	protected addRow(row: Row): void {
 		if (row.length > this.numFields()) throw `Error when inserting! Row has too many fields!`;
 
-		// typechecks
+		// Type checks
 		for (let c: number = 0; c < row.length; ++c) {
 			if (row[c] === undefined) throw `Error when inserting! Can not insert undefined!`;
 			let colType: string = this.types()[c];
 
-			// check for null
-			// if the inserted value is empty string and the datatype is not string
-			// insert null
+			// Check for null
+			// If the inserted value is empty string and the datatype is not string insert null
 			if (row[c] === null ||
 				(row[c] === '' && colType !== 'string')) {
 				row[c] = null;
-				// todo: allow definition of 'not null'-constraint
+				// TODO: allow definition of 'not null'-constraint
 
 			} else {
 
 				if (colType === 'any') {
-					// no typecheck necessary, all values welcome
-
+					// No typecheck necessary, all values welcome
 				} else {
-					// try to convert
+					// Try to convert
 					let res: ITypeConversionResult = this.typeEnv.convert(row[c], colType);
 					if (res.success) {
 						row[c] = res.result;
@@ -336,12 +314,12 @@ export class CoreColumnTable {
 			}
 		}
 
-		// insert the values
+		// Insert the values
 		for (let c: number = 0; c < row.length; ++c) {
 			this.column(this.fieldset.get(c)).push(row[c]);
 		}
 
-		// push null-values for non-existant fields
+		// Push null-values for non-existant fields
 		for (let c: number = row.length; c < this.numFields(); ++c) {
 			this.column(this.fieldset.get(c)).push(null);
 		}

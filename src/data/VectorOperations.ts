@@ -3,24 +3,21 @@ import * as _ from 'underscore';
 import { ITypeDetectionResult } from '../types/TypeEnvironment';
 import { StandardTypeEnv as TypeEnv } from '../types/StandardTypeEnv';
 
-/**
- * @module vec
- */
 export module vec {
 	export function range(vector: any[], dataType?: string): [any, any] {
 		let size: number = vector.length;
 		if (size === 0) return null;
 
-		let range: [any, any] = [vector[0], vector[0]];
+		let interval: [any, any] = [vector[0], vector[0]];
 		for (let n: number = 1; n < size; ++n) {
 			let value: any = vector[n];
 
-			// todo: Handle different datatypes
-			if (value < range[0]) range[0] = value;
-			if (value > range[1]) range[1] = value;
+			// TODO: Handle different datatypes
+			if (value < interval[0]) interval[0] = value;
+			if (value > interval[1]) interval[1] = value;
 		}
 
-		return range;
+		return interval;
 	}
 
 	export function min(vector: any[]): any { return range(vector)[0]; }
@@ -36,10 +33,10 @@ export module vec {
 
 			let res: ITypeDetectionResult = env.detectDataType(value, parseStrings);
 
-			// ignore nulls, they have no type
+			// Ignore nulls, they have no type
 			if (res.type === 'null') continue;
 
-			// add to the typeset
+			// Add to the typeset
 			if (typeset.indexOf(res.type) === -1) typeset.push(res.type);
 			if (convertTypes) vector[i] = res.value;
 		}
@@ -47,8 +44,8 @@ export module vec {
 
 		if (typeset.length === 0) return TypeEnv.kNull;
 		if (typeset.length === 1) return typeset[0];
-		else return 'any'; // return an any type
-		// todo: roll-up the types
+		else return 'any';
+		// TODO: roll-up the types
 	}
 
 	export function convertToType(vector: any[], targetType: string): any[] {
@@ -58,11 +55,7 @@ export module vec {
 		return newVec;
 	}
 
-	/**
-	 * @name groupByPositions
-	 *
-	 * not type safe
-	 */
+	// This is not types safe
 	export function groupByPositions(vector: any[]): {} {
 		let map: {} = {};
 		for (let i: number = 0; i < vector.length; ++i) {
@@ -76,9 +69,7 @@ export module vec {
 		return map;
 	}
 
-	/**
-	 * list all distinct values within the array
-	 */
+	// List all distinct values within the array
 	export function distinctValues(vector: any[]): any[] {
 		let values: any[] = [];
 		for (let i: number = 0; i < vector.length; ++i) {

@@ -21,7 +21,7 @@ export class CSVParser {
 		if (result.meta.fields) {
 			fields = result.meta.fields;
 
-			// create attribute vectors
+			// Create attribute vectors
 			for (let c: number = 0; c < fields.length; ++c) {
 				let vector: any[] = [];
 				for (let r: number = 0; r < numRows; ++r) {
@@ -30,18 +30,18 @@ export class CSVParser {
 				attrVectors.push(vector);
 			}
 		} else {
-			// find the number of columns needed for all rows
+			// Find the number of columns needed for all rows
 			let numColumns: number = 0;
 			for (let r: number = 0; r < numRows; ++r) {
 				numColumns = Math.max(numColumns, result.data[r].length);
 			}
 
-			// initialize fields
+			// Initialize fields
 			for (let c: number = 0; c < numColumns; ++c) {
 				fields.push('Column ' + (c + 1));
 			}
 
-			// fill attribute vectors
+			// Fill attribute vectors
 			for (let c: number = 0; c < numColumns; ++c) {
 				let vector: any[] = [];
 				for (let r: number = 0; r < numRows; ++r) {
@@ -51,7 +51,7 @@ export class CSVParser {
 			}
 		}
 
-		// create the table
+		// Create the table
 		let table: CoreColumnTable = new CoreColumnTable({
 			fields: fields,
 			columns: attrVectors

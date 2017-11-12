@@ -6,8 +6,8 @@ export interface ITypeConversionResult {
 }
 
 export interface ITypeConverter {
-	fromType: string; // javascript type or custom type or *
-	toType: string; // custom type
+	fromType: string; // Javascript type or custom type or *
+	toType: string; // Custom type
 	priority: number;
 	converter: (val: any) => ITypeConversionResult;
 }
@@ -39,7 +39,7 @@ export class TypeEnvironment {
 	convert(value: any, toType: string, forceFromType: string = null): ITypeConversionResult {
 		let fromType: string = forceFromType || this.detectDataType(value, false).type;
 
-		// check fromType === toType
+		// Check [fromType === toType]
 		if (fromType === toType) {
 			return {
 				success: true,
@@ -48,8 +48,8 @@ export class TypeEnvironment {
 			};
 		}
 
-		// get all converters that convert from fromType
-		// order by priority and filter by toType
+		// Get all converters that convert from [fromType].
+		// Order by priority and filter by [toType].
 		let converters: ITypeConverter[] = this.typeConverters[fromType] || [];
 		converters = converters.sort((a: ITypeConverter, b: ITypeConverter): number => a.priority - b.priority);
 		converters = converters.filter((conv: ITypeConverter): boolean => conv.toType === toType);

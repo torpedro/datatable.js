@@ -2,19 +2,14 @@
 import { ISet } from '../interfaces/ISet';
 import { ArrayOrConvertible } from '../interfaces/IArrayConvertible';
 
-/**
- * @class Set
- *
- * Keeps values in the order they are inserted (Important!)
- * ES6 has a native Set object. Probably replace this Set with that.
- *
- * TODO: Allow option to set deep-equal
- */
+// Keeps values in the order they are inserted (Important!)
+// ES6 has a native Set object. Probably replace this Set with that.
+// TODO: Allow option to set deep-equal
 export class Set implements ISet {
 	protected array: any[];
 
 	constructor(data?: ArrayOrConvertible) {
-		// initialize empty
+		// Initialize empty
 		let i: number;
 		this.array = [];
 
@@ -23,7 +18,7 @@ export class Set implements ISet {
 				this.add(data[i]);
 			}
 		} else if (data && data.toArray) {
-			// this is a IArrayConvertible
+			// This is a IArrayConvertible
 			for (let value of data.toArray()) {
 				this.add(value);
 			}

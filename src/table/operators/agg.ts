@@ -1,10 +1,6 @@
 import { AnalyticsTable } from '../AnalyticsTable';
 
-/**
- * @module agg
- *
- * Used in group-by operations
- */
+// Used in group-by operations
 export module agg {
 	export type Aggregation = (
 		((rows: any[], table: AnalyticsTable) => any) & { aggName?: string, name?: string }
@@ -12,16 +8,16 @@ export module agg {
 
 	export function sum(targetField: string, outputName?: string): Aggregation {
 		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): number {
-			// todo: type-switch
-			let sum: number = 0;
+			// TODO: type-switch
+			let total: number = 0;
 			let c: number = table.getFieldIndex(targetField);
 			for (let r: number = 0; r < rows.length; ++r) {
-				sum += rows[r][c];
+				total += rows[r][c];
 			}
-			return sum;
+			return total;
 		};
 
-		// set output name
+		// Set output name
 		if (outputName) aggf.aggName = outputName;
 		else aggf.aggName = 'SUM(' + targetField + ')';
 		return aggf;
@@ -29,16 +25,16 @@ export module agg {
 
 	export function avg(targetField: string, outputName: string): Aggregation {
 		let aggf: Aggregation = function(rows: any[], table: AnalyticsTable): number {
-			// todo: type-switch
-			let sum: number = 0;
+			// TODO: type-switch
+			let total: number = 0;
 			let c: number = table.getFieldIndex(targetField);
 			for (let r: number = 0; r < rows.length; ++r) {
-				sum += rows[r][c];
+				total += rows[r][c];
 			}
-			return (sum / rows.length);
+			return (total / rows.length);
 		};
 
-		// set output name
+		// Set output name
 		if (outputName) aggf.aggName = outputName;
 		else aggf.aggName = 'AVG(' + targetField + ')';
 		return aggf;
@@ -50,11 +46,9 @@ export module agg {
 			return rows[0][c];
 		};
 
-		// set output name
+		// Set output name
 		if (outputName) aggf.aggName = outputName;
 		else aggf.aggName = 'AVG(' + targetField + ')';
 		return aggf;
-
 	}
-
 }

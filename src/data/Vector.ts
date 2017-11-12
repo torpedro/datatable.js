@@ -33,7 +33,7 @@ export class Vector implements IVector {
 		if (this.type === 'any') {
 			this.data.push(value);
 		} else {
-			// check types
+			// Checking types...
 			let parseStrings: boolean = this.type !== 'string';
 			let res: ITypeDetectionResult = this.typeEnv.detectDataType(value, parseStrings);
 			if (res.type === this.type) {

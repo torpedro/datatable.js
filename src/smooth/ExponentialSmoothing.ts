@@ -1,12 +1,9 @@
-/**
- * @module es
- */
 export module es {
 	export function SingleExponentialSmoothing(vector: number[], alpha: number): number[] {
 		if (!vector || typeof alpha === 'undefined') throw 'Not enough parameters given!';
 		if (0 > alpha || alpha > 1) throw 'Alpha has to be in [0,1]!';
 
-		let result: number[] = []; // smoothed data
+		let result: number[] = []; // Smoothed data
 
 		result.push(vector[0]);
 		for (let t: number = 1; t < vector.length; ++t) {
@@ -17,17 +14,14 @@ export module es {
 		return result;
 	}
 
-	/**
-	 * Double Exponential Smoothing
-	 *
-	 * TODO: Type checking
-	 * TODO: tests
-	 */
+	// Double Exponential Smoothing
+	// TODO: Type checking
+	// TODO: tests
 	export function DoubleExponentialSmoothing(data: number[], alpha: number, beta: number): number[] {
 		if (!data || !alpha) return null;
 
-		let s: number[] = []; // smoothed data
-		let b: number[] = []; // trend
+		let s: number[] = []; // Smoothed data
+		let b: number[] = []; // Trend
 
 		s.push(data[0]);
 		b.push(data[1] - data[0]);
@@ -43,5 +37,5 @@ export module es {
 		return s;
 	}
 
-	// todo: Triple Exponential Smoothing
+	// TODO: Triple Exponential Smoothing
 }

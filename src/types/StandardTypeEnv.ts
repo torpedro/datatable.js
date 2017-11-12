@@ -5,9 +5,6 @@ import {
 	TypeID
 } from './TypeEnvironment';
 
-/**
- *
- */
 export class StandardTypeEnv extends TypeEnvironment {
 	public static kAny: TypeID      = 'any';
 	public static kString: TypeID   = 'string';
@@ -18,7 +15,7 @@ export class StandardTypeEnv extends TypeEnvironment {
 	public static kNull: TypeID     = 'null';
 	public static kFunction: TypeID = 'function';
 
-	// static instance
+	// Static instance
 	private static _instance: StandardTypeEnv;
 
 	public static getInstance(): StandardTypeEnv {
@@ -31,7 +28,7 @@ export class StandardTypeEnv extends TypeEnvironment {
 	constructor() {
 		super();
 
-		// booleans
+		// Booleans
 		this.addStringConverter(StandardTypeEnv.kBoolean, {
 			regex: /^[Ff][Aa][Ll][Ss][Ee]$/,
 			format: function(match: RegExpExecArray): boolean { return false; }
@@ -41,7 +38,7 @@ export class StandardTypeEnv extends TypeEnvironment {
 			format: function(match: RegExpExecArray): boolean { return true; }
 		});
 
-		// numbers
+		// Numbers
 		this.addStringConverter(StandardTypeEnv.kNumber, {
 			regex: /^\s*-?[0-9]+(?:\,[0-9][0-9][0-9])*(?:\.[0-9]+)?\s*$/,
 			format: function(match: RegExpExecArray): number {
@@ -55,8 +52,9 @@ export class StandardTypeEnv extends TypeEnvironment {
 			}
 		});
 
-		// dates
-		this.addStringConverter(StandardTypeEnv.kDate, { // dd.mm.yyyy
+		// Dates
+		// Format: dd.mm.yyyy (German)
+		this.addStringConverter(StandardTypeEnv.kDate, {
 			regex: /^([0-9]?[0-9])\.([0-9]?[0-9])\.([0-9][0-9][0-9][0-9])$/,
 			format: function(match: RegExpExecArray): Date {
 				let month: number = parseInt(match[2], 10) - 1;
@@ -64,7 +62,8 @@ export class StandardTypeEnv extends TypeEnvironment {
 			}
 		});
 
-		this.addStringConverter(StandardTypeEnv.kDate, { // yyyy-mm-dd
+		// Format: yyyy-mm-dd (ISO)
+		this.addStringConverter(StandardTypeEnv.kDate, {
 			regex: /^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])$/,
 			format: function(match: RegExpExecArray): Date {
 				let month: number = parseInt(match[2], 10) - 1;
@@ -72,7 +71,8 @@ export class StandardTypeEnv extends TypeEnvironment {
 			}
 		});
 
-		this.addStringConverter(StandardTypeEnv.kDate, { // mm/dd/yyyy
+		// Format: mm/dd/yyyy (USA)
+		this.addStringConverter(StandardTypeEnv.kDate, {
 			regex: /^([0-9]?[0-9])\/([0-9]?[0-9])\/([0-9][0-9][0-9][0-9])$/,
 			format: function(match: RegExpExecArray): Date {
 				let month: number = parseInt(match[1], 10) - 1;
@@ -82,7 +82,7 @@ export class StandardTypeEnv extends TypeEnvironment {
 
 		this.addStringConverter(StandardTypeEnv.kDate, {
 			matchAndFormat: function(str: string): Date|boolean {
-				// check if it starts with a date
+				// Check if it starts with a date
 				if (/^([0-9][0-9][0-9][0-9])\-([0-9][0-9])\-([0-9][0-9])/.exec(str)) {
 					let date: Date = new Date(str);
 					if (!isNaN(date.getTime())) return date;
@@ -117,5 +117,4 @@ export class StandardTypeEnv extends TypeEnvironment {
 			return null;
 		});
 	}
-
 }

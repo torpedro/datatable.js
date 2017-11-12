@@ -1,19 +1,13 @@
 import * as _ from 'underscore';
 import { util } from './util';
 
-/**
- * @class HashMap
- *
- *
- */
-
 type BucketEntry<K, V> = [K, V];
 type Bucket<K, V> = BucketEntry<K, V>[];
 
 export class HashMap<K, V> {
 	private map: { [key: string]: Bucket<K, V> } = {};
 
-	// flag to indicate whether to use equality or identity
+	// Flag to indicate whether to use equality or identity
 	private useIdentity: boolean;
 
 	constructor(useIdentity?: boolean) {
@@ -55,20 +49,16 @@ export class HashMap<K, V> {
 	}
 
 	private getBucket(key: K): Bucket<K, V> {
-		// hash the key
 		let hash: string = util.hashCode(key);
 
-		// create bucket if it doesn't exist
+		// Create bucket if it doesn't exist.
 		if (!(hash in this.map)) this.map[hash] = [];
 
-		// return the bucket
 		return this.map[hash];
 	}
 
-	/**
-	 * returns index of key within bucket
-	 * returns -1 if key not found
-	 */
+	// Returns the index of key within bucket.
+	// Returns -1 if key not found.
 	private findKeyInBucket(key: K, bucket: Bucket<K, V>): number {
 		for (let i: number = 0; i < bucket.length; ++i) {
 			if (this.isEqual(key, bucket[i][0])) {
