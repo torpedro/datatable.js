@@ -20,7 +20,7 @@ compile:
 	@$(TSC)
 	$(LOG) "Compilation done."
 
-test-and-lint: test lint
+test-full: test lint
 
 test: FORCE compile
 	$(LOG) "Testing... (Mocha version: "`$(MOCHA) --version`")"

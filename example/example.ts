@@ -1,9 +1,9 @@
-/// <reference path="../dist/datatable.js.d.ts" />
-import { Table } from "datatable.js";
+/// <reference path='../dist/datatable.js.d.ts' />
+import { Table } from 'datatable.js';
 
 let table = new Table({
   fields: ['One'],
   types: ['number']
 });
 
-table.insert([[1]])
+table.insert([[1]]);

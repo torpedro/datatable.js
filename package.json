@@ -1,13 +1,13 @@
 {
   "name": "datatable.js",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "author": "Pedro Flemming",
   "license": "MIT",
   "homepage": "https://github.com/torpedro/datatable.js",
   "main": "dist/datatable.js",
   "types": "dist/datatable.js.d.ts",
   "scripts": {
-    "test": "make test-and-lint"
+    "test": "make test-full"
   },
   "bugs": {
     "url": "https://github.com/torpedro/datatable.js/issues"
