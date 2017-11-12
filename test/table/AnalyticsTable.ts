@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import * as assert from 'assert';
 import { agg } from '../../src/table/operators/agg';
 import { AnalyticsTable } from '../../src/table/AnalyticsTable';
 import { FieldDescriptor } from '../../src/table/FieldDescriptor';
@@ -26,7 +26,7 @@ describe('table.AnalyticsTable', function () {
     table.insert([[1, 'Max', 'Mustermann']]);
     table.insert([[2, 'John', 'Doe']]);
 
-    var result = table.filter(function (row) { return row[0] < 2 });
+    var result = table.filter(function (row: any[]) { return row[0] < 2; });
     assert.deepEqual(result.rows(), [[1, 'Max', 'Mustermann']]);
   });
 
@@ -41,7 +41,7 @@ describe('table.AnalyticsTable', function () {
 
     var anaTable = new AnalyticsTable(table);
 
-    var resultTable = anaTable.filter(function (row) { return row[0] < 2 });
+    var resultTable = anaTable.filter(function (row: any[]) { return row[0] < 2; });
     assert.deepEqual(resultTable.rows(), [[1, 'Max', 'Mustermann']]);
   });
 
@@ -54,7 +54,7 @@ describe('table.AnalyticsTable', function () {
     // Custom Function
     // For the predefined aggregation function see the tests of agg-module below
     var res2 = table1.groupBy(['Category'], [
-      function SumScore1(rows) {
+      function SumScore1(rows: any[][]) {
         var sum = 0;
         for (var i = 0; i < rows.length; ++i) {
           sum += rows[i][1];
@@ -62,16 +62,18 @@ describe('table.AnalyticsTable', function () {
         return sum;
       }
     ]);
-    assert.deepEqual(res2.rows(), [[1, 80], [2, 30], [3, 40]])
-    assert.deepEqual(res2.fields(), ['Category', 'SumScore1'])
+    assert.deepEqual(res2.rows(), [[1, 80], [2, 30], [3, 40]]);
+    assert.deepEqual(res2.fields(), ['Category', 'SumScore1']);
   });
 
   it('group by function', function () {
-    var res1 = table1.groupBy([new FieldDescriptor(function (row) {
-      return Math.round(row.get('Category') / 2);
-    }, 'HalfCategories')])
+    var res1 = table1.groupBy([new FieldDescriptor(
+      function (row: any) {
+        return Math.round(row.get('Category') / 2);
+      },
+      'HalfCategories')]);
 
-    assert.deepEqual(res1.rows(), [[1], [2]])
+    assert.deepEqual(res1.rows(), [[1], [2]]);
   });
 
   it('distinctValues', function () {
@@ -150,8 +152,8 @@ describe('table.AnalyticsTable', function () {
     });
 
     var double = table.select(['Score', new FieldDescriptor(
-      function (row) {
-        return row.get('Score') * 2
+      function (row: any) {
+        return row.get('Score') * 2;
       },
       'DoubleScore'
     )]);
@@ -159,7 +161,7 @@ describe('table.AnalyticsTable', function () {
     assert.deepEqual(double.columns(), [
       [1, 5, 2, 3, 3],
       [2, 10, 4, 6, 6]
-    ])
+    ]);
   });
 
   it('select system columns', function () {
@@ -199,6 +201,5 @@ describe('table.AnalyticsTable', function () {
       [1, 300],
       [3, 400]
     ]);
-
-  })
+  });
 });

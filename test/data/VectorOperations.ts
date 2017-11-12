@@ -13,7 +13,6 @@ describe('data.VectorOperations', function() {
 
   it('detectDataTypes', function() {
     var vector: Array<any>;
-    var type: string;
 
     vector = [1, 2, 3, 4, 5, 2, 4, null, 10, -3, 5, '1.0'];
     assert.equal(vec.detectDataType(vector), 'number');
@@ -29,6 +28,6 @@ describe('data.VectorOperations', function() {
     var vector: Array<any>;
 
     vector = [1, 2, 1, 1, 2, 3, '1.0', null, 1];
-    assert.deepEqual(vec.distinctValues(vector), [1, 2, 3, '1.0', null])
+    assert.deepEqual(vec.distinctValues(vector), [1, 2, 3, '1.0', null]);
   });
 });

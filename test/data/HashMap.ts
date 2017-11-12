@@ -35,7 +35,7 @@ describe('data.HashMap', function () {
 
     assert.equal(map.get('abc'), 1);
     assert.equal(map.get(b), null); // Not Identical keys
-    assert.equal(map.get(a), 1); // identical keys
+    assert.equal(map.get(a), 1); // Identical keys
 
     map.set(b, 2);
     assert.equal(map.get(a), 1);

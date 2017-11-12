@@ -9,7 +9,7 @@ describe('table.operators.agg', function () {
     [1, 'Paul', 200],
     [2, 'John', 200],
     [2, 'Jeff', 300]
-  ]
+  ];
   let table: AnalyticsTable = new AnalyticsTable({
     fields: fields
   });

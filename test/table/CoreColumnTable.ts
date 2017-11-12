@@ -12,9 +12,10 @@ describe('table.CoreColumnTable', function () {
 
 
   it('should catch errors', function () {
-    assert.throws(function () {
-      new (<any>CoreColumnTable)("a"); // Should throw an exception
-    });
+    function throwError() {
+      return new (<any>CoreColumnTable)('a'); // Should throw an exception
+    }
+    assert.throws(throwError);
 
     // Type errors
     assert.throws(function () {
@@ -37,7 +38,7 @@ describe('table.CoreColumnTable', function () {
     table.insert([[1, null, null]]);
 
     assert.deepEqual(table.rows(), [[0, 'Max', null], [1, null, null]]);
-    assert.deepEqual(table.column('Name'), ['Max', null])
+    assert.deepEqual(table.column('Name'), ['Max', null]);
   });
 
 
@@ -61,15 +62,13 @@ describe('table.CoreColumnTable', function () {
 
 
   it('should have copy constructor', function () {
-    var header = ['ID', 'Name', 'Address'];
+    const fields = ['ID', 'Name', 'Address'];
+    const columns = [[1, 2], ['Max', 'John'], ['Germany', 'UK']];
+    let table = new CoreColumnTable({ fields, columns });
 
-    var table = new CoreColumnTable({
-      fields: ['ID', 'Name', 'Address'],
-      columns: [[1, 2], ['Max', 'John'], ['Germany', 'UK']]
-    });
     assert.deepEqual(table.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK']]);
 
-    var copy = new CoreColumnTable(table);
+    let copy = new CoreColumnTable(table);
     assert.deepEqual(copy.rows(), [[1, 'Max', 'Germany'], [2, 'John', 'UK']]);
 
     // Check that the vectors are not linked

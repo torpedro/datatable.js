@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import * as assert from 'assert';
 import { ITypeConversionResult } from '../../src/types/TypeEnvironment';
 import { StandardTypeEnv } from '../../src/types/StandardTypeEnv';
 

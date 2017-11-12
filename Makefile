@@ -20,13 +20,15 @@ compile:
 	@$(TSC)
 	$(LOG) "Compilation done."
 
+test-and-lint: test lint
+
 test: FORCE compile
-	$(LOG) "Mocha version: "`$(MOCHA) --version`
+	$(LOG) "Testing... (Mocha version: "`$(MOCHA) --version`")"
 	@$(MOCHA) $(BUILD)/test/**/*.js
 
 lint:
-	$(LOG) "Tslint version: "`$(TSLINT) --version`
-	$(TSLINT) --project .
+	$(LOG) "Linting... (Tslint version: "`$(TSLINT) --version`")"
+	@$(TSLINT) --project .
 
 release: $(MINTARGET) $(TARGET)
 
